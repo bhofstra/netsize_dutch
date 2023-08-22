@@ -4,7 +4,7 @@ output:
   html_document:
     toc: false
     number_sections: false
-author: "by: Beate Volker, Bas Hofstra, Rense Corten, Frank van Tubergen"
+author: "Beate Volker, Bas Hofstra, Rense Corten, Frank van Tubergen"
 bibliography: references.bib
 
 ---
@@ -37,18 +37,17 @@ klippy::klippy(position = c('top', 'right'))
 
 ----
 
-:::::::::::::: {.columns}
-::: {.column width="50%"}
 
-# My Lab Journal
+
+# Network size of the Dutch
 Last compiled on `r format(Sys.time(), '%B, %Y')`  
 
-*Describe lab journal here.*
 
 <br>
 
 ----
 
+## Replication website
 
 This is the replication website for the paper entitled: "How large is your network? Estimating Network Size of Residents in the Netherlands." By Beate Volker, Bas Hofstra, Rense Corten, and Frank van Tubergen. 
 

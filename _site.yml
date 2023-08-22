@@ -20,7 +20,7 @@ navbar:
 
   right:
   - icon: fab fa-github
-    href: https://github.com/robfranken/LabJournal
+    href: https://github.com/bhofstra/netsize_dutch
 output:
   html_document:
     theme: flatly
