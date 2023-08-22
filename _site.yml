@@ -10,7 +10,7 @@ navbar:
   left:
     - icon: fa-home
       href: index.html
-    - text: "My journal"
+    - text: "Names"
       menu:
       - text: "Page 1"
         href: lab1.html
