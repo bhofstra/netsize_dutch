@@ -1,0 +1,98 @@
+---
+title: "Lab journal"
+output:
+  html_document:
+    toc: false
+    number_sections: false
+author: "by: Your Name"
+bibliography: references.bib
+
+---
+
+
+```{r, install remotely, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+# install.packages("remotes")
+#remotes::install_github("rlesur/klippy")
+``` 
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+
+
+
+----
+
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+# My Lab Journal
+Last compiled on `r format(Sys.time(), '%B, %Y')`  
+
+*Describe lab journal here.*
+
+<br>
+
+----
+
+
+Everyone can fork this repository. 
+
+Use this example to journal your lab work and assignments. 
+
+
+:::
+::: {.column width="50%"}
+
+
+
+
+
+![](images/sciencedog.jpg)
+
+
+:::
+::::::::::::::
+
+
+
+## How to use
+
+1. Fork the repository for this website and follow instructions on `README` to get started [here](https://github.com/robfranken/LabJournal).  
+
+2. Journal your work, by editing the .Rmd-files
+
+3. ...
+
+4. Change everything to make it your own!
+
+
+<br>
+
+Use the top menu to navigate through the journal.
+
+
+----
+
+
+
+
+
+
