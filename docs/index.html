@@ -14,7 +14,7 @@
 
 <title>Lab journal</title>
 
-<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -39,8 +39,8 @@
 <link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
 <link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
 <script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
-<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -156,15 +156,11 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark the anchor link active (and if it's in a dropdown, also mark that active)
-  var dropdown = menuAnchor.closest('li.dropdown');
-  if (window.bootstrap) { // Bootstrap 4+
-    menuAnchor.addClass('active');
-    dropdown.find('> .dropdown-toggle').addClass('active');
-  } else { // Bootstrap 3
-    menuAnchor.parent().addClass('active');
-    dropdown.addClass('active');
-  }
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -193,8 +189,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -202,9 +198,16 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
+  content: "&#xe258;";
   border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -320,7 +323,7 @@ $(document).ready(function () {
 <div class="column" style="width:50%;">
 <div id="my-lab-journal" class="section level1">
 <h1>My Lab Journal</h1>
-<p>Last compiled on juni, 2023</p>
+<p>Last compiled on August, 2023</p>
 <p><em>Describe lab journal here.</em></p>
 <p><br></p>
 <hr />
@@ -336,7 +339,7 @@ $(document).ready(function () {
 <ol style="list-style-type: decimal">
 <li><p>Fork the repository for this website and follow instructions on
 <code>README</code> to get started <a
-href="https://github.com/robfranken/LabJournal">here</a>.</p></li>
+href="https://github.com/bhofstra/LabJournal">here</a>.</p></li>
 <li><p>Journal your work, by editing the .Rmd-files</p></li>
 <li><p>…</p></li>
 <li><p>Change everything to make it your own!</p></li>
@@ -346,7 +349,7 @@ href="https://github.com/robfranken/LabJournal">here</a>.</p></li>
 <hr />
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkxhYiBqb3VybmFsIg0Kb3V0cHV0Og0KICBodG1sX2RvY3VtZW50Og0KICAgIHRvYzogZmFsc2UNCiAgICBudW1iZXJfc2VjdGlvbnM6IGZhbHNlDQphdXRob3I6ICJieTogWW91ciBOYW1lIg0KYmlibGlvZ3JhcGh5OiByZWZlcmVuY2VzLmJpYg0KDQotLS0NCg0KDQpgYGB7ciwgaW5zdGFsbCByZW1vdGVseSwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQ0KIyBpbnN0YWxsLnBhY2thZ2VzKCJyZW1vdGVzIikNCiNyZW1vdGVzOjppbnN0YWxsX2dpdGh1Yigicmxlc3VyL2tsaXBweSIpDQpgYGAgDQoNCmBgYHtyLCBnbG9iYWxzZXR0aW5ncywgZWNobz1GQUxTRSwgd2FybmluZz1GQUxTRSwgcmVzdWx0cz0naGlkZSd9DQpsaWJyYXJ5KGtuaXRyKQ0KDQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpDQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkNCm9wdGlvbnMod2lkdGggPSAxMDApDQpyZ2w6OnNldHVwS25pdHIoKQ0KDQoNCg0KY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0NCg0KYGBgDQoNCmBgYHtyIGtsaXBweSwgZWNobz1GQUxTRSwgaW5jbHVkZT1UUlVFfQ0Ka2xpcHB5OjprbGlwcHkocG9zaXRpb24gPSBjKCd0b3AnLCAncmlnaHQnKSkNCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykNCiNrbGlwcHk6OmtsaXBweSh0b29sdGlwX21lc3NhZ2UgPSAnQ2xpY2sgdG8gY29weScsIHRvb2x0aXBfc3VjY2VzcyA9ICdEb25lJykNCmBgYA0KDQoNCg0KDQotLS0tDQoNCjo6Ojo6Ojo6Ojo6Ojo6IHsuY29sdW1uc30NCjo6OiB7LmNvbHVtbiB3aWR0aD0iNTAlIn0NCg0KIyBNeSBMYWIgSm91cm5hbA0KTGFzdCBjb21waWxlZCBvbiBgciBmb3JtYXQoU3lzLnRpbWUoKSwgJyVCLCAlWScpYCAgDQoNCipEZXNjcmliZSBsYWIgam91cm5hbCBoZXJlLioNCg0KPGJyPg0KDQotLS0tDQoNCg0KRXZlcnlvbmUgY2FuIGZvcmsgdGhpcyByZXBvc2l0b3J5LiANCg0KVXNlIHRoaXMgZXhhbXBsZSB0byBqb3VybmFsIHlvdXIgbGFiIHdvcmsgYW5kIGFzc2lnbm1lbnRzLiANCg0KDQo6OjoNCjo6OiB7LmNvbHVtbiB3aWR0aD0iNTAlIn0NCg0KDQoNCg0KDQohW10oaW1hZ2VzL3NjaWVuY2Vkb2cuanBnKQ0KDQoNCjo6Og0KOjo6Ojo6Ojo6Ojo6OjoNCg0KDQoNCiMjIEhvdyB0byB1c2UNCg0KMS4gRm9yayB0aGUgcmVwb3NpdG9yeSBmb3IgdGhpcyB3ZWJzaXRlIGFuZCBmb2xsb3cgaW5zdHJ1Y3Rpb25zIG9uIGBSRUFETUVgIHRvIGdldCBzdGFydGVkIFtoZXJlXShodHRwczovL2dpdGh1Yi5jb20vcm9iZnJhbmtlbi9MYWJKb3VybmFsKS4gIA0KDQoyLiBKb3VybmFsIHlvdXIgd29yaywgYnkgZWRpdGluZyB0aGUgLlJtZC1maWxlcw0KDQozLiAuLi4NCg0KNC4gQ2hhbmdlIGV2ZXJ5dGhpbmcgdG8gbWFrZSBpdCB5b3VyIG93biENCg0KDQo8YnI+DQoNClVzZSB0aGUgdG9wIG1lbnUgdG8gbmF2aWdhdGUgdGhyb3VnaCB0aGUgam91cm5hbC4NCg0KDQotLS0tDQoNCg0KDQoNCg0KDQo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTGFiIGpvdXJuYWwiCm91dHB1dDoKICBodG1sX2RvY3VtZW50OgogICAgdG9jOiBmYWxzZQogICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQphdXRob3I6ICJieTogWW91ciBOYW1lIgpiaWJsaW9ncmFwaHk6IHJlZmVyZW5jZXMuYmliCgotLS0KCgpgYGB7ciwgaW5zdGFsbCByZW1vdGVseSwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQojIGluc3RhbGwucGFja2FnZXMoInJlbW90ZXMiKQojcmVtb3Rlczo6aW5zdGFsbF9naXRodWIoInJsZXN1ci9rbGlwcHkiKQpgYGAgCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KCmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCgoKCi0tLS0KCjo6Ojo6Ojo6Ojo6Ojo6IHsuY29sdW1uc30KOjo6IHsuY29sdW1uIHdpZHRoPSI1MCUifQoKIyBNeSBMYWIgSm91cm5hbApMYXN0IGNvbXBpbGVkIG9uIGByIGZvcm1hdChTeXMudGltZSgpLCAnJUIsICVZJylgICAKCipEZXNjcmliZSBsYWIgam91cm5hbCBoZXJlLioKCjxicj4KCi0tLS0KCgpFdmVyeW9uZSBjYW4gZm9yayB0aGlzIHJlcG9zaXRvcnkuIAoKVXNlIHRoaXMgZXhhbXBsZSB0byBqb3VybmFsIHlvdXIgbGFiIHdvcmsgYW5kIGFzc2lnbm1lbnRzLiAKCgo6OjoKOjo6IHsuY29sdW1uIHdpZHRoPSI1MCUifQoKCgoKCiFbXShpbWFnZXMvc2NpZW5jZWRvZy5qcGcpCgoKOjo6Cjo6Ojo6Ojo6Ojo6Ojo6CgoKCiMjIEhvdyB0byB1c2UKCjEuIEZvcmsgdGhlIHJlcG9zaXRvcnkgZm9yIHRoaXMgd2Vic2l0ZSBhbmQgZm9sbG93IGluc3RydWN0aW9ucyBvbiBgUkVBRE1FYCB0byBnZXQgc3RhcnRlZCBbaGVyZV0oaHR0cHM6Ly9naXRodWIuY29tL2Job2ZzdHJhL0xhYkpvdXJuYWwpLiAgCgoyLiBKb3VybmFsIHlvdXIgd29yaywgYnkgZWRpdGluZyB0aGUgLlJtZC1maWxlcwoKMy4gLi4uCgo0LiBDaGFuZ2UgZXZlcnl0aGluZyB0byBtYWtlIGl0IHlvdXIgb3duIQoKCjxicj4KClVzZSB0aGUgdG9wIG1lbnUgdG8gbmF2aWdhdGUgdGhyb3VnaCB0aGUgam91cm5hbC4KCgotLS0tCgoKCgoKCg==</div>
 
 
 
