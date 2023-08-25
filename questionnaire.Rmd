@@ -1,10 +1,9 @@
 ---
-title: "Journal 1"
+title: "The Network Size Questionnaire"
 #bibliography: references.bib
-author: "Your Name"
+author: "Beate Volker, Bas Hofstra, Rense Corten"
+
 ---
-
-
 
 ```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
 library(knitr)
@@ -31,16 +30,20 @@ Last compiled on `r format(Sys.time(), '%B, %Y')`
 <br>
 
 ----
-  
-This is just an example page of your `r colorize("lab journal", "red")`.
-  
 
-----
+Now that we have selected the names in a principled way, we set out to conduct the survey.
 
 
-```{r}
-print("Hello Lab Journal")
+```{css, echo=FALSE}
+#embeded_pdf {
+ width: 100%; 
+ height:100%;
+}
 ```
 
+# Questionnaire
 
 
+<image src="Vragenlijst_netwerkomvang_Page_1.jpg"/>
+
+<image src="Vragenlijst_netwerkomvang_Page_2.jpg"/>

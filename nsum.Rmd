@@ -1,0 +1,264 @@
+---
+title: "NSUM estimation"
+#bibliography: references.bib
+author: "Bas Hofstra"
+---
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+Last compiled on `r format(Sys.time(), '%B, %Y')`
+
+<br>
+
+----
+
+This page describes how we went about for the data manipulation ahead NSUM Bayesian estimation method, the different scenarios, and the estimation itself. Note that this was done on a computing cluster, and it will very likely take a while of you do this locally. Note the parellel computing as well to speed up the process.
+
+<br>
+
+----
+
+# Initatiating R environment
+
+Start out with a custom function to load a set of required packages.
+  
+```{r init, eval=FALSE}
+# packages and read data
+
+rm(list = ls())
+
+# (c) Jochem Tolsma
+fpackage.check <- function(packages) {
+  lapply(packages, FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  })
+}
+packages = c("haven", "NSUM", "coda", "matrixStats", "parallel", "MASS", "doParallel")
+fpackage.check(packages)
+```
+
+
+<br>
+
+----
+
+# Loading the data
+
+We then load the data as we got them from IO research. Based on the questionnaire as shown here. Note that I check whether there are any missings on the demographic variables first (column 89 to 100).
+
+```{r datalaod, eval=FALSE}
+#repo <- "/yourscratch/" # yourpath
+df <- read_dta("DQUESTUU_eindbestand.dta")
+#df <- data.frame(df)
+
+nrow(as.matrix(na.omit(df[,c(89:100)]))) # no NAs on the demographic variables, just a check
+```
+
+<br>
+
+----
+
+# Data manipulation 1
+
+I then move to some data manipulation. I extract the columns for the X categories on University, Applied University, Tertiary Vocational, Son/Daughter, Randstad, and Corona infections. I also declare the number of those categories in the entire population in that specific point in time that the survey was conducted. I extract those columns from the data as well and fill up the "not knowing someone of that category" with zeros, such that it works in the estimation process.
+
+
+```{r, eval=FALSE}
+#--------------------------------------------------------------------------------
+# some data prep
+
+#v1 in data
+ref1 <- c(84957, 75214, 145600, 168066, 2500, 29808, 1558549)
+# ORDER:  uni, hbo, mbo, dochter/zoon, tweeling, randstad, corona
+df1_1 <- df[, c(8:14)]
+df1_2 <- df[, c(1:7)]
+
+# conditional filling in of zeros when respondents answer "no" I don't know that person
+for (i in 1:length(df1_2)){ # loop of collength
+   df1_1[[i]] <- ifelse(df1_2[[i]] == 2, 0, df1_1[[i]])
+}
+```
+
+
+<br>
+
+----
+
+# Data manipulation 2
+
+We do the same as above, but for the categories electrical vehicle, scooter, and vegans. We again declare the population numbers as well.
+
+```{r, eval=FALSE}
+#--------------------------------------------------------------------------------
+#v2 in data
+ref2 <- c(273259, 460618, 261000)
+# ORDER:   elecauto, scooter, vegan,
+df2_1 <- df[, c(18:20)]
+df2_2 <- df[, c(15:17)]
+
+# filling of zeros
+for (i in 1:length(df2_2)){ # loop of collength
+  df2_1[[i]] <- ifelse(df2_2[[i]] == 2, 0, df2_1[[i]])
+}
+
+
+
+```
+
+<br>
+
+----
+
+# Data manipulation 3
+
+And again, we do the same as above, but for the name categories (and see the Name search and Name selection pages so as to find out how we selected them).
+
+
+```{r, eval=FALSE}
+#--------------------------------------------------------------------------------
+#v3 in data
+ref3 <- c(15276,16350,27394,21200,25681,334502,29955,266522,39481, 2692,
+          136296,110231,112807,98208,1386,2186,11640,22704,13276,
+          40543,17024,23167,307032,36411,49182,186746,35973,134956,118610,86500,
+          102296,4213,5003,4517)
+# ORDER:   Sophie, Julia,Sanne,Lisa,Laura,Maria,Linda,Johanna,Monique,Ester,
+#             Anna,Elisabeth,Cornelia,Wilhelmina,Amira,Samira,Sara,Daan,Sem,
+#             Thomas,Max,Kevin,Johannes,Dennis,Jeroen,Jan,Marcel,Cornelis,Hendrik,Petrus,
+#             Willem,Ali,Mohammed,Noor
+
+df3_1 <- df[, c(55:88)]
+df3_2 <- df[, c(21:54)]
+
+# filling in of zeros
+for (i in 1:length(df3_2)){ # loop of collength
+  df3_1[[i]] <- ifelse(df3_2[[i]] == 2, 0, df3_1[[i]])
+}
+```
+
+
+<br>
+
+----
+
+# Data manipulation 4
+
+Before we move into the estimation, I need to do some final data manipulation. I first columbind the different X's together, both the actual answers from respondents, as well as the population numbers. It is important that these are in the same order. I also create an object with the total Dutch population. Note that I drop "Randstad", as there is a discrepancy between the survey quesiton and what we know from the entire population (Randstad versus "four biggest cities", these are two different things.)
+
+```{r, eval=FALSE}
+#--------------------------------------------------------------------------------
+# now cbind those matrices together
+cont <- cbind(df1_1[, c(1,2,3,4,5,7)], df2_1, df3_1)
+cont <- as.matrix(na.omit(cont)) # nice, only 60 or so missings
+pop <- c(ref1[c(1,2,3,4,5,7)], ref2, ref3) #without randstad (only 4 grote steden, not "randstad"), These are the known population sizes 
+totpop <- 17407585 # Total dutch population in 2020
+
+
+#--------------------------------------------------------------------------------
+# this is important: these are the data we can directly match to, same row order.
+df_nomissings <- cbind(df1_2[, c(1,2,3,4,5,7)], df1_1[, c(1,2,3,4,5,7)], df2_2, df2_1, df3_2, df3_1, df[, c(89:100)]) # loose randstad to get at same N
+df_nomissings <- na.omit(df_nomissings)
+
+```
+
+<br>
+
+----
+
+# Initiate estimation
+
+So we set a number of hyperparemeters first, 40K iterations, with a burnin of 1K, where we retain 4K chains. We do not save the entire NSUM output object, as we have 172 of those and they are 1GB each. So we extract the necessary information from each.
+
+
+```{r, eval=FALSE}
+#This is where the magic happens
+# So we don't save every NSUM object, it's about 1gb in size per heldout category
+
+iters <- 40000
+burns <- 1000
+retain <- 4000
+
+
+
+# paralellize the estimation
+closeAllConnections()
+numCores <- detectCores()
+if (numCores > 42) {
+  registerDoParallel(cores = 43)
+  } else {    
+    print("Too few cores!") 
+} 
+holdouts <- 1:43
+
+```
+
+<br>
+
+----
+
+# Estimation at tauK 0.25
+
+So this is the parellelized for loop where we estimate the NSUM output at tauK 0.25. We take starting parameter from the naive NSUM equation and move forward with that. Note that each of the 43 X categories is held out once. This implies that we have 43 network sizes for all respondents using tauK 0.25. We extract the average network size of the 4K chains for each respondent in each estimation scenario. We save that in a txt file. We repeat this process for tauK 0.5, 0.75, and 0.99. Only the file names and "tauK.start" value is different in those scenarios, the rest of the code remains similar. Note that there are thus 172 output files (4 x 43X's x 4 tauK scenarios).
+
+```{r, eval=FALSE}
+#--------------------------------------------------------------------------------
+## TauK 0.25
+#--------------------------------------------------------------------------------
+# some empty lsits to fill up alter on
+# note how we don't save any starting values, nor de nsum objects
+kds <- list()
+kdssd <- list()
+data <- list()
+
+# set.seed(3004)
+# holdouts <- sort(sample(1:43, 10, replace=FALSE))
+
+foreach (i = holdouts) %dopar% {
+  
+  cd <- cont[, -c(i)] # Then take out the known subpopulation of interest
+  
+  # caclulate starting values
+  z <- NSUM::killworth.start(cbind(cd, cont[, c(i)]), # paste the "takenout" at the max of matrix
+                       pop[-c(i)], 
+                       totpop)
+  
+  # run the Bayesian estimation
+  degree <- NSUM::nsum.mcmc(cbind(cd, cont[, c(i)]), # gets pasted at the last column
+                      pop[-c(i)], 
+                      totpop, model = "combined", # combined control for transmission and recall errors
+                      indices.k = 43, # notice that "holdout" gets pasted as last column
+                      iterations = iters, burnin = burns, size = retain, # 40k iterations, retain 4k chains
+                      d.start = z$d.start, mu.start = z$mu.start, # starting values from simpe estimator
+                      sigma.start = z$sigma.start, NK.start = z$NK.start, tauK.start = 0.25)
+  
+  # calculate rowmean and it's SD of the retained 4k chains
+  kds[[i]] <- rowMeans(degree$d.values,na.rm = TRUE) # calculate rowmean of netsize iterations
+  kdssd[[i]] <- matrixStats::rowSds(degree$d.values) # calculate sd of 4k estimates per row
+  data[[i]] <- cbind(kds[[i]],kdssd[[i]])
+  data <- as.data.frame(data[[i]])
+  
+  # Save the data, new .txt for each iteration, if something goes wrong, we can always start at prior one and combine
+  write.csv(data, paste0("degree_estimates_tauk025_holdout", i, ".txt"))
+  
+}
+```

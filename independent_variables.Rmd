@@ -1,0 +1,674 @@
+---
+title: "I&O research ID"
+#bibliography: references.bib
+author: "Bas Hofstra"
+---
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+Last compiled on `r format(Sys.time(), '%B, %Y')`
+
+<br>
+
+----
+
+This is the code with which we make our independent variables.
+
+<br>
+
+----
+
+# Initatiating R environment
+
+Start out with a custom function to load a set of required packages. And load the necessary data.
+  
+```{r pack, eval=FALSE}
+# packages and read data
+rm(list = ls())
+
+# (c) Jochem Tolsma
+fpackage.check <- function(packages) {
+  lapply(packages, FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  })
+}
+packages = c("haven", "coda", "matrixStats", "parallel", "MASS", "doParallel", "dplyr", "cowplot", 
+             "tidyverse", "naniar", "dotwhisker" ,"gt", "reshape2", "VGAM", "expss")
+fpackage.check(packages)
+rm(packages)
+
+load(file = "data/dutch_netsize_analyses_deps.rda")
+
+#--------------------------------------------------------------------------------
+```
+
+<br>
+
+----
+  
+# Eyeballing the variables  
+  
+Some initial eyeballing of the data. What are value labels, for instance, that we can use later?
+  
+```{r eye, eval=FALSE}
+
+# eyeballing
+# corona == 1 missing
+val_lab(df$V4)
+table(df$V4)
+
+# moeder == 6 missing
+val_lab(df$V5a)
+v <- data.frame(table(df$V5a_anders))
+m <- data.frame(table(df$V5b_anders))
+#table(df$migr)
+# hier kunnen we w/nw van maken, voor nu is me dat te veel werk
+
+# vader == 4 missing
+val_lab(df$V5b)
+table(df$V5b)
+
+# elect auto -== 1 missing
+val_lab(df$V6)
+table(df$V6)
+
+# scooter == no missing
+val_lab(df$V7)
+table(df$V7)
+
+# vegan == 3 missing
+val_lab(df$V8)
+table(df$V8)
+
+# geslacht == no missing
+val_lab(df$geslacht)
+table(df$geslacht)
+
+# opleiding == no missing, 8 "wil niet zeggen"
+val_lab(df$opleiding)
+table(df$opleiding)
+
+# leeftijd == no missing
+table(df$leeftijd)
+class(df$leeftijd)
+
+# zipcode == no missing
+table(df$postcode)
+class(df$postcode)
+
+# new vars io
+val_lab(df$werk) # werk
+
+val_lab(df$woonsituatie) # wonen
+
+val_lab(df$huishoudomvang) # huishouden
+
+val_lab(df$inkomen) # income
+
+val_lab(df$politiek) # politics
+
+table(df$politiek) # politics
+
+```
+
+<br>
+
+----
+  
+# Education
+  
+Next, we make the education variable, not the value labels below and how I create the variable.
+  
+```{r educ, eval=FALSE}
+#--------------------------------------------------------------------------------
+# opleiding
+
+# geen onderwijs / basisonderwijs / cursus inburgering / cursus Nederlandse taal 
+# 1 
+# LBO / VBO / VMBO (kader- of beroepsgerichte leerweg) / MBO 1 (assistentenopleidi 
+# 2 
+# MAVO / HAVO of VWO (eerste drie jaar) / ULO / MULO / VMBO (TL of GL) / VSO 
+# 3 
+# MBO 2, 3, 4 (basisberoeps-, vak-, middenkader- of specialistenopleiding) of MBO 
+# 4 
+# HAVO of VWO (overgegaan naar de 4e klas) / HBS / MMS / HBO propedeuse of WO Prop 
+# 5 
+# HBO (behalve HBO-master) / WO-kandidaats -of WO-bachelor 
+# 6 
+# WO-doctoraal of WO-master of HBO-master / postdoctoraal onderwijs 
+# 7 
+# weet niet/wil niet zeggen 
+# 8 
+# we recreate to 3 cats
+table(df$opleiding)
+df$opl[df$opleiding == 1] <- 1 # prim/sec
+df$opl[df$opleiding == 2] <- 1 # prim/sec
+df$opl[df$opleiding == 3] <- 1 # prim/sec
+df$opl[df$opleiding == 4] <- 2 # lower tert
+df$opl[df$opleiding == 5] <- 3 # higher tert/higher prep
+df$opl[df$opleiding == 6] <- 3 # higher tert
+df$opl[df$opleiding == 7] <- 3 # higher tert
+table(df$opl)
+df$opl <- as.factor(df$opl)
+df <- within(df, opl <- relevel(opl, ref = 3))
+
+```
+
+<br>
+
+----
+  
+# Self-reported gender
+  
+Next up, self reported gender, no missings.
+  
+```{r gender, eval=FALSE}
+
+#--------------------------------------------------------------------------------
+# nothing wrong with geslacht
+table(df$geslacht)
+df$woman[df$geslacht == 2] <- 1
+df$woman[df$geslacht == 1] <- 0
+#--------------------------------------------------------------------------------
+```
+
+<br>
+
+----
+  
+# Migration background
+  
+Migration background is a bit more challenging as there are some open answers of countries that we do want to include in this variable.
+  
+```{r migr1, eval=FALSE}
+
+
+# migration background
+table(df$V5a_anders)
+table(df$V5b_anders)
+
+table(df$V5a)
+table(df$V5b)
+# df <- df[!df$V5a == 3, ] # drop the missings
+# df <- df[!df$V5b == 3, ]
+
+# so if not a 1 (Dutch?) always get a migrant background
+df$migr <- ifelse(df$V5a == 2 & df$V5a != 3 | 
+                    df$V5b == 2 & df$V5b != 3, 1, # either mother father abroad == 1
+                  ifelse(df$V5a == 3 & df$V5b == 3, 3, 0)) # both missing == 3, otherwise 0
+table(df$migr)
+
+nrow(df[is.na(df$migr),])
+
+df$vader[df$V5a == 1] <- 1
+
+df$vader[df$V5a_anders=="Amerika"]<-2
+df$vader[df$V5a_anders=="Aruba"]<-3
+df$vader[df$V5a_anders=="Belgie"]<-2
+df$vader[df$V5a_anders=="België"]<-2
+df$vader[df$V5a_anders=="Brazilië"]<-3
+df$vader[df$V5a_anders=="Cameroun"]<-3
+df$vader[df$V5a_anders=="China"]<-3
+df$vader[df$V5a_anders=="Curaçao"]<-3
+df$vader[df$V5a_anders=="duitsland"]<-2
+df$vader[df$V5a_anders=="Duitsland"]<-2
+df$vader[df$V5a_anders=="Engeland"]<-2
+df$vader[df$V5a_anders=="EU"]<-2
+df$vader[df$V5a_anders=="Filipijnen"]<-3
+df$vader[df$V5a_anders=="frankrijk"]<-2
+df$vader[df$V5a_anders=="Frankrijk"]<-2
+df$vader[df$V5a_anders=="indie"]<-2
+df$vader[df$V5a_anders=="indonesie"]<-2
+df$vader[df$V5a_anders=="Indonesie"]<-2
+df$vader[df$V5a_anders=="Indonesië"]<-2
+df$vader[df$V5a_anders=="Iran"]<-3
+df$vader[df$V5a_anders=="Italie"]<-2
+df$vader[df$V5a_anders=="Italië"]<-2
+df$vader[df$V5a_anders=="Lettland"]<-2
+df$vader[df$V5a_anders=="Marokko"]<-3
+df$vader[df$V5a_anders=="Nederlands Indie"]<-2
+df$vader[df$V5a_anders=="Nederlands Indië"]<-2
+df$vader[df$V5a_anders=="Nieuw-Zeeland"]<-2
+df$vader[df$V5a_anders=="Nigeria"]<-3
+df$vader[df$V5a_anders=="Oeganda"]<-3
+df$vader[df$V5a_anders=="Oostenrijk"]<-3
+df$vader[df$V5a_anders=="Polen"]<-3
+df$vader[df$V5a_anders=="Polen en Nederland"]<-2
+df$vader[df$V5a_anders=="Spanje"]<-2
+df$vader[df$V5a_anders=="Sri Lanka"]<-3
+df$vader[df$V5a_anders=="suriname"]<-3
+df$vader[df$V5a_anders=="Suriname"]<-3
+df$vader[df$V5a_anders=="Syrië"]<-3
+df$vader[df$V5a_anders=="Turkije"]<-3
+df$vader[df$V5a_anders=="Venezuela"]<-3
+df$vader[df$V5a_anders=="Verenigd Koninkrijk"]<-2
+df$vader[df$V5a_anders=="Yugoslavia"]<-2
+df$vader[df$V5a_anders=="Zuid Afrika"]<-3
+
+table(df$vader)
+nrow(df[is.na(df$vader), ])
+```
+
+So now we coded the fathers, and we move on with the mothers.
+
+```{r migr2, eval=FALSE}
+#df$vader <- ifelse(df$V5a == 3 & df$V5a_anders == "", NA, df$vader)
+
+df$moeder[df$V5b == 1] <- 1 
+table(df$V5b_anders)
+
+
+df$moeder[df$V5b_anders == "algerije"] <- 3
+df$moeder[df$V5b_anders == "Aruba"] <- 3
+df$moeder[df$V5b_anders == "Australie"] <- 2
+df$moeder[df$V5b_anders == "Belgie"] <- 2
+df$moeder[df$V5b_anders == "China"] <- 3
+
+df$moeder[df$V5b_anders == "Curaçao"] <- 3
+df$moeder[df$V5b_anders == "duitsland"] <- 2
+df$moeder[df$V5b_anders == "Duitsland"] <- 3
+df$moeder[df$V5b_anders == "Engelabd"] <- 2
+df$moeder[df$V5b_anders == "Engeland"] <- 2
+df$moeder[df$V5b_anders == "EU"] <- 2
+df$moeder[df$V5b_anders == "Filipijnen"] <- 3
+df$moeder[df$V5b_anders == "frankrijk"] <- 2
+df$moeder[df$V5b_anders == "Frankrijk"] <- 2
+df$moeder[df$V5b_anders == "GB"] <- 2
+df$moeder[df$V5b_anders == "indonesie"] <- 2
+df$moeder[df$V5b_anders == "Indonesie"] <- 2
+df$moeder[df$V5b_anders == "Indonesië"] <- 2
+df$moeder[df$V5b_anders == "Irak"] <- 3
+df$moeder[df$V5b_anders == "Italie"] <- 2
+df$moeder[df$V5b_anders == "Kongo"] <- 3
+df$moeder[df$V5b_anders == "Marokko"] <- 3
+df$moeder[df$V5b_anders == "Nederlands indie"] <- 2
+df$moeder[df$V5b_anders == "Nederlands Indie"] <- 2
+df$moeder[df$V5b_anders == "Nederlands Indië"] <- 2
+df$moeder[df$V5b_anders == "Nigeria"] <- 3
+df$moeder[df$V5b_anders == "Oostenrijk"] <- 2
+df$moeder[df$V5b_anders == "Phnom Penh"] <- 3
+df$moeder[df$V5b_anders == "Polen"] <- 2
+df$moeder[df$V5b_anders == "Rusland"] <- 2
+df$moeder[df$V5b_anders == "singapore"] <- 3
+df$moeder[df$V5b_anders == "Spanje"] <- 2
+df$moeder[df$V5b_anders == "suriname"] <- 3
+df$moeder[df$V5b_anders == "Suriname"] <- 3
+df$moeder[df$V5b_anders == "Syrië"] <- 3
+df$moeder[df$V5b_anders == "Turkije"] <- 3
+df$moeder[df$V5b_anders == "Venezuela"] <- 3
+df$moeder[df$V5b_anders == "zie 5A"] <- 1
+df$moeder[df$V5b_anders == "Zwitserland"] <- 2
+
+#df$moeder <- ifelse(df$V5b == 3 & df$V5b_anders == "", NA, df$moeder)
+
+```
+
+Now that we created mother and father birth country, we implement a heuristic for migration background: majority, westerns, non-western migration background.
+
+```{r migr3, eval=FALSE}
+
+table(df$moeder)
+nrow(df[is.na(df$moeder),])
+
+df$migr3[df$moeder == 1 & df$vader == 1] <- 1
+df$migr3[df$moeder == 2 & df$vader == 2] <- 2
+df$migr3[df$moeder == 3 & df$vader == 3] <- 3
+
+df$migr3[df$moeder == 3 & df$vader == 2] <- 3
+df$migr3[df$moeder == 3 & df$vader == 1] <- 3
+
+df$migr3[df$moeder == 2 & df$vader == 1] <- 2
+df$migr3[df$moeder == 2 & df$vader == 3] <- 2
+
+df$migr3[df$moeder == 1 & df$vader == 2] <- 2
+df$migr3[df$moeder == 1 & df$vader == 3] <- 3
+
+df$migr3[is.na(df$moeder) & df$vader == 1] <- 1
+df$migr3[is.na(df$moeder) & df$vader == 2] <- 2
+df$migr3[is.na(df$moeder) & df$vader == 3] <- 3
+
+df$migr3[is.na(df$vader) & df$moeder == 1] <- 1
+df$migr3[is.na(df$vader) & df$moeder == 2] <- 2
+df$migr3[is.na(df$vader) & df$moeder == 3] <- 3
+
+table(df$migr3)
+table(df$migr)
+
+# 1 Maj
+# 2 west
+# 3 nonwest
+```
+
+
+<br>
+
+----
+  
+# Age
+  
+We create age and age squared as variables.
+  
+```{r age, eval=FALSE}
+#--------------------------------------------------------------------------------
+# age
+df$leeftijd10 <- df$leeftijd/10
+table(df$leeftijd10)
+df$leeftijd10sq <- df$leeftijd10^2
+```
+
+<br>
+
+----
+  
+# Zipcode info
+  
+We create a number of variables that relate to folks' zipcodes.
+  
+```{r zip, eval=FALSE}
+
+#--------------------------------------------------------------------------------
+# zip info
+zip <- read.csv("data/postcode4.csv") # --> https://www.cbs.nl/nl-nl/dossier/nederland-regionaal/geografische-data/gegevens-per-postcode
+zip <- zip[-2,]
+zipnames <- zip[1,]
+names(zip) <- zipnames
+zipnames <- zip[-1,]
+
+zip <- zip %>% replace_with_na_all(condition = ~.x == -99997)
+df$postcode <- as.numeric(df$postcode)
+zip$PC4 <- as.numeric(zip$PC4)
+df <- left_join(df, zip[, c("PC4", "OAD", "UITKMINAOW", "P_KOOPWON", "WOZWONING", "P_NL_ACHTG", "INWONER")], by = c("postcode" = "PC4"))
+
+df$neighdens <- as.numeric(df$OAD)/1000
+df$pbenrec <- (as.numeric(df$UITKMINAOW)/as.numeric(df$INWONER))*100
+df$pbuyhouse <- as.numeric(df$P_KOOPWON)
+df$worthhouse <- as.numeric(df$WOZWONING)/100
+df$pdutch <- as.numeric(df$P_NL_ACHTG)
+
+nrow(df[is.na(df$neighdens), ])
+
+summary(df$pbenrec)
+summary(df$neighdens)
+summary(df$pbuyhouse)
+summary(df$worthhouse)
+summary(df$pdutch)
+```
+
+<br>
+
+----
+  
+# Work situation
+  
+We create the current working situation of a respondent. (These are new variable obtained from I&O research, hence the hassle with the identifier before.)
+  
+```{r wor, eval=FALSE}
+#--------------------------------------------------------------------------------
+# NEW IO VARS
+#--------------------------------------------------------------------------------
+
+# working
+#val_lab(df$werk)
+df$werk <- as.character(df$werk)
+df$work <- 1
+df$work[df$werk == "anders"] <- 0
+df$work[df$werk == "werkloos / werkzoekend / bijstand"] <- 0
+df$work[df$werk == "studerend /schoolgaand"] <- 0
+df$work[df$werk == "arbeidsongeschikt"] <- 0
+df$work[df$werk == "gepensioneerd of VUT"] <- 0
+df$work[df$werk == "huisvrouw / huisman"] <- 0
+
+table(df$work)
+
+table(df$werk)
+
+```
+
+<br>
+
+----
+  
+# Living situation
+  
+Whether respondents live alone or not.
+  
+```{r liv, eval=FALSE}
+#--------------------------------------------------------------------------------
+# livingalone
+df$woonsituatie <- as.character(df$woonsituatie)
+
+df$livingalone <- 1
+df$livingalone[df$woonsituatie == "ik ben gehuwd/woon samen zonder thuiswonende kinderen"] <- 0
+df$livingalone[df$woonsituatie == "ik woon bij mijn ouder(s)/verzorger(s)"] <- 0
+df$livingalone[df$woonsituatie == "ik ben gehuwd/woon samen met thuiswonende kinderen"] <- 0
+df$livingalone[df$woonsituatie == "ik woon alleen (zonder partner) met kinderen"] <- 0
+df$livingalone[df$woonsituatie == "anders"] <- 0
+
+
+df$livingalone[is.na(df$woonsituatie)] <- 2
+df$livingalone[df$woonsituatie == "weet niet/wil niet zeggen"] <- 2 # --> should drop this one!
+
+table(df$livingalone)
+table(df$woonsituatie)
+
+
+```
+
+<br>
+
+----
+  
+# Household size
+  
+Respondent household size.
+  
+```{r hhs, eval=FALSE}
+#--------------------------------------------------------------------------------
+# householdsize
+
+df$hhsize <- as.character(df$huishoudomvang)
+table(df$hhsize)
+df$hhsize[df$hhsize == "1 (alleen ikzelf)"] <- 1
+df$hhsize <- as.numeric(df$hhsize)
+table(df$hhsize)
+df$hhsize[df$livingalone == 1] <- 1 # this overrides with prior answer
+table(df$hhsize)
+table(df$huishoudomvang)
+
+```
+
+<br>
+
+----
+  
+# Income
+  
+Respondent income.
+  
+```{r inc, eval=FALSE}
+#--------------------------------------------------------------------------------
+# income
+
+table(df$inkomen)
+df$inkomen <- as.character(df$inkomen)
+nrow(df[is.na(df$inkomen),]) # --> 37 missings
+
+df$income[df$inkomen=="minimum (Minder dan € 14.100)"] <- 1
+df$income[df$inkomen=="beneden modaal (€ 14.100 tot € 29.500)"] <- 1
+df$income[df$inkomen=="bijna modaal (€ 29.500 tot € 36.500)"] <- 1
+df$income[df$inkomen=="modaal (€ 36.500 tot € 43.500)"] <- 1
+df$income[df$inkomen=="tussen 1 en 2 keer modaal (€ 43.500 tot € 73.000)"] <- 2
+df$income[df$inkomen=="twee keer modaal (€ 73.000 tot € 87.100)"] <- 2
+df$income[df$inkomen=="meer dan 2 keer modaal (€ 87.100 of meer)"] <- 2
+df$income[df$inkomen=="weet ik niet / wil ik niet zeggen"] <- 3
+df$income[is.na(df$inkomen)] <- 3
+
+table(df$income)
+# 1 up to modal
+# 2 modal and up
+# 3 NA/doesn't know/doesn't want to say
+```
+
+<br>
+
+----
+  
+# Unused variables
+  
+There are a number of remaining variables to the data that we do not use in this particular paper.
+  
+```{r use, eval=FALSE}
+#--------------------------------------------------------------------------------
+# politics
+table(df$politiek)
+
+df$politiek <- as.character(df$politiek)
+
+# right
+df$politics <- 3
+df$politics[df$politiek == "VVD"] <- 1
+df$politics[df$politiek == "PVV"] <- 1
+df$politics[df$politiek == "CDA"] <- 1
+df$politics[df$politiek == "Forum voor Democratie"] <- 1
+df$politics[df$politiek == "ChristenUnie"] <- 1
+df$politics[df$politiek == "SGP"] <- 1
+df$politics[df$politiek == "BoerBurgerBeweging"] <- 1
+df$politics[df$politiek == "JA21"] <- 1
+df$politics[df$politiek == "50PLUS"] <- 1
+
+
+# left
+df$politics[df$politiek == "D66"] <- 2
+df$politics[df$politiek == "SP"] <- 2
+df$politics[df$politiek == "PvdA"] <- 2
+df$politics[df$politiek == "GroenLinks"] <- 2
+df$politics[df$politiek == "Partij voor de Dieren"] <- 2
+df$politics[df$politiek == "Volt"] <- 2
+df$politics[df$politiek == "DENK"] <- 2
+df$politics[df$politiek == "BIJ1"] <- 2
+
+table(df$politics)
+# 1 right
+# 2 left
+# 3 no voting, blanco, no voting rights, doesn't wanna say, etc.
+
+#--------------------------------------------------------------------------------
+# unused vars
+# drop missings and create corona var
+table(df$V4)
+df$corona <- df$V4
+table(df$corona)
+
+# create electric vehicle var
+table(df$V6)
+df$elecaut <- df$V6
+table(df$elecaut)
+
+# create scooter var
+table(df$V7)
+df$scooter <- df$V7
+table(df$scooter)
+
+# create vagan var
+table(df$V8)
+df$vegan <- df$V8
+
+# progressive construction: elec vehicle or vegan == progressive
+df$progr <- ifelse(df$vegan == 1 | df$elecaut == 1,1,0)
+table(df$progr)
+
+```
+
+
+<br>
+
+----
+  
+# Sample selections
+  
+Finally, we apply some sample selection based on the missigness in the data. Not much, as you can see below.
+  
+```{r sam, eval=FALSE}
+#--------------------------------------------------------------------------------
+# missingness and sample selection
+nrow(df[is.na(df$leeftijd10),]) # no missing
+nrow(df[is.na(df$geslacht),]) # no missing
+nrow(df[is.na(df$opl),]) # no missing
+nrow(df[is.na(df$V5a),]) # six missing
+nrow(df[is.na(df$V5b),]) # four missing
+nrow(df[df$migr == 3,]) # four missing on effective variable
+table(df$migr)
+
+#nrow(df[is.na(df$pbenrec), ])
+nrow(df[is.na(df$neighdens), ]) # four missing
+#nrow(df[is.na(df$pbuyhouse), ])
+nrow(df[is.na(df$worthhouse), ]) # eight missing
+#nrow(df[is.na(df$pdutch), ])
+
+nrow(df[is.na(df$werk),]) # no missing
+nrow(df[is.na(df$work),]) # no missing
+nrow(df[is.na(df$hhsize),]) # 1 missing
+
+nrow(df[is.na(df$income),]) # no missing
+
+nrow(df[df$income == 3,]) # though 183 won't say/know
+nrow(df[is.na(df$inkomen),]) # oif which 37 system missing
+
+nrow(df[is.na(df$politics),]) # no missing
+nrow(df[df$politics == 3,]) # though 223 won't say/know
+nrow(df[is.na(df$politiek),]) # oif which 135 system missing
+
+
+# df <- df[!is.na(df$pbenrec), ]
+# df <- df[!is.na(df$neighdens), ]
+# df <- df[!is.na(df$pbuyhouse), ]
+df <- df[!is.na(df$worthhouse), ]
+df <- df[!is.na(df$migr3), ]
+df <- df[!is.na(df$hhsize), ]
+# df <- df[!is.na(df$pdutch), ]
+
+#df <- df[!df$corona == 3,]
+#df <- df[!df$elecauto == 3,]
+#df <- df[!df$vegan == 3,]
+#df <- df[!df$scooter == 3,]
+
+#--------------------------------------------------------------------------------
+
+```
+
+
+<br>
+
+----
+  
+# Data storage
+  
+Finally, we save the data that we use for the analyses.
+  
+```{r data, eval=FALSE}
+# save data
+write.table(df, file = "data/dutch_netsize_analyses.txt")
+
+#--------------------------------------------------------------------------------
+```

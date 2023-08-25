@@ -12,10 +12,26 @@ navbar:
       href: index.html
     - text: "Names"
       menu:
-      - text: "Page 1"
-        href: lab1.html
-        
+      - text: "Names search"
+        href: names_search.html
+      - text: "Names selection"
+        href: names_selection.html
+    - text: "Questionnaire"
+      href: questionnaire.html
+    - text: "NSUM"
+      href: nsum.html
         # here, other .Rmds can be added
+    - text: "Variables"
+      menu:
+      - text: "I&O Identifier"
+        href: identifier.html
+      - text: "Dependent Variables"
+        href: dependent_variables.html
+      - text: "Independent Variables"
+        href: independent_variables.html
+    - text: "Analyses"
+      menu:
+
 
 
   right:

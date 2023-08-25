@@ -9,10 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Beate Volker, Bas Hofstra, Rense Corten, Frank van Tubergen" />
+<meta name="author" content="Bas Hofstra" />
 
 
-<title>Network size of the Dutch</title>
+<title>I&amp;O research ID</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -30,6 +30,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <script src="site_libs/navigation-1.1/sourceembed.js"></script>
@@ -240,6 +243,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -247,6 +313,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -335,9 +411,8 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Network size of the Dutch</h1>
-<h4 class="author">Beate Volker, Bas Hofstra, Rense Corten, Frank van
-Tubergen</h4>
+<h1 class="title toc-ignore">I&amp;O research ID</h1>
+<h4 class="author">Bas Hofstra</h4>
 
 </div>
 
@@ -347,38 +422,41 @@ Tubergen</h4>
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
 <p>Last compiled on August, 2023</p>
-<hr />
-<div id="network-size-of-the-dutch" class="section level1">
-<h1>Network size of the Dutch</h1>
 <p><br></p>
 <hr />
-<div id="replication-website" class="section level2">
-<h2>Replication website</h2>
-<p>This is the replication website for the paper entitled: “How large is
-your network? Estimating Network Size of Residents in the Netherlands.”
-By Beate Volker, Bas Hofstra, Rense Corten, and Frank van Tubergen.</p>
+<p>We want to attach some new variables to the data that I&amp;O
+research initially collected. But as the original had no identifier and
+we want to ascertain which repsondent is which, we make our own
+identifier.</p>
 <p><br></p>
 <hr />
-</div>
-<div id="how-to-use-this-website" class="section level2">
-<h2>How to use this website</h2>
-<p>The GitHub repository to this website is found <a
-href="https://github.com/bhofstra/netsize_dutch">here</a>. Each page
-captures a different aspect to the research paper. <br></p>
-<hr />
-</div>
-<div id="acknowledgements" class="section level2">
-<h2>Acknowledgements</h2>
-<p>We acknowledge Rob Franken for his LabJournal example on which we
-based this replication website, found <a
-href="https://github.com/robfranken/LabJournal">here</a>.</p>
-<hr />
-</div>
+<div id="making-person-identifiers" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Making person
+identifiers</h1>
+<p>Start out with a custom function to load a set of required
+packages.</p>
+<pre class="r test"><code># packages and read data
+
+df &lt;- haven::read_dta(&quot;DQUESTUU_eindbestand.dta&quot;)
+
+# first match tryout set.seed(12981298) samp &lt;- df[sample(nrow(df), 10, replace = F), ] samp &lt;-
+# samp[, c(&#39;geslacht&#39;, &#39;postcode&#39;, &#39;leeftijd&#39;, &#39;postcode&#39;, &#39;V5a&#39;, &#39;V5a_anders&#39;, &#39;V5b&#39;,
+# &#39;V5b_anders&#39;)] write.csv(samp, &#39;testsample_io.csv&#39;, row.names = F)
+
+# match to io
+iomatch &lt;- df[, c(&quot;geslacht&quot;, &quot;opleiding&quot;, &quot;leeftijd&quot;, &quot;postcode&quot;, &quot;V5a&quot;, &quot;V5a_anders&quot;, &quot;V5b&quot;, &quot;V5b_anders&quot;)]
+
+set.seed(12981298)
+personid &lt;- sample(10000:20000, nrow(df), replace = F)
+iomatch &lt;- cbind(personid, iomatch)
+write.csv(iomatch, &quot;iomatch.csv&quot;, row.names = F)</code></pre>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiTmV0d29yayBzaXplIG9mIHRoZSBEdXRjaCIKb3V0cHV0OgogIGh0bWxfZG9jdW1lbnQ6CiAgICB0b2M6IGZhbHNlCiAgICBudW1iZXJfc2VjdGlvbnM6IGZhbHNlCmF1dGhvcjogIkJlYXRlIFZvbGtlciwgQmFzIEhvZnN0cmEsIFJlbnNlIENvcnRlbiwgRnJhbmsgdmFuIFR1YmVyZ2VuIgpiaWJsaW9ncmFwaHk6IHJlZmVyZW5jZXMuYmliCgotLS0KCmBgYHtyLCBpbnN0YWxsIHJlbW90ZWx5LCBnbG9iYWxzZXR0aW5ncywgZWNobz1GQUxTRSwgd2FybmluZz1GQUxTRSwgcmVzdWx0cz0naGlkZSd9CiMgaW5zdGFsbC5wYWNrYWdlcygicmVtb3RlcyIpCiNyZW1vdGVzOjppbnN0YWxsX2dpdGh1Yigicmxlc3VyL2tsaXBweSIpCmBgYCAKCmBgYHtyLCBnbG9iYWxzZXR0aW5ncywgZWNobz1GQUxTRSwgd2FybmluZz1GQUxTRSwgcmVzdWx0cz0naGlkZSd9CmxpYnJhcnkoa25pdHIpCgprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCm9wdHNfY2h1bmskc2V0KHRpZHkub3B0cz1saXN0KHdpZHRoLmN1dG9mZj0xMDApLHRpZHk9VFJVRSwgd2FybmluZyA9IEZBTFNFLCBtZXNzYWdlID0gRkFMU0UsY29tbWVudCA9ICIjPiIsIGNhY2hlPVRSVUUsIGNsYXNzLnNvdXJjZT1jKCJ0ZXN0IiksIGNsYXNzLm91dHB1dD1jKCJ0ZXN0MiIpKQpvcHRpb25zKHdpZHRoID0gMTAwKQpyZ2w6OnNldHVwS25pdHIoKQoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KCmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCkxhc3QgY29tcGlsZWQgb24gYHIgZm9ybWF0KFN5cy50aW1lKCksICclQiwgJVknKWAgIAoKCi0tLS0KCgoKIyBOZXR3b3JrIHNpemUgb2YgdGhlIER1dGNoCgoKCjxicj4KCi0tLS0KCiMjIFJlcGxpY2F0aW9uIHdlYnNpdGUKClRoaXMgaXMgdGhlIHJlcGxpY2F0aW9uIHdlYnNpdGUgZm9yIHRoZSBwYXBlciBlbnRpdGxlZDogIkhvdyBsYXJnZSBpcyB5b3VyIG5ldHdvcms/IEVzdGltYXRpbmcgTmV0d29yayBTaXplIG9mIFJlc2lkZW50cyBpbiB0aGUgTmV0aGVybGFuZHMuIiBCeSBCZWF0ZSBWb2xrZXIsIEJhcyBIb2ZzdHJhLCBSZW5zZSBDb3J0ZW4sIGFuZCBGcmFuayB2YW4gVHViZXJnZW4uIAoKPGJyPgoKLS0tLQoKIyMgSG93IHRvIHVzZSB0aGlzIHdlYnNpdGUKClRoZSBHaXRIdWIgcmVwb3NpdG9yeSB0byB0aGlzIHdlYnNpdGUgaXMgZm91bmQgW2hlcmVdKGh0dHBzOi8vZ2l0aHViLmNvbS9iaG9mc3RyYS9uZXRzaXplX2R1dGNoKS4gRWFjaCBwYWdlIGNhcHR1cmVzIGEgZGlmZmVyZW50IGFzcGVjdCB0byB0aGUgcmVzZWFyY2ggcGFwZXIuIAo8YnI+CgotLS0tCgojIyBBY2tub3dsZWRnZW1lbnRzCgpXZSBhY2tub3dsZWRnZSBSb2IgRnJhbmtlbiBmb3IgaGlzIExhYkpvdXJuYWwgZXhhbXBsZSBvbiB3aGljaCB3ZSBiYXNlZCB0aGlzIHJlcGxpY2F0aW9uIHdlYnNpdGUsIGZvdW5kIFtoZXJlXShodHRwczovL2dpdGh1Yi5jb20vcm9iZnJhbmtlbi9MYWJKb3VybmFsKS4gIAoKCi0tLS0KCgoKCgoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiSSZPIHJlc2VhcmNoIElEIgojYmlibGlvZ3JhcGh5OiByZWZlcmVuY2VzLmJpYgphdXRob3I6ICJCYXMgSG9mc3RyYSIKLS0tCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KCmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCkxhc3QgY29tcGlsZWQgb24gYHIgZm9ybWF0KFN5cy50aW1lKCksICclQiwgJVknKWAKCjxicj4KCi0tLS0KCldlIHdhbnQgdG8gYXR0YWNoIHNvbWUgbmV3IHZhcmlhYmxlcyB0byB0aGUgZGF0YSB0aGF0IEkmTyByZXNlYXJjaCBpbml0aWFsbHkgY29sbGVjdGVkLiBCdXQgYXMgdGhlIG9yaWdpbmFsIGhhZCBubyBpZGVudGlmaWVyIGFuZCB3ZSB3YW50IHRvIGFzY2VydGFpbiB3aGljaCByZXBzb25kZW50IGlzIHdoaWNoLCB3ZSBtYWtlIG91ciBvd24gaWRlbnRpZmllci4KCjxicj4KCi0tLS0KCiMgTWFraW5nIHBlcnNvbiBpZGVudGlmaWVycwoKU3RhcnQgb3V0IHdpdGggYSBjdXN0b20gZnVuY3Rpb24gdG8gbG9hZCBhIHNldCBvZiByZXF1aXJlZCBwYWNrYWdlcy4KICAKYGBge3IgaWQsIGV2YWw9RkFMU0V9CiMgcGFja2FnZXMgYW5kIHJlYWQgZGF0YQoKZGYgPC0gaGF2ZW46OnJlYWRfZHRhKCJEUVVFU1RVVV9laW5kYmVzdGFuZC5kdGEiKQoKIyBmaXJzdCBtYXRjaCB0cnlvdXQKI3NldC5zZWVkKDEyOTgxMjk4KQojc2FtcCA8LSBkZltzYW1wbGUobnJvdyhkZiksIDEwLCByZXBsYWNlID0gRiksIF0KI3NhbXAgPC0gc2FtcFssIGMoImdlc2xhY2h0IiwgInBvc3Rjb2RlIiwgImxlZWZ0aWpkIiwgInBvc3Rjb2RlIiwgIlY1YSIsICJWNWFfYW5kZXJzIiwgIlY1YiIsICJWNWJfYW5kZXJzIildCiN3cml0ZS5jc3Yoc2FtcCwgInRlc3RzYW1wbGVfaW8uY3N2Iiwgcm93Lm5hbWVzID0gRikKCiMgbWF0Y2ggdG8gaW8KaW9tYXRjaCA8LSBkZlssIGMoImdlc2xhY2h0IiwgIm9wbGVpZGluZyIsICJsZWVmdGlqZCIsICJwb3N0Y29kZSIsICJWNWEiLCAiVjVhX2FuZGVycyIsICJWNWIiLCAiVjViX2FuZGVycyIpXQoKc2V0LnNlZWQoMTI5ODEyOTgpCnBlcnNvbmlkIDwtIHNhbXBsZSgxMDAwMDoyMDAwMCwgbnJvdyhkZiksIHJlcGxhY2UgPSBGKQppb21hdGNoIDwtIGNiaW5kKHBlcnNvbmlkLCBpb21hdGNoKQp3cml0ZS5jc3YoaW9tYXRjaCwgImlvbWF0Y2guY3N2Iiwgcm93Lm5hbWVzID0gRikKCmBgYAoK</div>
 
 
+</div>
+</div>
 
 </div>
 
@@ -412,11 +490,40 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("index.Rmd");
+  window.initializeSourceEmbed("identifier.Rmd");
   window.initializeCodeFolding("show" === "show");
 });
 </script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

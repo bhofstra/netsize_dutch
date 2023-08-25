@@ -1,0 +1,671 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-08-25"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
+
+
+#--------------------------------------------------------------------------------
+
+########################
+# DESCRIPTIVES
+########################
+
+# VIZ of netsize
+netsize_l <- gather(netsizes)
+dens1 <- ggplot(netsize_l[netsize_l$value < 2000,], aes(x=value, color = key)) + 
+  geom_density(alpha = .2, size = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = "none") +
+  labs(x = "Network size estimate", y = "Density") +
+  geom_vline(xintercept=as.numeric(psych::describe(netsize_l[, 2])[3]), color = "darkgrey", linetype = 2) +
+  geom_vline(xintercept=as.numeric(psych::describe(netsize_l[, 2])[5]), color = "darkgrey", linetype = 2) +
+  annotate("text", x = 490, y = 0.0004, color = "darkgrey", angle = 90, 
+           label = paste0("Mean = ", round(as.numeric(psych::describe(netsize_l[, 2])[3]), digits = 0))) +
+  annotate("text", x = 340, y = 0.0004, color = "darkgrey", angle = 90, 
+           label = paste0("Median = ", round(as.numeric(psych::describe(netsize_l[, 2])[5]), digits = 0))) +
+  ggtitle("B) Distribution of network sizes, all scenarios")
+
+
+# Get lower triangle of the correlation matrix
+get_lower_tri<-function(cormat){
+  cormat[upper.tri(cormat)] <- NA
+  return(cormat)
+}
+mat <- cor(netsizes)
+lower_tri <- get_lower_tri(mat)
+melted_cormat <- reshape2::melt(lower_tri) # data.table also has melt funciton that won't work on matrices
+melted_cormat$Var2 <- as.character(melted_cormat$Var2)
+melted_cormat$Var1 <- as.character(melted_cormat$Var1)
+melted_cormat <- melted_cormat[!melted_cormat$Var2 == melted_cormat$Var1,]
+melted_cormat <- melted_cormat[!is.na(melted_cormat$value), ]
+
+# Viz of correlations between netsize estimates
+dens2 <- ggplot(melted_cormat, aes(x=value)) + 
+  geom_density(size = 0.3) + 
+  xlim(0.915, 1) + 
+  theme_minimal() + 
+  labs(x="Pearson correlation", y = "Density") +
+  geom_vline(xintercept = .95, color = "darkgrey", linetype = 2) +
+  ggtitle("A) Distributions of correlations between network size scenarios")  +
+  geom_segment(x = 0.95, y = 125, xend = .99, yend = 125, linetype = 2, color = "darkgrey",
+                arrow = arrow(length = unit(0.25, "cm")))  +
+  annotate("text", x = .97, y = 135, color = "darkgrey", angle = 0, 
+           label = paste0(round(nrow(melted_cormat[melted_cormat$value > .95, ])/nrow(melted_cormat)*100, digits = 1),"% of correlations are > .95"))
+
+# lay 'm out on the grid           
+denses <- plot_grid(dens2, dens1, nrow = 1) 
+
+# save
+ggsave("densities.pdf", plot = denses, device = "pdf",
+       scale = 1, width = 12, height = 4, units = c("in"),
+       dpi = "retina")
+
+
+
+# descriptive table not automated
+
+psych::describe(df[, c("woman", "leeftijd10", "work", "hhsize", "neighdens", "worthhouse")])
+
+table(df$migr3)
+table(df$opl)
+table(df$income)
+table(df$politics)
+
+
+
+cor(df[,c("woman", "migr", "leeftijd10", "work", "hhsize", "neighdens", "worthhouse" )])
+
+
+# # Descriptive table
+# df$opl1[df$opl==1] <- 1
+# df$opl1[df$opl!=1] <- 0
+# df$opl2[df$opl==2] <- 1
+# df$opl2[df$opl!=2] <- 0
+# df$opl3[df$opl==3] <- 1
+# df$opl3[df$opl!=3] <- 0
+# 
+# 
+# w <- data.frame(c(psych::describe(df$woman)[c(2,3,4, 8,9)], "Woman"))
+# colnames(w)[6] <- "Variable"
+# l <- data.frame(c(psych::describe(df$leeftijd10)[c(2,3,4, 8,9)], "Age/10"))
+# colnames(l)[6] <- "Variable"
+# o1 <- data.frame(c(psych::describe(df$opl1)[c(2,3,4, 8,9)], "Education primary/secondary"))
+# colnames(o1)[6] <- "Variable"
+# o2 <- data.frame(c(psych::describe(df$opl2)[c(2,3,4, 8,9)], "Education tertiary low"))
+# colnames(o2)[6] <- "Variable"
+# o3 <- data.frame(c(psych::describe(df$opl3)[c(2,3,4, 8,9)], "Education tertiary high"))
+# colnames(o3)[6] <- "Variable"
+# m <- data.frame(c(psych::describe(df$migr)[c(2,3,4, 8,9)], "Migration background"))
+# colnames(m)[6] <- "Variable"
+# n <- data.frame(c(psych::describe(df$neighdens)[c(2,3,4, 8,9)], "Neighborhood density/1K"))
+# colnames(n)[6] <- "Variable"
+# h <- data.frame(c(psych::describe(df$worthhouse)[c(2,3,4, 8,9)], "Mean neighborhood WOZ-value/100K"))
+# colnames(h)[6] <- "Variable"
+# desc <- data.frame(rbind(w,l,o1,o2,o3,m,n,h))
+# 
+# desc$min <- round(desc$min, digits= 2)
+# desc$max <- round(desc$max, digits= 2)
+# desc$mean <- round(desc$mean, digits= 2)
+# desc$sd <- round(desc$sd, digits= 2)
+# 
+# 
+# desc$n[desc$Variable == "Woman"] <- nrow(df[df$woman==1,])
+# desc$n[desc$Variable == "Education primary/secondary"] <- nrow(df[df$opl1==1,])
+# desc$n[desc$Variable == "Education tertiary low"] <- nrow(df[df$opl2==1,])
+# desc$n[desc$Variable == "Education tertiary high"] <- nrow(df[df$opl3==1,])
+# desc$n[desc$Variable == "Migration background"] <- nrow(df[df$migr==1,])
+# 
+# 
+# desc$sd[desc$Variable == "Woman"] <- ""
+# desc$sd[desc$Variable == "Education primary/secondary"] <- ""
+# desc$sd[desc$Variable == "Education tertiary low"] <- ""
+# desc$sd[desc$Variable == "Education tertiary high"] <- ""
+# desc$sd[desc$Variable == "Migration background"] <- ""
+# 
+# desc <- desc[, c("Variable", "min", "max", "mean", "sd", "n")]
+# desctable <- desc %>% gt::gt()
+# 
+# desctable <- desctable %>%  tab_header(title = "Table X. Descriptive statistics of covariates")
+# desctable %>% gtsave(filename = "table.pdf", zoom = 1)
+# 
+# df$oplc <- as.numeric(as.character(df$opl))
+# head(df$oplc)
+# head(df$opl)
+# 
+# cortable <- data.frame(cor(df[,c("woman",  "migr", "oplc", "leeftijd10",  "neighdens", "worthhouse")]) )
+# 
+# cortable$names <- row.names(cortable)
+# cortable <- cortable[, c("names","woman",  "migr", "oplc", "leeftijd10",  "neighdens", "worthhouse")]
+# names(cortable) <- c("Variables", "Woman", "Migration backgr", "Educ", "Age/10", "Neighb dens", "WOZ-value")
+# cortable[c(1:6), 1] <- c("Woman", "Migration backgr", "Educ", "Age/10", "Neighb dens", "WOZ-value")
+# 
+# cortable[,2] <- format(round(as.numeric(cortable[,2]),3), nsmall = 3)
+# cortable[,3] <- format(round(as.numeric(cortable[,3]),3), nsmall = 3)
+# cortable[,4] <- format(round(as.numeric(cortable[,4]),3), nsmall = 3)
+# cortable[,5] <- format(round(as.numeric(cortable[,5]),3), nsmall = 3)
+# cortable[,6] <- format(round(as.numeric(cortable[,6]),3), nsmall = 3)
+# 
+# cortable[upper.tri(cortable)] <- ""
+# cortable<-as.data.frame(cortable)
+# cortable <- cortable[-1,]
+# cortable <- cortable[,-7]
+# 
+# ps <- psych::corr.test(df[,c("woman",  "migr", "oplc", "leeftijd10",  "neighdens", "worthhouse")])$p
+# ps <- ps[-1,]
+# ps <- ps[,-6]
+# ps <- format(round(ps, 3), nsmall = 3)
+# ps[upper.tri(ps)] <- ""
+# ps<-as.data.frame(ps)
+# 
+# cortable <- cbind(cortable, ps)
+# cortable <- cortable[, c("Variables", "Woman", "woman", "Migration backgr", "migr", "Educ", "oplc", "Age/10", "leeftijd10", "Neighb dens", "neighdens")]
+# names(cortable) <- c("Variables", "Woman", "p-value ", "Migration backgr", "p-value  ", "Educ", "p-value   ", "Age/10", "p-value    ", "Neighb dens", "p-value     ")
+# 
+# cortable <- cortable %>% gt::gt()
+# cortable <- cortable %>%  tab_header(title = "Table X. Correlation matrix of covariates")
+# 
+# cortable %>% gtsave(filename = "cors.pdf", zoom = 1)
+
+
+
+#--------------------------------------------------------------------------------
+
+########################
+# DESCRIPTIONS Xs
+########################
+
+# 
+# aggregate(df[, 271:273], list(df$woman), mean)
+# aggregate(df[, 271:273], list(df$opl), mean)
+# aggregate(df[, 271:273], list(df$migr), mean)
+# 
+# aggregate(df[, 274:279], list(df$woman), mean)
+# aggregate(df[, 274:279], list(df$opl), mean)
+# aggregate(df[, 274:279], list(df$migr), mean)
+# 
+# aggregate(df[, 280:313], list(df$woman), mean)
+# aggregate(df[, 280:313], list(df$migr), mean)
+# aggregate(df[, 280:313], list(df$migr), mean)
+# 
+# xs <- list()
+# for (i in 271:313) {
+#  xs[[i]] <- lm(log10(df[, i]+1) ~ woman + opl + migr + leeftijd10 + neighdens + worthhouse, data = df)
+# }
+# xs[sapply(xs, is.null)] <- NULL
+# summary(xs[[1]])
+# 
+# # main effects
+# one_bracket <- list(
+#   c("Education tert. high = ref.", "Educ. prim./sec.", "Educ. tert. low"))
+# 
+# for (i in 1:length(xs)){
+# xsm[[i]] <- dwplot(xs[[i]],
+#               dot_args = list(color = "black", size = 0.5, shape = 1), # color for the dot
+#               whisker_args = list(size = 1, color = "darkgrey"),   # color for the whisker
+#               vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+#                                           colour = "grey60",
+#                                           linetype = 2,
+#                                           size = 1)) %>%                                     # make model variable
+#     relabel_predictors(c(
+#       "woman" = " ",
+#       "opl1" = "  ",
+#       "opl2" = "   ",
+#       "migr" = "    ",
+#       "migr" = "      ",
+#       "leeftijd10" = "       ",
+#       "neighdens" = "        ",
+#       "worthhouse" = "         "
+#     )) + theme(legend.position = "none",
+#                axis.text = element_text(color = "grey")) + 
+#     theme_minimal() 
+# }
+# 
+# 
+# labs <- dwplot(xs[[1]],
+#        dot_args = list(color = "white", size = 0, shape = 1), # color for the dot
+#        whisker_args = list(size = 0, color = "white")) %>%                                    
+#   relabel_predictors(c(
+#     "woman" = "Woman",
+#     "opl1" = "Prim/Sec Educ",
+#     "opl2" = "Lower Tert",
+#     "migr" = "Migr Backgr",
+#     "leeftijd10" = "Age/10",
+#     "neighdens" = "Neighb Dens",
+#     "worthhouse" = "House Val"
+#   )) + theme(legend.position = "none",
+#              axis.text = element_text(color = "black"),
+#              panel.grid.major = element_line(color = "white"),
+#              panel.grid.minor = element_line(color = "white"),
+#              panel.grid.major.x = element_blank(),
+#              panel.grid.major.y = element_blank(),
+#              panel.grid.minor.x = element_blank(),
+#              panel.grid.minor.y = element_blank(),
+#              panel.background = element_rect(fill = "white"),
+#              axis.text.x = element_blank(),
+#              axis.ticks.x = element_blank(),
+#              axis.ticks.y = element_blank())
+# 
+# # uni, hbo, mbo
+# school <- plot_grid(labs, xsm[[1]], xsm[[2]], xsm[[3]], nrow = 1, labels = c("",names(df)[271:273]), label_size = 8, rel_widths = c(0.2,1,1,1))
+# 
+# # save
+# ggsave("school.pdf", plot = school, device = "pdf",
+#        scale = 1, width = 10, height = 5, units = c("in"),
+#        dpi = "retina")
+# 
+# 
+# # vegan etc.
+# soceco <- plot_grid(labs, xsm[[4]], xsm[[5]], xsm[[6]],xsm[[7]],xsm[[8]],xsm[[9]], nrow = 1, labels = c("",names(df)[274:279]), label_size = 8,
+#           rel_widths = c(0.2,1,1,1,1,1,1))
+# # save
+# ggsave("soceco.pdf", plot = soceco, device = "pdf",
+#        scale = 1, width = 12, height = 5, units = c("in"),
+#        dpi = "retina")
+# 
+# 
+# 
+# 
+# # female names
+# femnames <- plot_grid(xsm[[10]], xsm[[11]], xsm[[12]], xsm[[13]], xsm[[14]],xsm[[15]],
+#           xsm[[16]],xsm[[17]],xsm[[18]],xsm[[19]],xsm[[20]],
+#           xsm[[21]],xsm[[22]],xsm[[23]],xsm[[24]],xsm[[25]],
+#           xsm[[26]], nrow = 4, labels = names(df)[280:296], label_size = 6)
+# 
+# # male names
+# malnames <- plot_grid(xsm[[27]], xsm[[28]], xsm[[29]], xsm[[30]], xsm[[31]],xsm[[32]],
+#           xsm[[33]],xsm[[34]],xsm[[35]],xsm[[36]],xsm[[37]],
+#           xsm[[38]],xsm[[39]],xsm[[40]],xsm[[41]],xsm[[42]],
+#           xsm[[43]], nrow = 4, labels = names(df)[297:313])
+# 
+# summary(xs[[43]])
+
+
+#--------------------------------------------------------------------------------
+
+
+########################
+# MODELS
+########################
+
+
+
+
+# paralellize the estimation
+# closeAllConnections()
+# numCores <- detectCores()
+# registerDoParallel(cores = 8)
+
+
+
+c <- 88
+# main effects
+summary(lm(df[!df[[c]]>10000, c(c)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+                      data = df[!df[[c]]>10000,]))
+
+
+class(as.factor(df$woman))
+
+
+models <- list()
+modelsint <- list()
+modelssq <- list()
+modellog <- list()
+modellm <- list()
+est <- list()
+estlm <- list()
+
+df$opl <-relevel(df$opl, ref = 1)
+df$migr3 <-relevel(as.factor(df$migr3), ref = 1)
+df$politics <-relevel(as.factor(df$politics), ref = 1)
+df$income <-relevel(as.factor(df$income), ref = 2)
+#foreach (i = 13:184) %dopar% {
+for (i in 14:185) { # --> 168 negative binomials with different netsizes. We then look at distributions of coefficients across those.
+  
+  #if (i %in% c(18, 61, 104, 147)) next #fascinating 18, 61, 104, 147 --> the corona estimator holdout initially didn't work, removing outliers works, also has undue effects
+    df[,c(i)] <- round(df[, c(i)], 0)
+    
+    # main effects
+    # models[[i]] <- glm.nb(df[!df[[i]]>10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+    #                        data = df[!df[[i]]>10000,], init.theta = 1.032713156, link = log)
+
+    # # main effects
+    # modelsint[[i]] <- glm.nb(df[!df[[i]]>10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+    #                       data = df[!df[[i]]>10000,], init.theta = 1.032713156, link = log)
+   
+    modellog[[i]] <- lm(log10(df[!df[[i]]>10000, c(i)]) ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+                        data = df[!df[[i]]>10000,])
+
+    # modellm[[i]] <- lm(df[!df[[i]]>10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+    #                    data = df[!df[[i]]>10000,])
+    # 
+    # # # u-shape for age negbin
+    # modelssq[[i]] <- glm.nb(df[!df[[i]]>10000, c(i)] ~ as.factor(woman) + leeftijd10 + leeftijd10sq + as.factor(opl) + migr + neighdens + worthhouse, 
+    #                        data = df[!df[[i]]>10000,], init.theta = 1.032713156, link = log)
+    
+    # get CIs for main effects, may be useful for viz later
+    #est[[i]] <- cbind(Estimate = coef(models[[i]]), confint(models[[i]]))
+    #estlm[[i]] <- cbind(Estimate = coef(modellm[[i]]), confint(modellm[[i]]))
+    
+}
+
+#est[sapply(est, is.null)] <- NULL
+models[sapply(models, is.null)] <- NULL
+modelsint[sapply(modelsint, is.null)] <- NULL
+est[sapply(est, is.null)] <- NULL
+estlm[sapply(estlm, is.null)] <- NULL
+modellog[sapply(modellog, is.null)] <- NULL
+modellm[sapply(modellm, is.null)] <- NULL
+modelssq[sapply(modelssq, is.null)] <- NULL
+
+
+
+# nice df with CIs
+estimates <- list()     
+for (i in 1:length(est)) { # -->  some data crunching to visualize
+  
+
+  estimates[[i]] <- data.frame(t(est[[i]]))
+  estimates[[i]] <- cbind(estimates[[i]], data.frame(c("est", "lb", "ub")))
+  names(estimates[[i]]) <- c("intercept",  "woman", "age",  "opl1",  "opl2", "migr",
+                             "neighdens","worthhouse", "var")
+  rownames(estimates[[i]]) <- 1:nrow(estimates[[i]])
+
+}
+estimates <- bind_rows(estimates)
+
+# nice df with CIs
+estimateslm <- list()     
+for (i in 1:length(estlm)) { # -->  some data crunching to visualize
+  
+  
+  estimateslm[[i]] <- data.frame(t(estlm[[i]]))
+  estimateslm[[i]] <- cbind(estimateslm[[i]], data.frame(c("est", "lb", "ub")))
+  names(estimateslm[[i]]) <- c("intercept",  "woman", "age",  "opl2",  "opl1", "migr",
+                             "neighdens","worthhouse", "var")
+  rownames(estimateslm[[i]]) <- 1:nrow(estimateslm[[i]])
+  
+}
+estimateslm <- bind_rows(estimateslm)
+summary(modellm[[1]])
+summary(estimateslm$opl1)
+summary(estimateslm$opl2)
+summary(modellm[[172]])
+#--------------------------------------------------------------------------------
+# Viz of results
+
+# main effects
+four_brackets <- list(
+  c("Educ tert high=ref", "Educ prim/sec", "Educ tert low"),
+  c(">modal inc=ref", "<=modal income", "Unkn income"),
+  c("Dutch maj=ref", "West backgr", "non-West backgr"),
+  c("Left vote=ref", "Right vote", "No/blanco vote"))
+
+ logmodel <- {dwplot(modellog,
+         dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
+         whisker_args = list(size = 0.25, color = "darkgrey", alpha = 0.5),   # color for the whisker
+         vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                     colour = "grey60",
+                                     linetype = 2,
+                                     size = 1)) %>%                                     # make model variable
+    relabel_predictors(c(
+      "as.factor(woman)1" = "Women",
+      "leeftijd10" = "Age/10",
+      "as.factor(opl)1" = "Educ prim/sec",
+      "as.factor(opl)2" = "Educ tert low",
+      "as.factor(work)1" = "Working",
+      "as.factor(income)1" = "<=modal income",
+      "as.factor(income)3" = "Unkn income",
+      "as.factor(migr3)2" = "West backgr",
+      "as.factor(migr3)3" = "non-West backgr",
+      "hhsize" = "Household size",
+      "as.factor(politics)1" = "Right vote",
+      "as.factor(politics)3" = "No/blanco vote",
+      "neighdens" = "Neigh. density",
+      "worthhouse" = "WOZ-values"
+    )) + theme(legend.position = "none",
+               axis.text = element_text(color = "grey")) + 
+    theme_minimal() +
+    #ggtitle("A) Negative binomial model of network size") +
+    xlab("B on Log(network size count)")}  %>%
+  add_brackets(four_brackets, fontSize = .6)
+
+ 
+ 
+ {dwplot(modellm,
+         dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
+         whisker_args = list(size = 0.25, color = "darkgrey", alpha = 0.5),   # color for the whisker
+         vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                     colour = "grey60",
+                                     linetype = 2,
+                                     size = 1)) %>%                                     # make model variable
+     relabel_predictors(c(
+       "as.factor(woman)1" = "Women",
+       "leeftijd10" = "Age/10",
+       "as.factor(opl)1" = "Educ prim/sec",
+       "as.factor(opl)2" = "Educ tert low",
+       "as.factor(work)1" = "Working",
+       "as.factor(income)1" = "<=modal income",
+       "as.factor(income)3" = "Unkn income",
+       "as.factor(migr3)2" = "West backgr",
+       "as.factor(migr3)3" = "non-West backgr",
+       "hhsize" = "Household size",
+       "as.factor(politics)2" = "Left vote",
+       "as.factor(politics)3" = "No/blanco vote",
+       "neighdens" = "Neigh. density",
+       "worthhouse" = "WOZ-values"
+     )) + theme(legend.position = "none",
+                axis.text = element_text(color = "grey")) + 
+     theme_minimal() +
+     #ggtitle("A) Negative binomial model of network size") +
+     xlab("B on Log(network size count)")}  %>%
+   add_brackets(four_brackets, fontSize = .6)
+
+# save
+ggsave("results_log.pdf", plot = logmodel, device = "pdf",
+       scale = 1, width = 6, height = 6, units = c("in"),
+       dpi = "retina")
+
+
+# contrasting low en sec educ
+models1 <- list()
+df$opl <-relevel(df$opl, ref = 1)
+head(df$opl)
+for (i in 13:184) { # --> 168 negative binomials with different netsizes. We then look at distributions of coefficients across those
+  models1[[i]] <- glm.nb(df[!df[[i]]>10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + migr + neighdens + worthhouse, 
+                        data = df[!df[[i]]>10000,], init.theta = 1.032713156, link = log)
+}
+models1[sapply(models1, is.null)] <- NULL
+dwplot(models1,
+        dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
+        whisker_args = list(size = 0.25, color = "darkgrey", alpha = 0.5),   # color for the whisker
+        vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                    colour = "grey60",
+                                    linetype = 2,
+                                    size = 1)) 
+
+modelsint <- list()
+for (i in 13:184) { # --> 168 negative binomials with different netsizes. We then look at distributions of coefficients across those.
+  
+  #if (i %in% c(18, 61, 104, 147)) next #fascinating 18, 61, 104, 147 --> the corona estimator holdout initially didn't work, removing outliers works, also has undue effects
+  df[,c(i)] <- round(df[, c(i)], 0)
+  
+  # main effects
+  modelsint[[i]] <- lm(df[!df[[i]]>1000, c(i)] ~ as.factor(woman) + as.factor(opl)*leeftijd10 + migr + worthhouse + neighdens + leeftijd10 , 
+                           data = df[!df[[i]]>1000,])
+}
+modelsint[sapply(modelsint, is.null)] <- NULL
+summary(modelsint[[170]])
+
+dwplot(modelsint,
+       dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
+       whisker_args = list(size = 0.25, color = "darkgrey", alpha = 0.5),   # color for the whisker
+       vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                   colour = "grey60",
+                                   linetype = 2,
+                                   size = 1)) 
+
+
+
+#--------------------------------------------------------------------------------
+# lm logresults are similar
+
+log <- dwplot(modellog,
+        dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
+        whisker_args = list(size = 0.25),   # color for the whisker
+        vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                    colour = "grey60",
+                                    linetype = 2,
+                                    size = 1)) %>%                                     # make model variable
+    relabel_predictors(c(
+      "as.factor(woman)1" = " ",
+      "leeftijd10" = "  ",
+      "as.factor(opl)1" = "   ",
+      "as.factor(opl)2" = "    ",
+      "migr" = "      ",
+      "neighdens" = "       ",
+      "worthhouse" = "        "
+    )) + theme(legend.position = "none",
+               axis.text = element_text(color = "white"),
+               plot.margin = margin(2, 0, 2, 0, "cm")) + 
+    theme_minimal() +
+    ggtitle("B) Linear model of log(network size)") +
+    xlab("B on log(network size)")
+
+
+#--------------------------------------------------------------------------------
+# lm results are similar
+
+lm <- dwplot(modellm,
+               dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
+               whisker_args = list(size = 0.25),   # color for the whisker
+               vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                           colour = "grey60",
+                                           linetype = 2,
+                                           size = 1)) %>%                                     # make model variable
+    relabel_predictors(c(
+      "as.factor(woman)1" = " ",
+      "leeftijd10" = "  ",
+      "as.factor(opl)1" = "   ",
+      "as.factor(opl)2" = "    ",
+      "migr" = "      ",
+      "neighdens" = "       ",
+      "worthhouse" = "        "
+    ))  + theme(legend.position = "none",
+                axis.text = element_text(color = "white"),plot.margin = unit(c(1,1,1,1), "cm")) + 
+    theme_minimal() +
+    ggtitle("C) Linear model of network size") +
+    xlab("B on network size count")
+
+# gotta fix the margins
+robust <- plot_grid(nb, log, lm, nrow = 1)
+robust
+ggsave("robust.pdf", plot = robust, device = "pdf",
+       scale = 1, width = 15, height = 9, units = c("in"),
+       dpi = "retina")
+
+
+lm <- 
+  
+  summary(modellog[[185]])
+
+  dwplot(models,
+             dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
+             whisker_args = list(size = 0.25),   # color for the whisker
+             vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                         colour = "grey60",
+                                         linetype = 2,
+                                         size = 1))
+
+%>%                                     # make model variable
+  relabel_predictors(c(
+    "as.factor(woman)1" = " ",
+    "leeftijd10" = "  ",
+    "as.factor(opl)1" = "   ",
+    "as.factor(opl)2" = "    ",
+    "migr" = "      ",
+    "neighdens" = "       ",
+    "worthhouse" = "        "
+  ))  + theme(legend.position = "none",
+              axis.text = element_text(color = "white"),plot.margin = unit(c(1,1,1,1), "cm")) + 
+  theme_minimal() +
+  ggtitle("C) Linear model of network size") +
+  xlab("B on network size count")
+
+
+
+
+
+
+
+
+
+
+
+
+
+# u-shape age
+two_bracket <- list(
+  c("Education tert. high = ref.", "Education prim./sec.", "Education tert. low"),
+  c("Age inverted U", "Age/10", "Age/10^2"))
+x2 <- {dwplot(modelssq,
+       dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
+       whisker_args = list(size = 0.25),   # color for the whisker
+       vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                   colour = "grey60",
+                                   linetype = 2,
+                                   size = 1)) %>%                                     # make model variable
+  relabel_predictors(c(
+    "as.factor(woman)1" = "Women",
+    "leeftijd10" = "Age/10",
+    "leeftijd10sq" = "Age/10^2",
+    "as.factor(opl)1" = "Education prim./sec.",
+    "as.factor(opl)2" = "Education tert. low",
+    "migr" = "Migration backgr.",
+    "neighdens" = "Neighb. density/1K",
+    "worthhouse" = "Neighb. WOZ-values/100K."
+  )) + theme(legend.position = "none") + 
+  theme_minimal()  +
+    ggtitle("B) Including main and squared age effect, inverted U-shape") +
+    xlab("Log odds on network size count")
+  } %>%
+  add_brackets(two_bracket)
+
+
+results <- plot_grid(nb, x2, nrow = 1)
+
+# save
+ggsave("results.pdf", plot = results, device = "pdf",
+       scale = 1, width = 19, height = 9, units = c("in"),
+       dpi = "retina")
+
+
+
+```

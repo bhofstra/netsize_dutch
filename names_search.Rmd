@@ -1,0 +1,157 @@
+---
+title: "Finding relevant names (X's)"
+#bibliography: references.bib
+author: "Rense Corten"
+---
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+Last compiled on `r format(Sys.time(), '%B, %Y')`
+
+<br>
+
+----
+
+The first step is to select a set of names (or X's, in NSUM terminology) that represent social groups (by age, ethnic background, gender, and so forth) well. Hence, we first need to find out what those names are. In a first step, we therefore look at name popularity from the [Meerten Voornamenbank](https://www.meertens.knaw.nl/nvb/) that shows name popularity by year. We do this via relatively straightforward crawl of that website.
+
+<br>
+
+----
+
+# Initatiating R environment
+
+Start out with a custom function to load a set of required packages.
+  
+```{r, eval=FALSE}
+# packages and read data
+rm(list = ls())
+
+# scraper to collect popularity lists of names in the Netherlands, per year
+# Rense Corten, Utrecht University, April 2021
+
+# ----------- LOAD THE REQUIRED PACKAGES ---------------- |
+
+# (c) Jochem Tolsma
+fpackage.check <- function(packages) {
+  lapply(packages, FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  })
+}
+packages = c("tidyverse", "rvest", "polite")
+fpackage.check(packages)
+```
+
+<br>
+
+----
+
+# Custom functions
+
+Then declare a custom function that does a polite crawl of first name data from the Meertens Voornamenbank.
+  
+```{r, eval=FALSE}
+# ----------- FUNCTIONS ---------------- |
+
+get_year_names <- function(session, year){
+  #year = 2014
+  yr_path = paste("nvb/topnamen/land/Nederland/", as.character(year),sep="") # set the path for the specific year's webpage
+  
+  year_session <-nod(session, path = yr_path) # agree changing of the path with the host (assuming I have already "bowed" for the higher-level path)
+  
+  year_page <- scrape(year_session) # get the page for this year
+  
+  all_names <-year_page %>%  # parse the page as a table. Turns out this is a list of three tables; we need numbers 2 and 3
+    html_table()
+  
+  boy_names <- all_names[[2]] # second table from the list of three
+  colnames(boy_names) <- c("rank", "name", "count") #seems like this should be easier...
+  boy_names <- boy_names %>% 
+    as.data.frame() %>% 
+    mutate(is_girl_name = 0) # add a gender dummy
+  
+  girl_names <- all_names[[3]] # third table from the list of three
+  colnames(girl_names) <- c("rank", "name", "count") #seems like this should be easier...
+  girl_names <- girl_names %>% 
+    as.data.frame() %>% 
+    mutate(is_girl_name = 1)  # add a gender dummy
+  
+  all_names <- rbind(girl_names, boy_names) %>% # combine the two as a new data frame
+    mutate(year = year)  
+  return(all_names)
+}
+```
+
+<br>
+
+----
+
+# Crawling
+
+The next step is actually crawling the names in a specific set of years and bind that in a data frame.
+
+```{r, eval=FALSE}
+# ----------- IMPLEMENT THE SCRAPER ---------------- |
+
+# check permissions and introduce myself to the host
+session <- bow("https://www.meertens.knaw.nl/nvb/", user_agent =  "R. Corten, Universiteit Utrecht", delay = 1)
+session
+
+all_names <- data.frame( # initialize the empty data frame for the results
+  rank = integer(),
+  name = character(),
+  count = integer(),
+  is_girl_name = integer(),
+  year = integer()
+)
+
+startyear = 1950
+endyear = 2014
+
+for(i in endyear:startyear){ # loop over all years
+  print(paste("scraping year",i))
+  names_year <- get_year_names(session, i)
+  all_names <- rbind(all_names, names_year)
+}
+```
+
+<br>
+
+----
+
+# Saving the data
+
+The final step here is to save it to a CSV file so that we can inspect numbers of this specific set of names to select our X's from.
+
+```{r, eval=FALSE}
+write.csv(all_names, 
+          file = paste("all_names_",as.character(startyear),as.character(endyear),".csv", sep=""),
+          row.names=FALSE)
+
+```
+
+
+
+
+
+

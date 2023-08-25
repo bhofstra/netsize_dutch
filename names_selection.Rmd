@@ -1,0 +1,185 @@
+---
+title: "Selecting the names (X's)"
+#bibliography: references.bib
+author: "Rense Corten"
+---
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+Last compiled on `r format(Sys.time(), '%B, %Y')`
+
+<br>
+
+----
+
+The second step is to find the frequencies of the selected set of names (or X's, in NSUM terminology). We again use the [Meerten Voornamenbank](https://www.meertens.knaw.nl/nvb/) that shows name popularity by year. We do this via relatively straightforward crawl of that website. You can see the selected names below in the code.
+
+<br>
+
+----
+
+# Initatiating R environment
+
+Start out with a custom function to load a set of required packages.
+  
+```{r, eval=FALSE}
+# packages and read data
+rm(list = ls())
+
+# scraper to collect popularity lists of names in the Netherlands, per year
+# Rense Corten, Utrecht University, April 2021
+
+# ----------- LOAD THE REQUIRED PACKAGES ---------------- |
+
+# (c) Jochem Tolsma
+fpackage.check <- function(packages) {
+  lapply(packages, FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  })
+}
+packages = c("tidyverse", "rvest", "polite")
+fpackage.check(packages)
+```
+
+
+<br>
+
+----
+
+# Functions
+
+Make a custom function that queries the Meertens
+
+```{r, eval=FALSE}
+# ----------- FUNCTIONS ---------------- |
+
+get_name_number <- function(session, name){
+  #year = 2014
+  name_path = paste("/nvb/naam/is/", name,sep="") # set the path for the specific name's webpage
+  
+  name_session <-nod(session, path = name_path) # agree changing of the path with the host (assuming I have already "bowed" for the higher-level path)
+  
+  name_page <- scrape(name_session) # get the page for this year
+  
+  names_data <-name_page %>%  # parse the page as a table. Turns out this is a list of three tables; we need numbers 2 and 3
+    html_table()
+  
+  n_m <- names_data[[1]][["X3"]][2] %>% 
+    str_replace("--","0")
+  
+  n_v <- names_data[[1]][["X3"]][6] %>% 
+    str_replace("--","0")
+  
+  
+  print(name)
+  
+  n_total <- as.numeric(n_m) + as.numeric(n_v)
+  
+  return(n_total)
+}
+```
+
+
+<br>
+
+----
+
+# Scraping the specific names
+
+The name frequencies that are queried from Meertens are found below. These are then put into a dataframe.
+
+
+```{r, eval=FALSE}
+
+# ----------- IMPLEMENT THE SCRAPER ---------------- |
+
+namelist <- c(
+"Sophie",
+"Julia",
+"Sanne",
+"Lisa",
+"Laura",
+"Maria",
+"Linda",
+"Johanna",
+"Monique",
+"Ester",
+"Anna",
+"Elisabeth",
+"Cornelia",
+"Wilhelmina",
+"Amira",
+"Samira",
+"Sara",
+"Daan",
+"Sem",
+"Thomas",
+"Max",
+"Kevin",
+"Johannes",
+"Dennis",
+"Jeroen",
+"Jan",
+"Marcel",
+"Cornelis",
+"Hendrik",
+"Petrus",
+"Willem",
+"Ali",
+"Mohammed",
+"Noor"
+)
+
+name_number <- c()
+
+# check permissions and introduce myself to the host
+session <- bow("https://www.meertens.knaw.nl/nvb/", user_agent =  "R. Corten, Universiteit Utrecht", delay = 1)
+session
+
+
+for(i in 1:length(namelist)) {
+  name_number[i] <- get_name_number(session, namelist[i])
+}
+ 
+
+names_numbers <- data.frame(
+  name = namelist,
+  number= name_number
+)
+```
+
+
+<br>
+
+----
+
+# Saving the data
+
+We finally save the data in a CSV file.
+
+```{r, eval=FALSE}
+write.csv(names_numbers, 
+          file = "name_numbers.csv",
+          row.names=FALSE)
+```

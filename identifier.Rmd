@@ -1,0 +1,63 @@
+---
+title: "I&O research ID"
+#bibliography: references.bib
+author: "Bas Hofstra"
+---
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+Last compiled on `r format(Sys.time(), '%B, %Y')`
+
+<br>
+
+----
+
+We want to attach some new variables to the data that I&O research initially collected. But as the original had no identifier and we want to ascertain which repsondent is which, we make our own identifier.
+
+<br>
+
+----
+
+# Making person identifiers
+
+Start out with a custom function to load a set of required packages.
+  
+```{r id, eval=FALSE}
+# packages and read data
+
+df <- haven::read_dta("DQUESTUU_eindbestand.dta")
+
+# first match tryout
+#set.seed(12981298)
+#samp <- df[sample(nrow(df), 10, replace = F), ]
+#samp <- samp[, c("geslacht", "postcode", "leeftijd", "postcode", "V5a", "V5a_anders", "V5b", "V5b_anders")]
+#write.csv(samp, "testsample_io.csv", row.names = F)
+
+# match to io
+iomatch <- df[, c("geslacht", "opleiding", "leeftijd", "postcode", "V5a", "V5a_anders", "V5b", "V5b_anders")]
+
+set.seed(12981298)
+personid <- sample(10000:20000, nrow(df), replace = F)
+iomatch <- cbind(personid, iomatch)
+write.csv(iomatch, "iomatch.csv", row.names = F)
+
+```
+

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Rense Corten" />
+
+
+<title>Selecting the names (X’s)</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="tweaks.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Names
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="names_search.html">Names search</a>
+    </li>
+    <li>
+      <a href="names_selection.html">Names selection</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="questionnaire.html">Questionnaire</a>
+</li>
+<li>
+  <a href="nsum.html">NSUM</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="identifier.html">I&amp;O Identifier</a>
+    </li>
+    <li>
+      <a href="dependent_variables.html">Dependent Variables</a>
+    </li>
+    <li>
+      <a href="independent_variables.html">Independent Variables</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/bhofstra/netsize_dutch">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Selecting the names (X’s)</h1>
+<h4 class="author">Rense Corten</h4>
+
+</div>
+
+
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<p>Last compiled on August, 2023</p>
+<p><br></p>
+<hr />
+<p>The second step is to find the frequencies of the selected set of
+names (or X’s, in NSUM terminology). We again use the <a
+href="https://www.meertens.knaw.nl/nvb/">Meerten Voornamenbank</a> that
+shows name popularity by year. We do this via relatively straightforward
+crawl of that website. You can see the selected names below in the
+code.</p>
+<p><br></p>
+<hr />
+<div id="initatiating-r-environment" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Initatiating R
+environment</h1>
+<p>Start out with a custom function to load a set of required
+packages.</p>
+<pre class="r test"><code># packages and read data
+rm(list = ls())
+
+# scraper to collect popularity lists of names in the Netherlands, per year Rense Corten, Utrecht
+# University, April 2021
+
+# ----------- LOAD THE REQUIRED PACKAGES ---------------- |
+
+# (c) Jochem Tolsma
+fpackage.check &lt;- function(packages) {
+    lapply(packages, FUN = function(x) {
+        if (!require(x, character.only = TRUE)) {
+            install.packages(x, dependencies = TRUE)
+            library(x, character.only = TRUE)
+        }
+    })
+}
+packages = c(&quot;tidyverse&quot;, &quot;rvest&quot;, &quot;polite&quot;)
+fpackage.check(packages)</code></pre>
+<p><br></p>
+<hr />
+</div>
+<div id="functions" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Functions</h1>
+<p>Make a custom function that queries the Meertens</p>
+<pre class="r test"><code># ----------- FUNCTIONS ---------------- |
+
+get_name_number &lt;- function(session, name){
+  #year = 2014
+  name_path = paste(&quot;/nvb/naam/is/&quot;, name,sep=&quot;&quot;) # set the path for the specific name&#39;s webpage
+  
+  name_session &lt;-nod(session, path = name_path) # agree changing of the path with the host (assuming I have already &quot;bowed&quot; for the higher-level path)
+  
+  name_page &lt;- scrape(name_session) # get the page for this year
+  
+  names_data &lt;-name_page %&gt;%  # parse the page as a table. Turns out this is a list of three tables; we need numbers 2 and 3
+    html_table()
+  
+  n_m &lt;- names_data[[1]][[&quot;X3&quot;]][2] %&gt;% 
+    str_replace(&quot;--&quot;,&quot;0&quot;)
+  
+  n_v &lt;- names_data[[1]][[&quot;X3&quot;]][6] %&gt;% 
+    str_replace(&quot;--&quot;,&quot;0&quot;)
+  
+  
+  print(name)
+  
+  n_total &lt;- as.numeric(n_m) + as.numeric(n_v)
+  
+  return(n_total)
+}</code></pre>
+<p><br></p>
+<hr />
+</div>
+<div id="scraping-the-specific-names" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Scraping the specific
+names</h1>
+<p>The name frequencies that are queried from Meertens are found below.
+These are then put into a dataframe.</p>
+<pre class="r test"><code># ----------- IMPLEMENT THE SCRAPER ---------------- |
+
+namelist &lt;- c(&quot;Sophie&quot;, &quot;Julia&quot;, &quot;Sanne&quot;, &quot;Lisa&quot;, &quot;Laura&quot;, &quot;Maria&quot;, &quot;Linda&quot;, &quot;Johanna&quot;, &quot;Monique&quot;, &quot;Ester&quot;,
+    &quot;Anna&quot;, &quot;Elisabeth&quot;, &quot;Cornelia&quot;, &quot;Wilhelmina&quot;, &quot;Amira&quot;, &quot;Samira&quot;, &quot;Sara&quot;, &quot;Daan&quot;, &quot;Sem&quot;, &quot;Thomas&quot;,
+    &quot;Max&quot;, &quot;Kevin&quot;, &quot;Johannes&quot;, &quot;Dennis&quot;, &quot;Jeroen&quot;, &quot;Jan&quot;, &quot;Marcel&quot;, &quot;Cornelis&quot;, &quot;Hendrik&quot;, &quot;Petrus&quot;,
+    &quot;Willem&quot;, &quot;Ali&quot;, &quot;Mohammed&quot;, &quot;Noor&quot;)
+
+name_number &lt;- c()
+
+# check permissions and introduce myself to the host
+session &lt;- bow(&quot;https://www.meertens.knaw.nl/nvb/&quot;, user_agent = &quot;R. Corten, Universiteit Utrecht&quot;, delay = 1)
+session
+
+
+for (i in 1:length(namelist)) {
+    name_number[i] &lt;- get_name_number(session, namelist[i])
+}
+
+
+names_numbers &lt;- data.frame(name = namelist, number = name_number)</code></pre>
+<p><br></p>
+<hr />
+</div>
+<div id="saving-the-data" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Saving the data</h1>
+<p>We finally save the data in a CSV file.</p>
+<pre class="r test"><code>write.csv(names_numbers, file = &quot;name_numbers.csv&quot;, row.names = FALSE)</code></pre>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU2VsZWN0aW5nIHRoZSBuYW1lcyAoWCdzKSIKI2JpYmxpb2dyYXBoeTogcmVmZXJlbmNlcy5iaWIKYXV0aG9yOiAiUmVuc2UgQ29ydGVuIgotLS0KCmBgYHtyLCBnbG9iYWxzZXR0aW5ncywgZWNobz1GQUxTRSwgd2FybmluZz1GQUxTRSwgcmVzdWx0cz0naGlkZSd9CmxpYnJhcnkoa25pdHIpCgprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCm9wdHNfY2h1bmskc2V0KHRpZHkub3B0cz1saXN0KHdpZHRoLmN1dG9mZj0xMDApLHRpZHk9VFJVRSwgd2FybmluZyA9IEZBTFNFLCBtZXNzYWdlID0gRkFMU0UsY29tbWVudCA9ICIjPiIsIGNhY2hlPVRSVUUsIGNsYXNzLnNvdXJjZT1jKCJ0ZXN0IiksIGNsYXNzLm91dHB1dD1jKCJ0ZXN0MiIpKQpvcHRpb25zKHdpZHRoID0gMTAwKQpyZ2w6OnNldHVwS25pdHIoKQoKCgpjb2xvcml6ZSA8LSBmdW5jdGlvbih4LCBjb2xvcikge3NwcmludGYoIjxzcGFuIHN0eWxlPSdjb2xvcjogJXM7Jz4lczwvc3Bhbj4iLCBjb2xvciwgeCkgfQoKYGBgCgpgYGB7ciBrbGlwcHksIGVjaG89RkFMU0UsIGluY2x1ZGU9VFJVRX0Ka2xpcHB5OjprbGlwcHkocG9zaXRpb24gPSBjKCd0b3AnLCAncmlnaHQnKSkKI2tsaXBweTo6a2xpcHB5KGNvbG9yID0gJ2RhcmtyZWQnKQoja2xpcHB5OjprbGlwcHkodG9vbHRpcF9tZXNzYWdlID0gJ0NsaWNrIHRvIGNvcHknLCB0b29sdGlwX3N1Y2Nlc3MgPSAnRG9uZScpCmBgYAoKTGFzdCBjb21waWxlZCBvbiBgciBmb3JtYXQoU3lzLnRpbWUoKSwgJyVCLCAlWScpYAoKPGJyPgoKLS0tLQoKVGhlIHNlY29uZCBzdGVwIGlzIHRvIGZpbmQgdGhlIGZyZXF1ZW5jaWVzIG9mIHRoZSBzZWxlY3RlZCBzZXQgb2YgbmFtZXMgKG9yIFgncywgaW4gTlNVTSB0ZXJtaW5vbG9neSkuIFdlIGFnYWluIHVzZSB0aGUgW01lZXJ0ZW4gVm9vcm5hbWVuYmFua10oaHR0cHM6Ly93d3cubWVlcnRlbnMua25hdy5ubC9udmIvKSB0aGF0IHNob3dzIG5hbWUgcG9wdWxhcml0eSBieSB5ZWFyLiBXZSBkbyB0aGlzIHZpYSByZWxhdGl2ZWx5IHN0cmFpZ2h0Zm9yd2FyZCBjcmF3bCBvZiB0aGF0IHdlYnNpdGUuIFlvdSBjYW4gc2VlIHRoZSBzZWxlY3RlZCBuYW1lcyBiZWxvdyBpbiB0aGUgY29kZS4KCjxicj4KCi0tLS0KCiMgSW5pdGF0aWF0aW5nIFIgZW52aXJvbm1lbnQKClN0YXJ0IG91dCB3aXRoIGEgY3VzdG9tIGZ1bmN0aW9uIHRvIGxvYWQgYSBzZXQgb2YgcmVxdWlyZWQgcGFja2FnZXMuCiAgCmBgYHtyLCBldmFsPUZBTFNFfQojIHBhY2thZ2VzIGFuZCByZWFkIGRhdGEKcm0obGlzdCA9IGxzKCkpCgojIHNjcmFwZXIgdG8gY29sbGVjdCBwb3B1bGFyaXR5IGxpc3RzIG9mIG5hbWVzIGluIHRoZSBOZXRoZXJsYW5kcywgcGVyIHllYXIKIyBSZW5zZSBDb3J0ZW4sIFV0cmVjaHQgVW5pdmVyc2l0eSwgQXByaWwgMjAyMQoKIyAtLS0tLS0tLS0tLSBMT0FEIFRIRSBSRVFVSVJFRCBQQUNLQUdFUyAtLS0tLS0tLS0tLS0tLS0tIHwKCiMgKGMpIEpvY2hlbSBUb2xzbWEKZnBhY2thZ2UuY2hlY2sgPC0gZnVuY3Rpb24ocGFja2FnZXMpIHsKICBsYXBwbHkocGFja2FnZXMsIEZVTiA9IGZ1bmN0aW9uKHgpIHsKICAgIGlmICghcmVxdWlyZSh4LCBjaGFyYWN0ZXIub25seSA9IFRSVUUpKSB7CiAgICAgIGluc3RhbGwucGFja2FnZXMoeCwgZGVwZW5kZW5jaWVzID0gVFJVRSkKICAgICAgbGlicmFyeSh4LCBjaGFyYWN0ZXIub25seSA9IFRSVUUpCiAgICB9CiAgfSkKfQpwYWNrYWdlcyA9IGMoInRpZHl2ZXJzZSIsICJydmVzdCIsICJwb2xpdGUiKQpmcGFja2FnZS5jaGVjayhwYWNrYWdlcykKYGBgCgoKPGJyPgoKLS0tLQoKIyBGdW5jdGlvbnMKCk1ha2UgYSBjdXN0b20gZnVuY3Rpb24gdGhhdCBxdWVyaWVzIHRoZSBNZWVydGVucwoKYGBge3IsIGV2YWw9RkFMU0V9CiMgLS0tLS0tLS0tLS0gRlVOQ1RJT05TIC0tLS0tLS0tLS0tLS0tLS0gfAoKZ2V0X25hbWVfbnVtYmVyIDwtIGZ1bmN0aW9uKHNlc3Npb24sIG5hbWUpewogICN5ZWFyID0gMjAxNAogIG5hbWVfcGF0aCA9IHBhc3RlKCIvbnZiL25hYW0vaXMvIiwgbmFtZSxzZXA9IiIpICMgc2V0IHRoZSBwYXRoIGZvciB0aGUgc3BlY2lmaWMgbmFtZSdzIHdlYnBhZ2UKICAKICBuYW1lX3Nlc3Npb24gPC1ub2Qoc2Vzc2lvbiwgcGF0aCA9IG5hbWVfcGF0aCkgIyBhZ3JlZSBjaGFuZ2luZyBvZiB0aGUgcGF0aCB3aXRoIHRoZSBob3N0IChhc3N1bWluZyBJIGhhdmUgYWxyZWFkeSAiYm93ZWQiIGZvciB0aGUgaGlnaGVyLWxldmVsIHBhdGgpCiAgCiAgbmFtZV9wYWdlIDwtIHNjcmFwZShuYW1lX3Nlc3Npb24pICMgZ2V0IHRoZSBwYWdlIGZvciB0aGlzIHllYXIKICAKICBuYW1lc19kYXRhIDwtbmFtZV9wYWdlICU+JSAgIyBwYXJzZSB0aGUgcGFnZSBhcyBhIHRhYmxlLiBUdXJucyBvdXQgdGhpcyBpcyBhIGxpc3Qgb2YgdGhyZWUgdGFibGVzOyB3ZSBuZWVkIG51bWJlcnMgMiBhbmQgMwogICAgaHRtbF90YWJsZSgpCiAgCiAgbl9tIDwtIG5hbWVzX2RhdGFbWzFdXVtbIlgzIl1dWzJdICU+JSAKICAgIHN0cl9yZXBsYWNlKCItLSIsIjAiKQogIAogIG5fdiA8LSBuYW1lc19kYXRhW1sxXV1bWyJYMyJdXVs2XSAlPiUgCiAgICBzdHJfcmVwbGFjZSgiLS0iLCIwIikKICAKICAKICBwcmludChuYW1lKQogIAogIG5fdG90YWwgPC0gYXMubnVtZXJpYyhuX20pICsgYXMubnVtZXJpYyhuX3YpCiAgCiAgcmV0dXJuKG5fdG90YWwpCn0KYGBgCgoKPGJyPgoKLS0tLQoKIyBTY3JhcGluZyB0aGUgc3BlY2lmaWMgbmFtZXMKClRoZSBuYW1lIGZyZXF1ZW5jaWVzIHRoYXQgYXJlIHF1ZXJpZWQgZnJvbSBNZWVydGVucyBhcmUgZm91bmQgYmVsb3cuIFRoZXNlIGFyZSB0aGVuIHB1dCBpbnRvIGEgZGF0YWZyYW1lLgoKCmBgYHtyLCBldmFsPUZBTFNFfQoKIyAtLS0tLS0tLS0tLSBJTVBMRU1FTlQgVEhFIFNDUkFQRVIgLS0tLS0tLS0tLS0tLS0tLSB8CgpuYW1lbGlzdCA8LSBjKAoiU29waGllIiwKIkp1bGlhIiwKIlNhbm5lIiwKIkxpc2EiLAoiTGF1cmEiLAoiTWFyaWEiLAoiTGluZGEiLAoiSm9oYW5uYSIsCiJNb25pcXVlIiwKIkVzdGVyIiwKIkFubmEiLAoiRWxpc2FiZXRoIiwKIkNvcm5lbGlhIiwKIldpbGhlbG1pbmEiLAoiQW1pcmEiLAoiU2FtaXJhIiwKIlNhcmEiLAoiRGFhbiIsCiJTZW0iLAoiVGhvbWFzIiwKIk1heCIsCiJLZXZpbiIsCiJKb2hhbm5lcyIsCiJEZW5uaXMiLAoiSmVyb2VuIiwKIkphbiIsCiJNYXJjZWwiLAoiQ29ybmVsaXMiLAoiSGVuZHJpayIsCiJQZXRydXMiLAoiV2lsbGVtIiwKIkFsaSIsCiJNb2hhbW1lZCIsCiJOb29yIgopCgpuYW1lX251bWJlciA8LSBjKCkKCiMgY2hlY2sgcGVybWlzc2lvbnMgYW5kIGludHJvZHVjZSBteXNlbGYgdG8gdGhlIGhvc3QKc2Vzc2lvbiA8LSBib3coImh0dHBzOi8vd3d3Lm1lZXJ0ZW5zLmtuYXcubmwvbnZiLyIsIHVzZXJfYWdlbnQgPSAgIlIuIENvcnRlbiwgVW5pdmVyc2l0ZWl0IFV0cmVjaHQiLCBkZWxheSA9IDEpCnNlc3Npb24KCgpmb3IoaSBpbiAxOmxlbmd0aChuYW1lbGlzdCkpIHsKICBuYW1lX251bWJlcltpXSA8LSBnZXRfbmFtZV9udW1iZXIoc2Vzc2lvbiwgbmFtZWxpc3RbaV0pCn0KIAoKbmFtZXNfbnVtYmVycyA8LSBkYXRhLmZyYW1lKAogIG5hbWUgPSBuYW1lbGlzdCwKICBudW1iZXI9IG5hbWVfbnVtYmVyCikKYGBgCgoKPGJyPgoKLS0tLQoKIyBTYXZpbmcgdGhlIGRhdGEKCldlIGZpbmFsbHkgc2F2ZSB0aGUgZGF0YSBpbiBhIENTViBmaWxlLgoKYGBge3IsIGV2YWw9RkFMU0V9CndyaXRlLmNzdihuYW1lc19udW1iZXJzLCAKICAgICAgICAgIGZpbGUgPSAibmFtZV9udW1iZXJzLmNzdiIsCiAgICAgICAgICByb3cubmFtZXM9RkFMU0UpCmBgYAo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("names_selection.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
