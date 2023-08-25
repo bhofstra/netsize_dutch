@@ -31,7 +31,8 @@ navbar:
         href: independent_variables.html
     - text: "Analyses"
       menu:
-
+      - text: "Descriptive analyses"
+        href: descriptives.html
 
 
   right:

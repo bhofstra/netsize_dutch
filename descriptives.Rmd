@@ -1,38 +1,64 @@
 ---
-title: "Untitled"
-output: html_document
-date: "2023-08-25"
+title: "Descriptive analyses"
+#bibliography: references.bib
+author: "Bas Hofstra"
 ---
 
-```{r setup, include=FALSE}
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
 knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
 ```
 
-## Including Plots
+Last compiled on `r format(Sys.time(), '%B, %Y')`
 
-You can also embed plots, for example:
+<br>
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+----
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+This is the code with which we make our dependent variables.
+
+<br>
+
+----
+
+# Initatiating R environment
+
+Start out with a custom function to load a set of required packages.
+  
+```{r pack, eval=FALSE}
+# packages and read data
+rm(list = ls())
+
+# (c) Jochem Tolsma
+fpackage.check <- function(packages) {
+  lapply(packages, FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  })
+}
+packages = c("haven", "coda", "matrixStats", "parallel", "MASS", "doParallel", "dplyr", "cowplot", 
+             "tidyverse", "naniar", "dotwhisker" ,"gt", "reshape2", "VGAM", "expss")
+fpackage.check(packages)
+rm(packages)
 
 
-
-
-
-#--------------------------------------------------------------------------------
 
 ########################
 # DESCRIPTIVES
@@ -665,7 +691,6 @@ results <- plot_grid(nb, x2, nrow = 1)
 ggsave("results.pdf", plot = results, device = "pdf",
        scale = 1, width = 19, height = 9, units = c("in"),
        dpi = "retina")
-
 
 
 ```

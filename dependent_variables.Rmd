@@ -1,5 +1,5 @@
 ---
-title: "I&O research ID"
+title: "Dependent variables"
 #bibliography: references.bib
 author: "Bas Hofstra"
 ---
@@ -41,12 +41,6 @@ This is the code with which we make our dependent variables.
 Start out with a custom function to load a set of required packages.
   
 ```{r pack, eval=FALSE}
-###############################################
-# Author:   - Bas Hofstra                     #
-# Date:     - 23/03/22                        #
-# Taks:     - analyze nsum data
-###############################################
-
 
 # packages and read data
 rm(list = ls())

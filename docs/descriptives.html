@@ -9,10 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Bas Hofstra" />
 
-<meta name="date" content="2023-08-25" />
 
-<title>Untitled</title>
+<title>Descriptive analyses</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -38,6 +38,10 @@
 <script src="site_libs/navigation-1.1/sourceembed.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -380,6 +384,18 @@ div.tocify {
     </li>
   </ul>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="descriptives.html">Descriptive analyses</a>
+    </li>
+  </ul>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -407,1156 +423,680 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Untitled</h1>
-<h4 class="date">2023-08-25</h4>
+<h1 class="title toc-ignore">Descriptive analyses</h1>
+<h4 class="author">Bas Hofstra</h4>
 
 </div>
 
 
-<div id="r-markdown" class="section level2" number="0.1">
-<h2><span class="header-section-number">0.1</span> R Markdown</h2>
-<p>This is an R Markdown document. Markdown is a simple formatting
-syntax for authoring HTML, PDF, and MS Word documents. For more details
-on using R Markdown see <a href="http://rmarkdown.rstudio.com"
-class="uri">http://rmarkdown.rstudio.com</a>.</p>
-<p>When you click the <strong>Knit</strong> button a document will be
-generated that includes both content as well as the output of any
-embedded R code chunks within the document. You can embed an R code
-chunk like this:</p>
-<pre class="r"><code>summary(cars)</code></pre>
-<pre><code>##      speed           dist       
-##  Min.   : 4.0   Min.   :  2.00  
-##  1st Qu.:12.0   1st Qu.: 26.00  
-##  Median :15.0   Median : 36.00  
-##  Mean   :15.4   Mean   : 42.98  
-##  3rd Qu.:19.0   3rd Qu.: 56.00  
-##  Max.   :25.0   Max.   :120.00</code></pre>
-</div>
-<div id="including-plots" class="section level2" number="0.2">
-<h2><span class="header-section-number">0.2</span> Including Plots</h2>
-<p>You can also embed plots, for example:</p>
-<p><img src="descriptives_files/figure-html/pressure-1.png" width="672" /></p>
-<p>Note that the <code>echo = FALSE</code> parameter was added to the
-code chunk to prevent printing of the R code that generated the
-plot.</p>
-<p>#——————————————————————————–</p>
-<div id="section" class="section level24"
-number="0.2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1">
-<p class="heading"><span
-class="header-section-number">0.2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1</span>
-</p>
-</div>
-</div>
-<div id="descriptives" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> DESCRIPTIVES</h1>
-<div id="section-1" class="section level24"
-number="1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1">
-<p class="heading"><span
-class="header-section-number">1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1</span>
-</p>
-</div>
-</div>
-<div id="viz-of-netsize" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> VIZ of netsize</h1>
-<p>netsize_l &lt;- gather(netsizes) dens1 &lt;-
-ggplot(netsize_l[netsize_l$value &lt; 2000,], aes(x=value, color = key))
-+ geom_density(alpha = .2, size = 0.1) + theme_minimal() +
-theme(legend.position = “none”) + labs(x = “Network size estimate”, y =
-“Density”) +
-geom_vline(xintercept=as.numeric(psych::describe(netsize_l[, 2])[3]),
-color = “darkgrey”, linetype = 2) +
-geom_vline(xintercept=as.numeric(psych::describe(netsize_l[, 2])[5]),
-color = “darkgrey”, linetype = 2) + annotate(“text”, x = 490, y =
-0.0004, color = “darkgrey”, angle = 90, label = paste0(“Mean =”,
-round(as.numeric(psych::describe(netsize_l[, 2])[3]), digits = 0))) +
-annotate(“text”, x = 340, y = 0.0004, color = “darkgrey”, angle = 90,
-label = paste0(“Median =”, round(as.numeric(psych::describe(netsize_l[,
-2])[5]), digits = 0))) + ggtitle(“B) Distribution of network sizes, all
-scenarios”)</p>
-</div>
-<div id="get-lower-triangle-of-the-correlation-matrix"
-class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Get lower triangle of
-the correlation matrix</h1>
-<p>get_lower_tri&lt;-function(cormat){ cormat[upper.tri(cormat)] &lt;-
-NA return(cormat) } mat &lt;- cor(netsizes) lower_tri &lt;-
-get_lower_tri(mat) melted_cormat &lt;- reshape2::melt(lower_tri) #
-data.table also has melt funciton that won’t work on matrices
-melted_cormat<span class="math inline">\(Var2 &lt;-
-as.character(melted_cormat\)</span>Var2) melted_cormat<span
-class="math inline">\(Var1 &lt;-
-as.character(melted_cormat\)</span>Var1) melted_cormat &lt;-
-melted_cormat[!melted_cormat<span class="math inline">\(Var2 ==
-melted_cormat\)</span>Var1,] melted_cormat &lt;-
-melted_cormat[!is.na(melted_cormat$value), ]</p>
-</div>
-<div id="viz-of-correlations-between-netsize-estimates"
-class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Viz of correlations
-between netsize estimates</h1>
-<p>dens2 &lt;- ggplot(melted_cormat, aes(x=value)) + geom_density(size =
-0.3) + xlim(0.915, 1) + theme_minimal() + labs(x=“Pearson correlation”,
-y = “Density”) + geom_vline(xintercept = .95, color = “darkgrey”,
-linetype = 2) + ggtitle(“A) Distributions of correlations between
-network size scenarios”) + geom_segment(x = 0.95, y = 125, xend = .99,
-yend = 125, linetype = 2, color = “darkgrey”, arrow = arrow(length =
-unit(0.25, “cm”))) + annotate(“text”, x = .97, y = 135, color =
-“darkgrey”, angle = 0, label =
-paste0(round(nrow(melted_cormat[melted_cormat$value &gt; .95,
-])/nrow(melted_cormat)*100, digits = 1),“% of correlations are &gt;
-.95”))</p>
-</div>
-<div id="lay-m-out-on-the-grid" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> lay ’m out on the
-grid</h1>
-<p>denses &lt;- plot_grid(dens2, dens1, nrow = 1)</p>
-</div>
-<div id="save" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> save</h1>
-<p>ggsave(“densities.pdf”, plot = denses, device = “pdf”, scale = 1,
-width = 12, height = 4, units = c(“in”), dpi = “retina”)</p>
-</div>
-<div id="descriptive-table-not-automated" class="section level1"
-number="7">
-<h1><span class="header-section-number">7</span> descriptive table not
-automated</h1>
-<p>psych::describe(df[, c(“woman”, “leeftijd10”, “work”, “hhsize”,
-“neighdens”, “worthhouse”)])</p>
-<p>table(df<span class="math inline">\(migr3) table(df\)</span>opl)
-table(df<span class="math inline">\(income)
-table(df\)</span>politics)</p>
-<p>cor(df[,c(“woman”, “migr”, “leeftijd10”, “work”, “hhsize”,
-“neighdens”, “worthhouse” )])</p>
-</div>
-<div id="descriptive-table" class="section level1" number="8">
-<h1><span class="header-section-number">8</span> # Descriptive
-table</h1>
-</div>
-<div id="dfopl1dfopl1---1" class="section level1" number="9">
-<h1><span class="header-section-number">9</span> df<span
-class="math inline">\(opl1[df\)</span>opl==1] &lt;- 1</h1>
-</div>
-<div id="dfopl1dfopl1---0" class="section level1" number="10">
-<h1><span class="header-section-number">10</span> df<span
-class="math inline">\(opl1[df\)</span>opl!=1] &lt;- 0</h1>
-</div>
-<div id="dfopl2dfopl2---1" class="section level1" number="11">
-<h1><span class="header-section-number">11</span> df<span
-class="math inline">\(opl2[df\)</span>opl==2] &lt;- 1</h1>
-</div>
-<div id="dfopl2dfopl2---0" class="section level1" number="12">
-<h1><span class="header-section-number">12</span> df<span
-class="math inline">\(opl2[df\)</span>opl!=2] &lt;- 0</h1>
-</div>
-<div id="dfopl3dfopl3---1" class="section level1" number="13">
-<h1><span class="header-section-number">13</span> df<span
-class="math inline">\(opl3[df\)</span>opl==3] &lt;- 1</h1>
-</div>
-<div id="dfopl3dfopl3---0" class="section level1" number="14">
-<h1><span class="header-section-number">14</span> df<span
-class="math inline">\(opl3[df\)</span>opl!=3] &lt;- 0</h1>
-</div>
-<div id="section-2" class="section level1" number="15">
-<h1><span class="header-section-number">15</span> </h1>
-</div>
-<div id="section-3" class="section level1" number="16">
-<h1><span class="header-section-number">16</span> </h1>
-</div>
-<div
-id="w---data.framecpsychdescribedfwomanc234-89-woman-colnamesw6---variable-l---data.framecpsychdescribedfleeftijd10c234-89-age10"
-class="section level1" number="17">
-<h1><span class="header-section-number">17</span> w &lt;-
-data.frame(c(psych::describe(df<span
-class="math inline">\(woman)[c(2,3,4, 8,9)], &quot;Woman&quot;)) #
-colnames(w)[6] &lt;- &quot;Variable&quot; # l &lt;-
-data.frame(c(psych::describe(df\)</span>leeftijd10)[c(2,3,4, 8,9)],
-“Age/10”))</h1>
-</div>
-<div id="colnamesl6---variable" class="section level1" number="18">
-<h1><span class="header-section-number">18</span> colnames(l)[6] &lt;-
-“Variable”</h1>
-</div>
-<div
-id="o1---data.framecpsychdescribedfopl1c234-89-education-primarysecondary-colnameso16---variable-o2---data.framecpsychdescribedfopl2c234-89-education-tertiary-low"
-class="section level1" number="19">
-<h1><span class="header-section-number">19</span> o1 &lt;-
-data.frame(c(psych::describe(df<span
-class="math inline">\(opl1)[c(2,3,4, 8,9)], &quot;Education
-primary/secondary&quot;)) # colnames(o1)[6] &lt;- &quot;Variable&quot; #
-o2 &lt;- data.frame(c(psych::describe(df\)</span>opl2)[c(2,3,4, 8,9)],
-“Education tertiary low”))</h1>
-</div>
-<div id="colnameso26---variable" class="section level1" number="20">
-<h1><span class="header-section-number">20</span> colnames(o2)[6] &lt;-
-“Variable”</h1>
-</div>
-<div
-id="o3---data.framecpsychdescribedfopl3c234-89-education-tertiary-high-colnameso36---variable-m---data.framecpsychdescribedfmigrc234-89-migration-background"
-class="section level1" number="21">
-<h1><span class="header-section-number">21</span> o3 &lt;-
-data.frame(c(psych::describe(df<span
-class="math inline">\(opl3)[c(2,3,4, 8,9)], &quot;Education tertiary
-high&quot;)) # colnames(o3)[6] &lt;- &quot;Variable&quot; # m &lt;-
-data.frame(c(psych::describe(df\)</span>migr)[c(2,3,4, 8,9)], “Migration
-background”))</h1>
-</div>
-<div id="colnamesm6---variable" class="section level1" number="22">
-<h1><span class="header-section-number">22</span> colnames(m)[6] &lt;-
-“Variable”</h1>
-</div>
-<div
-id="n---data.framecpsychdescribedfneighdensc234-89-neighborhood-density1k-colnamesn6---variable-h---data.framecpsychdescribedfworthhousec234-89-mean-neighborhood-woz-value100k"
-class="section level1" number="23">
-<h1><span class="header-section-number">23</span> n &lt;-
-data.frame(c(psych::describe(df<span
-class="math inline">\(neighdens)[c(2,3,4, 8,9)], &quot;Neighborhood
-density/1K&quot;)) # colnames(n)[6] &lt;- &quot;Variable&quot; # h &lt;-
-data.frame(c(psych::describe(df\)</span>worthhouse)[c(2,3,4, 8,9)],
-“Mean neighborhood WOZ-value/100K”))</h1>
-</div>
-<div id="colnamesh6---variable" class="section level1" number="24">
-<h1><span class="header-section-number">24</span> colnames(h)[6] &lt;-
-“Variable”</h1>
-</div>
-<div id="desc---data.framerbindwlo1o2o3mnh" class="section level1"
-number="25">
-<h1><span class="header-section-number">25</span> desc &lt;-
-data.frame(rbind(w,l,o1,o2,o3,m,n,h))</h1>
-</div>
-<div id="section-4" class="section level1" number="26">
-<h1><span class="header-section-number">26</span> </h1>
-</div>
-<div id="descmin---rounddescmin-digits-2" class="section level1"
-number="27">
-<h1><span class="header-section-number">27</span> desc<span
-class="math inline">\(min &lt;- round(desc\)</span>min, digits= 2)</h1>
-</div>
-<div id="descmax---rounddescmax-digits-2" class="section level1"
-number="28">
-<h1><span class="header-section-number">28</span> desc<span
-class="math inline">\(max &lt;- round(desc\)</span>max, digits= 2)</h1>
-</div>
-<div id="descmean---rounddescmean-digits-2" class="section level1"
-number="29">
-<h1><span class="header-section-number">29</span> desc<span
-class="math inline">\(mean &lt;- round(desc\)</span>mean, digits=
-2)</h1>
-</div>
-<div id="descsd---rounddescsd-digits-2" class="section level1"
-number="30">
-<h1><span class="header-section-number">30</span> desc<span
-class="math inline">\(sd &lt;- round(desc\)</span>sd, digits= 2)</h1>
-</div>
-<div id="section-5" class="section level1" number="31">
-<h1><span class="header-section-number">31</span> </h1>
-</div>
-<div id="section-6" class="section level1" number="32">
-<h1><span class="header-section-number">32</span> </h1>
-</div>
-<div
-id="descndescvariable-woman---nrowdfdfwoman1-descndescvariable-education-primarysecondary---nrowdfdfopl11"
-class="section level1" number="33">
-<h1><span class="header-section-number">33</span> desc<span
-class="math inline">\(n[desc\)</span>Variable == “Woman”] &lt;-
-nrow(df[df<span class="math inline">\(woman==1,]) #
-desc\)</span>n[desc<span class="math inline">\(Variable ==
-&quot;Education primary/secondary&quot;] &lt;-
-nrow(df[df\)</span>opl1==1,])</h1>
-</div>
-<div
-id="descndescvariable-education-tertiary-low---nrowdfdfopl21-descndescvariable-education-tertiary-high---nrowdfdfopl31"
-class="section level1" number="34">
-<h1><span class="header-section-number">34</span> desc<span
-class="math inline">\(n[desc\)</span>Variable == “Education tertiary
-low”] &lt;- nrow(df[df<span class="math inline">\(opl2==1,]) #
-desc\)</span>n[desc<span class="math inline">\(Variable ==
-&quot;Education tertiary high&quot;] &lt;-
-nrow(df[df\)</span>opl3==1,])</h1>
-</div>
-<div
-id="descndescvariable-migration-background---nrowdfdfmigr1-descsddescvariable-woman---descsddescvariable-education-primarysecondary---descsddescvariable-education-tertiary-low---descsddescvariable-education-tertiary-high---descsddescvariable-migration-background---desc---desc-cvariable-min-max-mean-sd-n-desctable---desc-gtgt-desctable---desctable-tab_headertitle-table-x.-descriptive-statistics-of-covariates-desctable-gtsavefilename-table.pdf-zoom-1-dfoplc---as.numericas.characterdfopl-headdfoplc"
-class="section level1" number="35">
-<h1><span class="header-section-number">35</span> desc<span
-class="math inline">\(n[desc\)</span>Variable == “Migration background”]
-&lt;- nrow(df[df<span class="math inline">\(migr==1,]) # # #
-desc\)</span>sd[desc<span class="math inline">\(Variable ==
-&quot;Woman&quot;] &lt;- &quot;&quot; # desc\)</span>sd[desc<span
-class="math inline">\(Variable == &quot;Education
-primary/secondary&quot;] &lt;- &quot;&quot; # desc\)</span>sd[desc<span
-class="math inline">\(Variable == &quot;Education tertiary low&quot;]
-&lt;- &quot;&quot; # desc\)</span>sd[desc<span
-class="math inline">\(Variable == &quot;Education tertiary high&quot;]
-&lt;- &quot;&quot; # desc\)</span>sd[desc<span
-class="math inline">\(Variable == &quot;Migration background&quot;]
-&lt;- &quot;&quot; # # desc &lt;- desc[, c(&quot;Variable&quot;,
-&quot;min&quot;, &quot;max&quot;, &quot;mean&quot;, &quot;sd&quot;,
-&quot;n&quot;)] # desctable &lt;- desc %&gt;% gt::gt() # # desctable
-&lt;- desctable %&gt;% tab_header(title = &quot;Table X. Descriptive
-statistics of covariates&quot;) # desctable %&gt;% gtsave(filename =
-&quot;table.pdf&quot;, zoom = 1) # # df\)</span>oplc &lt;-
-as.numeric(as.character(df<span class="math inline">\(opl)) #
-head(df\)</span>oplc)</h1>
-</div>
-<div
-id="headdfopl-cortable---data.framecordfcwoman-migr-oplc-leeftijd10-neighdens-worthhouse-cortablenames---row.namescortable"
-class="section level1" number="36">
-<h1><span class="header-section-number">36</span> head(df<span
-class="math inline">\(opl) # # cortable &lt;-
-data.frame(cor(df[,c(&quot;woman&quot;, &quot;migr&quot;,
-&quot;oplc&quot;, &quot;leeftijd10&quot;, &quot;neighdens&quot;,
-&quot;worthhouse&quot;)]) ) # # cortable\)</span>names &lt;-
-row.names(cortable)</h1>
-</div>
-<div
-id="cortable---cortable-cnameswoman-migr-oplc-leeftijd10-neighdens-worthhouse"
-class="section level1" number="37">
-<h1><span class="header-section-number">37</span> cortable &lt;-
-cortable[, c(“names”,“woman”, “migr”, “oplc”, “leeftijd10”, “neighdens”,
-“worthhouse”)]</h1>
-</div>
-<div
-id="namescortable---cvariables-woman-migration-backgr-educ-age10-neighb-dens-woz-value"
-class="section level1" number="38">
-<h1><span class="header-section-number">38</span> names(cortable) &lt;-
-c(“Variables”, “Woman”, “Migration backgr”, “Educ”, “Age/10”, “Neighb
-dens”, “WOZ-value”)</h1>
-</div>
-<div
-id="cortablec16-1---cwoman-migration-backgr-educ-age10-neighb-dens-woz-value"
-class="section level1" number="39">
-<h1><span class="header-section-number">39</span> cortable[c(1:6), 1]
-&lt;- c(“Woman”, “Migration backgr”, “Educ”, “Age/10”, “Neighb dens”,
-“WOZ-value”)</h1>
-</div>
-<div id="section-7" class="section level1" number="40">
-<h1><span class="header-section-number">40</span> </h1>
-</div>
-<div id="cortable2---formatroundas.numericcortable23-nsmall-3"
-class="section level1" number="41">
-<h1><span class="header-section-number">41</span> cortable[,2] &lt;-
-format(round(as.numeric(cortable[,2]),3), nsmall = 3)</h1>
-</div>
-<div id="cortable3---formatroundas.numericcortable33-nsmall-3"
-class="section level1" number="42">
-<h1><span class="header-section-number">42</span> cortable[,3] &lt;-
-format(round(as.numeric(cortable[,3]),3), nsmall = 3)</h1>
-</div>
-<div id="cortable4---formatroundas.numericcortable43-nsmall-3"
-class="section level1" number="43">
-<h1><span class="header-section-number">43</span> cortable[,4] &lt;-
-format(round(as.numeric(cortable[,4]),3), nsmall = 3)</h1>
-</div>
-<div id="cortable5---formatroundas.numericcortable53-nsmall-3"
-class="section level1" number="44">
-<h1><span class="header-section-number">44</span> cortable[,5] &lt;-
-format(round(as.numeric(cortable[,5]),3), nsmall = 3)</h1>
-</div>
-<div id="cortable6---formatroundas.numericcortable63-nsmall-3"
-class="section level1" number="45">
-<h1><span class="header-section-number">45</span> cortable[,6] &lt;-
-format(round(as.numeric(cortable[,6]),3), nsmall = 3)</h1>
-</div>
-<div id="section-8" class="section level1" number="46">
-<h1><span class="header-section-number">46</span> </h1>
-</div>
-<div id="cortableupper.tricortable--" class="section level1"
-number="47">
-<h1><span class="header-section-number">47</span>
-cortable[upper.tri(cortable)] &lt;- “”</h1>
-</div>
-<div id="cortable-as.data.framecortable" class="section level1"
-number="48">
-<h1><span class="header-section-number">48</span>
-cortable&lt;-as.data.frame(cortable)</h1>
-</div>
-<div id="cortable---cortable-1" class="section level1" number="49">
-<h1><span class="header-section-number">49</span> cortable &lt;-
-cortable[-1,]</h1>
-</div>
-<div id="cortable---cortable-7" class="section level1" number="50">
-<h1><span class="header-section-number">50</span> cortable &lt;-
-cortable[,-7]</h1>
-</div>
-<div id="section-9" class="section level1" number="51">
-<h1><span class="header-section-number">51</span> </h1>
-</div>
-<div
-id="ps---psychcorr.testdfcwoman-migr-oplc-leeftijd10-neighdens-worthhousep"
-class="section level1" number="52">
-<h1><span class="header-section-number">52</span> ps &lt;-
-psych::corr.test(df[,c(“woman”, “migr”, “oplc”, “leeftijd10”,
-“neighdens”, “worthhouse”)])$p</h1>
-</div>
-<div id="ps---ps-1" class="section level1" number="53">
-<h1><span class="header-section-number">53</span> ps &lt;- ps[-1,]</h1>
-</div>
-<div id="ps---ps-6" class="section level1" number="54">
-<h1><span class="header-section-number">54</span> ps &lt;- ps[,-6]</h1>
-</div>
-<div id="ps---formatroundps-3-nsmall-3" class="section level1"
-number="55">
-<h1><span class="header-section-number">55</span> ps &lt;-
-format(round(ps, 3), nsmall = 3)</h1>
-</div>
-<div id="psupper.trips--" class="section level1" number="56">
-<h1><span class="header-section-number">56</span> ps[upper.tri(ps)]
-&lt;- “”</h1>
-</div>
-<div id="ps-as.data.frameps" class="section level1" number="57">
-<h1><span class="header-section-number">57</span>
-ps&lt;-as.data.frame(ps)</h1>
-</div>
-<div id="section-10" class="section level1" number="58">
-<h1><span class="header-section-number">58</span> </h1>
-</div>
-<div id="cortable---cbindcortable-ps" class="section level1"
-number="59">
-<h1><span class="header-section-number">59</span> cortable &lt;-
-cbind(cortable, ps)</h1>
-</div>
-<div
-id="cortable---cortable-cvariables-woman-woman-migration-backgr-migr-educ-oplc-age10-leeftijd10-neighb-dens-neighdens"
-class="section level1" number="60">
-<h1><span class="header-section-number">60</span> cortable &lt;-
-cortable[, c(“Variables”, “Woman”, “woman”, “Migration backgr”, “migr”,
-“Educ”, “oplc”, “Age/10”, “leeftijd10”, “Neighb dens”,
-“neighdens”)]</h1>
-</div>
-<div
-id="namescortable---cvariables-woman-p-value-migration-backgr-p-value-educ-p-value-age10-p-value-neighb-dens-p-value"
-class="section level1" number="61">
-<h1><span class="header-section-number">61</span> names(cortable) &lt;-
-c(“Variables”, “Woman”, “p-value”, “Migration backgr”, “p-value”,
-“Educ”, “p-value”, “Age/10”, “p-value”, “Neighb dens”, “p-value”)</h1>
-</div>
-<div id="section-11" class="section level1" number="62">
-<h1><span class="header-section-number">62</span> </h1>
-</div>
-<div id="cortable---cortable-gtgt" class="section level1" number="63">
-<h1><span class="header-section-number">63</span> cortable &lt;-
-cortable %&gt;% gt::gt()</h1>
-</div>
-<div
-id="cortable---cortable-tab_headertitle-table-x.-correlation-matrix-of-covariates"
-class="section level1" number="64">
-<h1><span class="header-section-number">64</span> cortable &lt;-
-cortable %&gt;% tab_header(title = “Table X. Correlation matrix of
-covariates”)</h1>
-</div>
-<div id="section-12" class="section level1" number="65">
-<h1><span class="header-section-number">65</span> </h1>
-</div>
-<div id="cortable-gtsavefilename-cors.pdf-zoom-1" class="section level1"
-number="66">
-<h1><span class="header-section-number">66</span> cortable %&gt;%
-gtsave(filename = “cors.pdf”, zoom = 1)</h1>
-<p>#——————————————————————————–</p>
-<div id="section-13" class="section level24"
-number="66.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1">
-<p class="heading"><span
-class="header-section-number">66.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1</span>
-</p>
-</div>
-</div>
-<div id="descriptions-xs" class="section level1" number="67">
-<h1><span class="header-section-number">67</span> DESCRIPTIONS Xs</h1>
-<div id="section-14" class="section level24"
-number="67.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1">
-<p class="heading"><span
-class="header-section-number">67.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1</span>
-</p>
-</div>
-</div>
-<div id="section-15" class="section level1" number="68">
-<h1><span class="header-section-number">68</span> </h1>
-</div>
-<div
-id="aggregatedf-271273-listdfwoman-mean-aggregatedf-271273-listdfopl-mean"
-class="section level1" number="69">
-<h1><span class="header-section-number">69</span> aggregate(df[,
-271:273], list(df<span class="math inline">\(woman), mean) #
-aggregate(df[, 271:273], list(df\)</span>opl), mean)</h1>
-</div>
-<div
-id="aggregatedf-271273-listdfmigr-mean-aggregatedf-274279-listdfwoman-mean"
-class="section level1" number="70">
-<h1><span class="header-section-number">70</span> aggregate(df[,
-271:273], list(df<span class="math inline">\(migr), mean) # #
-aggregate(df[, 274:279], list(df\)</span>woman), mean)</h1>
-</div>
-<div
-id="aggregatedf-274279-listdfopl-mean-aggregatedf-274279-listdfmigr-mean"
-class="section level1" number="71">
-<h1><span class="header-section-number">71</span> aggregate(df[,
-274:279], list(df<span class="math inline">\(opl), mean) #
-aggregate(df[, 274:279], list(df\)</span>migr), mean)</h1>
-</div>
-<div id="section-16" class="section level1" number="72">
-<h1><span class="header-section-number">72</span> </h1>
-</div>
-<div
-id="aggregatedf-280313-listdfwoman-mean-aggregatedf-280313-listdfmigr-mean"
-class="section level1" number="73">
-<h1><span class="header-section-number">73</span> aggregate(df[,
-280:313], list(df<span class="math inline">\(woman), mean) #
-aggregate(df[, 280:313], list(df\)</span>migr), mean)</h1>
-</div>
-<div id="aggregatedf-280313-listdfmigr-mean" class="section level1"
-number="74">
-<h1><span class="header-section-number">74</span> aggregate(df[,
-280:313], list(df$migr), mean)</h1>
-</div>
-<div id="section-17" class="section level1" number="75">
-<h1><span class="header-section-number">75</span> </h1>
-</div>
-<div id="xs---list" class="section level1" number="76">
-<h1><span class="header-section-number">76</span> xs &lt;- list()</h1>
-</div>
-<div id="for-i-in-271313" class="section level1" number="77">
-<h1><span class="header-section-number">77</span> for (i in 271:313)
-{</h1>
-</div>
-<div
-id="xsi---lmlog10df-i1-woman-opl-migr-leeftijd10-neighdens-worthhouse-data-df"
-class="section level1" number="78">
-<h1><span class="header-section-number">78</span> xs[[i]] &lt;-
-lm(log10(df[, i]+1) ~ woman + opl + migr + leeftijd10 + neighdens +
-worthhouse, data = df)</h1>
-</div>
-<div id="section-18" class="section level1" number="79">
-<h1><span class="header-section-number">79</span> }</h1>
-</div>
-<div id="xssapplyxs-is.null---null" class="section level1" number="80">
-<h1><span class="header-section-number">80</span> xs[sapply(xs,
-is.null)] &lt;- NULL</h1>
-</div>
-<div id="summaryxs1" class="section level1" number="81">
-<h1><span class="header-section-number">81</span> summary(xs[[1]])</h1>
-</div>
-<div id="section-19" class="section level1" number="82">
-<h1><span class="header-section-number">82</span> </h1>
-</div>
-<div id="main-effects" class="section level1" number="83">
-<h1><span class="header-section-number">83</span> # main effects</h1>
-</div>
-<div id="one_bracket---list" class="section level1" number="84">
-<h1><span class="header-section-number">84</span> one_bracket &lt;-
-list(</h1>
-</div>
-<div id="ceducation-tert.-high-ref.-educ.-prim.sec.-educ.-tert.-low"
-class="section level1" number="85">
-<h1><span class="header-section-number">85</span> c(“Education tert.
-high = ref.”, “Educ. prim./sec.”, “Educ. tert. low”))</h1>
-</div>
-<div id="section-20" class="section level1" number="86">
-<h1><span class="header-section-number">86</span> </h1>
-</div>
-<div id="for-i-in-1lengthxs" class="section level1" number="87">
-<h1><span class="header-section-number">87</span> for (i in
-1:length(xs)){</h1>
-</div>
-<div id="xsmi---dwplotxsi" class="section level1" number="88">
-<h1><span class="header-section-number">88</span> xsm[[i]] &lt;-
-dwplot(xs[[i]],</h1>
-</div>
-<div id="dot_args-listcolor-black-size-0.5-shape-1-color-for-the-dot"
-class="section level1" number="89">
-<h1><span class="header-section-number">89</span> dot_args = list(color
-= “black”, size = 0.5, shape = 1), # color for the dot</h1>
-</div>
-<div id="whisker_args-listsize-1-color-darkgrey-color-for-the-whisker"
-class="section level1" number="90">
-<h1><span class="header-section-number">90</span> whisker_args =
-list(size = 1, color = “darkgrey”), # color for the whisker</h1>
-</div>
-<div
-id="vline-ggplot2geom_vlinexintercept-0-put-vline-behind-coefs-see-httpsgithub.comfsoltdotwhiskerissues84"
-class="section level1" number="91">
-<h1><span class="header-section-number">91</span> vline =
-ggplot2::geom_vline(xintercept = 0, # put vline <em>behind</em> coefs;
-see <a href="https://github.com/fsolt/dotwhisker/issues/84"
-class="uri">https://github.com/fsolt/dotwhisker/issues/84</a></h1>
-</div>
-<div id="colour-grey60" class="section level1" number="92">
-<h1><span class="header-section-number">92</span> colour =
-“grey60”,</h1>
-</div>
-<div id="linetype-2" class="section level1" number="93">
-<h1><span class="header-section-number">93</span> linetype = 2,</h1>
-</div>
-<div id="size-1-make-model-variable" class="section level1" number="94">
-<h1><span class="header-section-number">94</span> size = 1)) %&gt;% #
-make model variable</h1>
-</div>
-<div id="relabel_predictorsc" class="section level1" number="95">
-<h1><span class="header-section-number">95</span>
-relabel_predictors(c(</h1>
-</div>
-<div id="woman" class="section level1" number="96">
-<h1><span class="header-section-number">96</span> “woman” = ” “,</h1>
-</div>
-<div id="opl1" class="section level1" number="97">
-<h1><span class="header-section-number">97</span> “opl1” = ” “,</h1>
-</div>
-<div id="opl2" class="section level1" number="98">
-<h1><span class="header-section-number">98</span> “opl2” = ” “,</h1>
-</div>
-<div id="migr" class="section level1" number="99">
-<h1><span class="header-section-number">99</span> “migr” = ” “,</h1>
-</div>
-<div id="migr-1" class="section level1" number="100">
-<h1><span class="header-section-number">100</span> “migr” = ” “,</h1>
-</div>
-<div id="leeftijd10" class="section level1" number="101">
-<h1><span class="header-section-number">101</span> “leeftijd10” = ”
-“,</h1>
-</div>
-<div id="neighdens" class="section level1" number="102">
-<h1><span class="header-section-number">102</span> “neighdens” = ”
-“,</h1>
-</div>
-<div id="worthhouse" class="section level1" number="103">
-<h1><span class="header-section-number">103</span> “worthhouse” = ”
-”</h1>
-</div>
-<div id="themelegend.position-none" class="section level1" number="104">
-<h1><span class="header-section-number">104</span> )) +
-theme(legend.position = “none”,</h1>
-</div>
-<div id="axis.text-element_textcolor-grey" class="section level1"
-number="105">
-<h1><span class="header-section-number">105</span> axis.text =
-element_text(color = “grey”)) +</h1>
-</div>
-<div id="theme_minimal" class="section level1" number="106">
-<h1><span class="header-section-number">106</span> theme_minimal()</h1>
-</div>
-<div id="section-21" class="section level1" number="107">
-<h1><span class="header-section-number">107</span> }</h1>
-</div>
-<div id="section-22" class="section level1" number="108">
-<h1><span class="header-section-number">108</span> </h1>
-</div>
-<div id="section-23" class="section level1" number="109">
-<h1><span class="header-section-number">109</span> </h1>
-</div>
-<div id="labs---dwplotxs1" class="section level1" number="110">
-<h1><span class="header-section-number">110</span> labs &lt;-
-dwplot(xs[[1]],</h1>
-</div>
-<div id="dot_args-listcolor-white-size-0-shape-1-color-for-the-dot"
-class="section level1" number="111">
-<h1><span class="header-section-number">111</span> dot_args = list(color
-= “white”, size = 0, shape = 1), # color for the dot</h1>
-</div>
-<div id="whisker_args-listsize-0-color-white" class="section level1"
-number="112">
-<h1><span class="header-section-number">112</span> whisker_args =
-list(size = 0, color = “white”)) %&gt;%</h1>
-</div>
-<div id="relabel_predictorsc-1" class="section level1" number="113">
-<h1><span class="header-section-number">113</span>
-relabel_predictors(c(</h1>
-</div>
-<div id="woman-woman" class="section level1" number="114">
-<h1><span class="header-section-number">114</span> “woman” =
-“Woman”,</h1>
-</div>
-<div id="opl1-primsec-educ" class="section level1" number="115">
-<h1><span class="header-section-number">115</span> “opl1” = “Prim/Sec
-Educ”,</h1>
-</div>
-<div id="opl2-lower-tert" class="section level1" number="116">
-<h1><span class="header-section-number">116</span> “opl2” = “Lower
-Tert”,</h1>
-</div>
-<div id="migr-migr-backgr" class="section level1" number="117">
-<h1><span class="header-section-number">117</span> “migr” = “Migr
-Backgr”,</h1>
-</div>
-<div id="leeftijd10-age10" class="section level1" number="118">
-<h1><span class="header-section-number">118</span> “leeftijd10” =
-“Age/10”,</h1>
-</div>
-<div id="neighdens-neighb-dens" class="section level1" number="119">
-<h1><span class="header-section-number">119</span> “neighdens” = “Neighb
-Dens”,</h1>
-</div>
-<div id="worthhouse-house-val" class="section level1" number="120">
-<h1><span class="header-section-number">120</span> “worthhouse” = “House
-Val”</h1>
-</div>
-<div id="themelegend.position-none-1" class="section level1"
-number="121">
-<h1><span class="header-section-number">121</span> )) +
-theme(legend.position = “none”,</h1>
-</div>
-<div id="axis.text-element_textcolor-black" class="section level1"
-number="122">
-<h1><span class="header-section-number">122</span> axis.text =
-element_text(color = “black”),</h1>
-</div>
-<div id="panel.grid.major-element_linecolor-white"
-class="section level1" number="123">
-<h1><span class="header-section-number">123</span> panel.grid.major =
-element_line(color = “white”),</h1>
-</div>
-<div id="panel.grid.minor-element_linecolor-white"
-class="section level1" number="124">
-<h1><span class="header-section-number">124</span> panel.grid.minor =
-element_line(color = “white”),</h1>
-</div>
-<div id="panel.grid.major.x-element_blank" class="section level1"
-number="125">
-<h1><span class="header-section-number">125</span> panel.grid.major.x =
-element_blank(),</h1>
-</div>
-<div id="panel.grid.major.y-element_blank" class="section level1"
-number="126">
-<h1><span class="header-section-number">126</span> panel.grid.major.y =
-element_blank(),</h1>
-</div>
-<div id="panel.grid.minor.x-element_blank" class="section level1"
-number="127">
-<h1><span class="header-section-number">127</span> panel.grid.minor.x =
-element_blank(),</h1>
-</div>
-<div id="panel.grid.minor.y-element_blank" class="section level1"
-number="128">
-<h1><span class="header-section-number">128</span> panel.grid.minor.y =
-element_blank(),</h1>
-</div>
-<div id="panel.background-element_rectfill-white" class="section level1"
-number="129">
-<h1><span class="header-section-number">129</span> panel.background =
-element_rect(fill = “white”),</h1>
-</div>
-<div id="axis.text.x-element_blank" class="section level1" number="130">
-<h1><span class="header-section-number">130</span> axis.text.x =
-element_blank(),</h1>
-</div>
-<div id="axis.ticks.x-element_blank" class="section level1"
-number="131">
-<h1><span class="header-section-number">131</span> axis.ticks.x =
-element_blank(),</h1>
-</div>
-<div id="axis.ticks.y-element_blank" class="section level1"
-number="132">
-<h1><span class="header-section-number">132</span> axis.ticks.y =
-element_blank())</h1>
-</div>
-<div id="section-24" class="section level1" number="133">
-<h1><span class="header-section-number">133</span> </h1>
-</div>
-<div id="uni-hbo-mbo" class="section level1" number="134">
-<h1><span class="header-section-number">134</span> # uni, hbo, mbo</h1>
-</div>
-<div
-id="school---plot_gridlabs-xsm1-xsm2-xsm3-nrow-1-labels-cnamesdf271273-label_size-8-rel_widths-c0.2111"
-class="section level1" number="135">
-<h1><span class="header-section-number">135</span> school &lt;-
-plot_grid(labs, xsm[[1]], xsm[[2]], xsm[[3]], nrow = 1, labels =
-c(““,names(df)[271:273]), label_size = 8, rel_widths =
-c(0.2,1,1,1))</h1>
-</div>
-<div id="section-25" class="section level1" number="136">
-<h1><span class="header-section-number">136</span> </h1>
-</div>
-<div id="save-1" class="section level1" number="137">
-<h1><span class="header-section-number">137</span> # save</h1>
-</div>
-<div id="ggsaveschool.pdf-plot-school-device-pdf" class="section level1"
-number="138">
-<h1><span class="header-section-number">138</span> ggsave(“school.pdf”,
-plot = school, device = “pdf”,</h1>
-</div>
-<div id="scale-1-width-10-height-5-units-cin" class="section level1"
-number="139">
-<h1><span class="header-section-number">139</span> scale = 1, width =
-10, height = 5, units = c(“in”),</h1>
-</div>
-<div id="dpi-retina" class="section level1" number="140">
-<h1><span class="header-section-number">140</span> dpi = “retina”)</h1>
-</div>
-<div id="section-26" class="section level1" number="141">
-<h1><span class="header-section-number">141</span> </h1>
-</div>
-<div id="section-27" class="section level1" number="142">
-<h1><span class="header-section-number">142</span> </h1>
-</div>
-<div id="vegan-etc." class="section level1" number="143">
-<h1><span class="header-section-number">143</span> # vegan etc.</h1>
-</div>
-<div
-id="soceco---plot_gridlabs-xsm4-xsm5-xsm6xsm7xsm8xsm9-nrow-1-labels-cnamesdf274279-label_size-8"
-class="section level1" number="144">
-<h1><span class="header-section-number">144</span> soceco &lt;-
-plot_grid(labs, xsm[[4]], xsm[[5]], xsm[[6]],xsm[[7]],xsm[[8]],xsm[[9]],
-nrow = 1, labels = c(““,names(df)[274:279]), label_size = 8,</h1>
-</div>
-<div id="rel_widths-c0.2111111" class="section level1" number="145">
-<h1><span class="header-section-number">145</span> rel_widths =
-c(0.2,1,1,1,1,1,1))</h1>
-</div>
-<div id="save-2" class="section level1" number="146">
-<h1><span class="header-section-number">146</span> # save</h1>
-</div>
-<div id="ggsavesoceco.pdf-plot-soceco-device-pdf" class="section level1"
-number="147">
-<h1><span class="header-section-number">147</span> ggsave(“soceco.pdf”,
-plot = soceco, device = “pdf”,</h1>
-</div>
-<div id="scale-1-width-12-height-5-units-cin" class="section level1"
-number="148">
-<h1><span class="header-section-number">148</span> scale = 1, width =
-12, height = 5, units = c(“in”),</h1>
-</div>
-<div id="dpi-retina-1" class="section level1" number="149">
-<h1><span class="header-section-number">149</span> dpi = “retina”)</h1>
-</div>
-<div id="section-28" class="section level1" number="150">
-<h1><span class="header-section-number">150</span> </h1>
-</div>
-<div id="section-29" class="section level1" number="151">
-<h1><span class="header-section-number">151</span> </h1>
-</div>
-<div id="section-30" class="section level1" number="152">
-<h1><span class="header-section-number">152</span> </h1>
-</div>
-<div id="section-31" class="section level1" number="153">
-<h1><span class="header-section-number">153</span> </h1>
-</div>
-<div id="female-names" class="section level1" number="154">
-<h1><span class="header-section-number">154</span> # female names</h1>
-</div>
-<div id="femnames---plot_gridxsm10-xsm11-xsm12-xsm13-xsm14xsm15"
-class="section level1" number="155">
-<h1><span class="header-section-number">155</span> femnames &lt;-
-plot_grid(xsm[[10]], xsm[[11]], xsm[[12]], xsm[[13]],
-xsm[[14]],xsm[[15]],</h1>
-</div>
-<div id="xsm16xsm17xsm18xsm19xsm20" class="section level1" number="156">
-<h1><span class="header-section-number">156</span>
-xsm[[16]],xsm[[17]],xsm[[18]],xsm[[19]],xsm[[20]],</h1>
-</div>
-<div id="xsm21xsm22xsm23xsm24xsm25" class="section level1" number="157">
-<h1><span class="header-section-number">157</span>
-xsm[[21]],xsm[[22]],xsm[[23]],xsm[[24]],xsm[[25]],</h1>
-</div>
-<div id="xsm26-nrow-4-labels-namesdf280296-label_size-6"
-class="section level1" number="158">
-<h1><span class="header-section-number">158</span> xsm[[26]], nrow = 4,
-labels = names(df)[280:296], label_size = 6)</h1>
-</div>
-<div id="section-32" class="section level1" number="159">
-<h1><span class="header-section-number">159</span> </h1>
-</div>
-<div id="male-names" class="section level1" number="160">
-<h1><span class="header-section-number">160</span> # male names</h1>
-</div>
-<div id="malnames---plot_gridxsm27-xsm28-xsm29-xsm30-xsm31xsm32"
-class="section level1" number="161">
-<h1><span class="header-section-number">161</span> malnames &lt;-
-plot_grid(xsm[[27]], xsm[[28]], xsm[[29]], xsm[[30]],
-xsm[[31]],xsm[[32]],</h1>
-</div>
-<div id="xsm33xsm34xsm35xsm36xsm37" class="section level1" number="162">
-<h1><span class="header-section-number">162</span>
-xsm[[33]],xsm[[34]],xsm[[35]],xsm[[36]],xsm[[37]],</h1>
-</div>
-<div id="xsm38xsm39xsm40xsm41xsm42" class="section level1" number="163">
-<h1><span class="header-section-number">163</span>
-xsm[[38]],xsm[[39]],xsm[[40]],xsm[[41]],xsm[[42]],</h1>
-</div>
-<div id="xsm43-nrow-4-labels-namesdf297313" class="section level1"
-number="164">
-<h1><span class="header-section-number">164</span> xsm[[43]], nrow = 4,
-labels = names(df)[297:313])</h1>
-</div>
-<div id="section-33" class="section level1" number="165">
-<h1><span class="header-section-number">165</span> </h1>
-</div>
-<div id="summaryxs43" class="section level1" number="166">
-<h1><span class="header-section-number">166</span>
-summary(xs[[43]])</h1>
-<p>#——————————————————————————–</p>
-<div id="section-34" class="section level24"
-number="166.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1">
-<p class="heading"><span
-class="header-section-number">166.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1</span>
-</p>
-</div>
-</div>
-<div id="models" class="section level1" number="167">
-<h1><span class="header-section-number">167</span> MODELS</h1>
-<div id="section-35" class="section level24"
-number="167.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1">
-<p class="heading"><span
-class="header-section-number">167.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1</span>
-</p>
-</div>
-</div>
-<div id="paralellize-the-estimation" class="section level1"
-number="168">
-<h1><span class="header-section-number">168</span> paralellize the
-estimation</h1>
-</div>
-<div id="closeallconnections" class="section level1" number="169">
-<h1><span class="header-section-number">169</span>
-closeAllConnections()</h1>
-</div>
-<div id="numcores---detectcores" class="section level1" number="170">
-<h1><span class="header-section-number">170</span> numCores &lt;-
-detectCores()</h1>
-</div>
-<div id="registerdoparallelcores-8" class="section level1" number="171">
-<h1><span class="header-section-number">171</span>
-registerDoParallel(cores = 8)</h1>
-<p>c &lt;- 88 # main effects summary(lm(df[!df[[c]]&gt;10000, c(c)] ~
-as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) +
-as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) +
-neighdens + worthhouse, data = df[!df[[c]]&gt;10000,]))</p>
-<p>class(as.factor(df$woman))</p>
-<p>models &lt;- list() modelsint &lt;- list() modelssq &lt;- list()
-modellog &lt;- list() modellm &lt;- list() est &lt;- list() estlm &lt;-
-list()</p>
-<p>df<span class="math inline">\(opl &lt;-relevel(df\)</span>opl, ref =
-1) df<span class="math inline">\(migr3
-&lt;-relevel(as.factor(df\)</span>migr3), ref = 1) df<span
-class="math inline">\(politics
-&lt;-relevel(as.factor(df\)</span>politics), ref = 1) df<span
-class="math inline">\(income &lt;-relevel(as.factor(df\)</span>income),
-ref = 2) #foreach (i = 13:184) %dopar% { for (i in 14:185) { # –&gt; 168
-negative binomials with different netsizes. We then look at
-distributions of coefficients across those.</p>
-<p>#if (i %in% c(18, 61, 104, 147)) next #fascinating 18, 61, 104, 147
-–&gt; the corona estimator holdout initially didn’t work, removing
-outliers works, also has undue effects df[,c(i)] &lt;- round(df[, c(i)],
-0)</p>
-<pre><code># main effects
-# models[[i]] &lt;- glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
-#                        data = df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log)
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<p>Last compiled on August, 2023</p>
+<p><br></p>
+<hr />
+<p>This is the code with which we make our dependent variables.</p>
+<p><br></p>
+<hr />
+<div id="initatiating-r-environment" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Initatiating R
+environment</h1>
+<p>Start out with a custom function to load a set of required
+packages.</p>
+<pre class="r test"><code># packages and read data
+rm(list = ls())
 
-# # main effects
-# modelsint[[i]] &lt;- glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
-#                       data = df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log)
+# (c) Jochem Tolsma
+fpackage.check &lt;- function(packages) {
+  lapply(packages, FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  })
+}
+packages = c(&quot;haven&quot;, &quot;coda&quot;, &quot;matrixStats&quot;, &quot;parallel&quot;, &quot;MASS&quot;, &quot;doParallel&quot;, &quot;dplyr&quot;, &quot;cowplot&quot;, 
+             &quot;tidyverse&quot;, &quot;naniar&quot;, &quot;dotwhisker&quot; ,&quot;gt&quot;, &quot;reshape2&quot;, &quot;VGAM&quot;, &quot;expss&quot;)
+fpackage.check(packages)
+rm(packages)
 
-modellog[[i]] &lt;- lm(log10(df[!df[[i]]&gt;10000, c(i)]) ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
-                    data = df[!df[[i]]&gt;10000,])
 
-# modellm[[i]] &lt;- lm(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
-#                    data = df[!df[[i]]&gt;10000,])
+
+########################
+# DESCRIPTIVES
+########################
+
+# VIZ of netsize
+netsize_l &lt;- gather(netsizes)
+dens1 &lt;- ggplot(netsize_l[netsize_l$value &lt; 2000,], aes(x=value, color = key)) + 
+  geom_density(alpha = .2, size = 0.1) + 
+  theme_minimal() + 
+  theme(legend.position = &quot;none&quot;) +
+  labs(x = &quot;Network size estimate&quot;, y = &quot;Density&quot;) +
+  geom_vline(xintercept=as.numeric(psych::describe(netsize_l[, 2])[3]), color = &quot;darkgrey&quot;, linetype = 2) +
+  geom_vline(xintercept=as.numeric(psych::describe(netsize_l[, 2])[5]), color = &quot;darkgrey&quot;, linetype = 2) +
+  annotate(&quot;text&quot;, x = 490, y = 0.0004, color = &quot;darkgrey&quot;, angle = 90, 
+           label = paste0(&quot;Mean = &quot;, round(as.numeric(psych::describe(netsize_l[, 2])[3]), digits = 0))) +
+  annotate(&quot;text&quot;, x = 340, y = 0.0004, color = &quot;darkgrey&quot;, angle = 90, 
+           label = paste0(&quot;Median = &quot;, round(as.numeric(psych::describe(netsize_l[, 2])[5]), digits = 0))) +
+  ggtitle(&quot;B) Distribution of network sizes, all scenarios&quot;)
+
+
+# Get lower triangle of the correlation matrix
+get_lower_tri&lt;-function(cormat){
+  cormat[upper.tri(cormat)] &lt;- NA
+  return(cormat)
+}
+mat &lt;- cor(netsizes)
+lower_tri &lt;- get_lower_tri(mat)
+melted_cormat &lt;- reshape2::melt(lower_tri) # data.table also has melt funciton that won&#39;t work on matrices
+melted_cormat$Var2 &lt;- as.character(melted_cormat$Var2)
+melted_cormat$Var1 &lt;- as.character(melted_cormat$Var1)
+melted_cormat &lt;- melted_cormat[!melted_cormat$Var2 == melted_cormat$Var1,]
+melted_cormat &lt;- melted_cormat[!is.na(melted_cormat$value), ]
+
+# Viz of correlations between netsize estimates
+dens2 &lt;- ggplot(melted_cormat, aes(x=value)) + 
+  geom_density(size = 0.3) + 
+  xlim(0.915, 1) + 
+  theme_minimal() + 
+  labs(x=&quot;Pearson correlation&quot;, y = &quot;Density&quot;) +
+  geom_vline(xintercept = .95, color = &quot;darkgrey&quot;, linetype = 2) +
+  ggtitle(&quot;A) Distributions of correlations between network size scenarios&quot;)  +
+  geom_segment(x = 0.95, y = 125, xend = .99, yend = 125, linetype = 2, color = &quot;darkgrey&quot;,
+                arrow = arrow(length = unit(0.25, &quot;cm&quot;)))  +
+  annotate(&quot;text&quot;, x = .97, y = 135, color = &quot;darkgrey&quot;, angle = 0, 
+           label = paste0(round(nrow(melted_cormat[melted_cormat$value &gt; .95, ])/nrow(melted_cormat)*100, digits = 1),&quot;% of correlations are &gt; .95&quot;))
+
+# lay &#39;m out on the grid           
+denses &lt;- plot_grid(dens2, dens1, nrow = 1) 
+
+# save
+ggsave(&quot;densities.pdf&quot;, plot = denses, device = &quot;pdf&quot;,
+       scale = 1, width = 12, height = 4, units = c(&quot;in&quot;),
+       dpi = &quot;retina&quot;)
+
+
+
+# descriptive table not automated
+
+psych::describe(df[, c(&quot;woman&quot;, &quot;leeftijd10&quot;, &quot;work&quot;, &quot;hhsize&quot;, &quot;neighdens&quot;, &quot;worthhouse&quot;)])
+
+table(df$migr3)
+table(df$opl)
+table(df$income)
+table(df$politics)
+
+
+
+cor(df[,c(&quot;woman&quot;, &quot;migr&quot;, &quot;leeftijd10&quot;, &quot;work&quot;, &quot;hhsize&quot;, &quot;neighdens&quot;, &quot;worthhouse&quot; )])
+
+
+# # Descriptive table
+# df$opl1[df$opl==1] &lt;- 1
+# df$opl1[df$opl!=1] &lt;- 0
+# df$opl2[df$opl==2] &lt;- 1
+# df$opl2[df$opl!=2] &lt;- 0
+# df$opl3[df$opl==3] &lt;- 1
+# df$opl3[df$opl!=3] &lt;- 0
 # 
-# # # u-shape for age negbin
-# modelssq[[i]] &lt;- glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + leeftijd10sq + as.factor(opl) + migr + neighdens + worthhouse, 
-#                        data = df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log)
+# 
+# w &lt;- data.frame(c(psych::describe(df$woman)[c(2,3,4, 8,9)], &quot;Woman&quot;))
+# colnames(w)[6] &lt;- &quot;Variable&quot;
+# l &lt;- data.frame(c(psych::describe(df$leeftijd10)[c(2,3,4, 8,9)], &quot;Age/10&quot;))
+# colnames(l)[6] &lt;- &quot;Variable&quot;
+# o1 &lt;- data.frame(c(psych::describe(df$opl1)[c(2,3,4, 8,9)], &quot;Education primary/secondary&quot;))
+# colnames(o1)[6] &lt;- &quot;Variable&quot;
+# o2 &lt;- data.frame(c(psych::describe(df$opl2)[c(2,3,4, 8,9)], &quot;Education tertiary low&quot;))
+# colnames(o2)[6] &lt;- &quot;Variable&quot;
+# o3 &lt;- data.frame(c(psych::describe(df$opl3)[c(2,3,4, 8,9)], &quot;Education tertiary high&quot;))
+# colnames(o3)[6] &lt;- &quot;Variable&quot;
+# m &lt;- data.frame(c(psych::describe(df$migr)[c(2,3,4, 8,9)], &quot;Migration background&quot;))
+# colnames(m)[6] &lt;- &quot;Variable&quot;
+# n &lt;- data.frame(c(psych::describe(df$neighdens)[c(2,3,4, 8,9)], &quot;Neighborhood density/1K&quot;))
+# colnames(n)[6] &lt;- &quot;Variable&quot;
+# h &lt;- data.frame(c(psych::describe(df$worthhouse)[c(2,3,4, 8,9)], &quot;Mean neighborhood WOZ-value/100K&quot;))
+# colnames(h)[6] &lt;- &quot;Variable&quot;
+# desc &lt;- data.frame(rbind(w,l,o1,o2,o3,m,n,h))
+# 
+# desc$min &lt;- round(desc$min, digits= 2)
+# desc$max &lt;- round(desc$max, digits= 2)
+# desc$mean &lt;- round(desc$mean, digits= 2)
+# desc$sd &lt;- round(desc$sd, digits= 2)
+# 
+# 
+# desc$n[desc$Variable == &quot;Woman&quot;] &lt;- nrow(df[df$woman==1,])
+# desc$n[desc$Variable == &quot;Education primary/secondary&quot;] &lt;- nrow(df[df$opl1==1,])
+# desc$n[desc$Variable == &quot;Education tertiary low&quot;] &lt;- nrow(df[df$opl2==1,])
+# desc$n[desc$Variable == &quot;Education tertiary high&quot;] &lt;- nrow(df[df$opl3==1,])
+# desc$n[desc$Variable == &quot;Migration background&quot;] &lt;- nrow(df[df$migr==1,])
+# 
+# 
+# desc$sd[desc$Variable == &quot;Woman&quot;] &lt;- &quot;&quot;
+# desc$sd[desc$Variable == &quot;Education primary/secondary&quot;] &lt;- &quot;&quot;
+# desc$sd[desc$Variable == &quot;Education tertiary low&quot;] &lt;- &quot;&quot;
+# desc$sd[desc$Variable == &quot;Education tertiary high&quot;] &lt;- &quot;&quot;
+# desc$sd[desc$Variable == &quot;Migration background&quot;] &lt;- &quot;&quot;
+# 
+# desc &lt;- desc[, c(&quot;Variable&quot;, &quot;min&quot;, &quot;max&quot;, &quot;mean&quot;, &quot;sd&quot;, &quot;n&quot;)]
+# desctable &lt;- desc %&gt;% gt::gt()
+# 
+# desctable &lt;- desctable %&gt;%  tab_header(title = &quot;Table X. Descriptive statistics of covariates&quot;)
+# desctable %&gt;% gtsave(filename = &quot;table.pdf&quot;, zoom = 1)
+# 
+# df$oplc &lt;- as.numeric(as.character(df$opl))
+# head(df$oplc)
+# head(df$opl)
+# 
+# cortable &lt;- data.frame(cor(df[,c(&quot;woman&quot;,  &quot;migr&quot;, &quot;oplc&quot;, &quot;leeftijd10&quot;,  &quot;neighdens&quot;, &quot;worthhouse&quot;)]) )
+# 
+# cortable$names &lt;- row.names(cortable)
+# cortable &lt;- cortable[, c(&quot;names&quot;,&quot;woman&quot;,  &quot;migr&quot;, &quot;oplc&quot;, &quot;leeftijd10&quot;,  &quot;neighdens&quot;, &quot;worthhouse&quot;)]
+# names(cortable) &lt;- c(&quot;Variables&quot;, &quot;Woman&quot;, &quot;Migration backgr&quot;, &quot;Educ&quot;, &quot;Age/10&quot;, &quot;Neighb dens&quot;, &quot;WOZ-value&quot;)
+# cortable[c(1:6), 1] &lt;- c(&quot;Woman&quot;, &quot;Migration backgr&quot;, &quot;Educ&quot;, &quot;Age/10&quot;, &quot;Neighb dens&quot;, &quot;WOZ-value&quot;)
+# 
+# cortable[,2] &lt;- format(round(as.numeric(cortable[,2]),3), nsmall = 3)
+# cortable[,3] &lt;- format(round(as.numeric(cortable[,3]),3), nsmall = 3)
+# cortable[,4] &lt;- format(round(as.numeric(cortable[,4]),3), nsmall = 3)
+# cortable[,5] &lt;- format(round(as.numeric(cortable[,5]),3), nsmall = 3)
+# cortable[,6] &lt;- format(round(as.numeric(cortable[,6]),3), nsmall = 3)
+# 
+# cortable[upper.tri(cortable)] &lt;- &quot;&quot;
+# cortable&lt;-as.data.frame(cortable)
+# cortable &lt;- cortable[-1,]
+# cortable &lt;- cortable[,-7]
+# 
+# ps &lt;- psych::corr.test(df[,c(&quot;woman&quot;,  &quot;migr&quot;, &quot;oplc&quot;, &quot;leeftijd10&quot;,  &quot;neighdens&quot;, &quot;worthhouse&quot;)])$p
+# ps &lt;- ps[-1,]
+# ps &lt;- ps[,-6]
+# ps &lt;- format(round(ps, 3), nsmall = 3)
+# ps[upper.tri(ps)] &lt;- &quot;&quot;
+# ps&lt;-as.data.frame(ps)
+# 
+# cortable &lt;- cbind(cortable, ps)
+# cortable &lt;- cortable[, c(&quot;Variables&quot;, &quot;Woman&quot;, &quot;woman&quot;, &quot;Migration backgr&quot;, &quot;migr&quot;, &quot;Educ&quot;, &quot;oplc&quot;, &quot;Age/10&quot;, &quot;leeftijd10&quot;, &quot;Neighb dens&quot;, &quot;neighdens&quot;)]
+# names(cortable) &lt;- c(&quot;Variables&quot;, &quot;Woman&quot;, &quot;p-value &quot;, &quot;Migration backgr&quot;, &quot;p-value  &quot;, &quot;Educ&quot;, &quot;p-value   &quot;, &quot;Age/10&quot;, &quot;p-value    &quot;, &quot;Neighb dens&quot;, &quot;p-value     &quot;)
+# 
+# cortable &lt;- cortable %&gt;% gt::gt()
+# cortable &lt;- cortable %&gt;%  tab_header(title = &quot;Table X. Correlation matrix of covariates&quot;)
+# 
+# cortable %&gt;% gtsave(filename = &quot;cors.pdf&quot;, zoom = 1)
 
-# get CIs for main effects, may be useful for viz later
-#est[[i]] &lt;- cbind(Estimate = coef(models[[i]]), confint(models[[i]]))
-#estlm[[i]] &lt;- cbind(Estimate = coef(modellm[[i]]), confint(modellm[[i]]))</code></pre>
-<p>}</p>
-<p>#est[sapply(est, is.null)] &lt;- NULL models[sapply(models, is.null)]
-&lt;- NULL modelsint[sapply(modelsint, is.null)] &lt;- NULL
-est[sapply(est, is.null)] &lt;- NULL estlm[sapply(estlm, is.null)] &lt;-
-NULL modellog[sapply(modellog, is.null)] &lt;- NULL
-modellm[sapply(modellm, is.null)] &lt;- NULL modelssq[sapply(modelssq,
-is.null)] &lt;- NULL</p>
-</div>
-<div id="nice-df-with-cis" class="section level1" number="172">
-<h1><span class="header-section-number">172</span> nice df with CIs</h1>
-<p>estimates &lt;- list()<br />
-for (i in 1:length(est)) { # –&gt; some data crunching to visualize</p>
-<p>estimates[[i]] &lt;- data.frame(t(est[[i]])) estimates[[i]] &lt;-
-cbind(estimates[[i]], data.frame(c(“est”, “lb”, “ub”)))
-names(estimates[[i]]) &lt;- c(“intercept”, “woman”, “age”, “opl1”,
-“opl2”, “migr”, “neighdens”,“worthhouse”, “var”)
-rownames(estimates[[i]]) &lt;- 1:nrow(estimates[[i]])</p>
-<p>} estimates &lt;- bind_rows(estimates)</p>
-</div>
-<div id="nice-df-with-cis-1" class="section level1" number="173">
-<h1><span class="header-section-number">173</span> nice df with CIs</h1>
-<p>estimateslm &lt;- list()<br />
-for (i in 1:length(estlm)) { # –&gt; some data crunching to
-visualize</p>
-<p>estimateslm[[i]] &lt;- data.frame(t(estlm[[i]])) estimateslm[[i]]
-&lt;- cbind(estimateslm[[i]], data.frame(c(“est”, “lb”, “ub”)))
-names(estimateslm[[i]]) &lt;- c(“intercept”, “woman”, “age”, “opl2”,
-“opl1”, “migr”, “neighdens”,“worthhouse”, “var”)
-rownames(estimateslm[[i]]) &lt;- 1:nrow(estimateslm[[i]])</p>
-<p>} estimateslm &lt;- bind_rows(estimateslm) summary(modellm[[1]])
-summary(estimateslm<span class="math inline">\(opl1)
-summary(estimateslm\)</span>opl2) summary(modellm[[172]])
-#——————————————————————————– # Viz of results</p>
-</div>
-<div id="main-effects-1" class="section level1" number="174">
-<h1><span class="header-section-number">174</span> main effects</h1>
-<p>four_brackets &lt;- list( c(“Educ tert high=ref”, “Educ prim/sec”,
-“Educ tert low”), c(“&gt;modal inc=ref”, “&lt;=modal income”, “Unkn
-income”), c(“Dutch maj=ref”, “West backgr”, “non-West backgr”), c(“Left
-vote=ref”, “Right vote”, “No/blanco vote”))</p>
-<p>logmodel &lt;- {dwplot(modellog, dot_args = list(color = “black”,
-size = 0.75, shape = 1), # color for the dot whisker_args = list(size =
-0.25, color = “darkgrey”, alpha = 0.5), # color for the whisker vline =
-ggplot2::geom_vline(xintercept = 0, # put vline <em>behind</em> coefs;
-see <a href="https://github.com/fsolt/dotwhisker/issues/84"
-class="uri">https://github.com/fsolt/dotwhisker/issues/84</a> colour =
-“grey60”, linetype = 2, size = 1)) %&gt;% # make model variable
-relabel_predictors(c( “as.factor(woman)1” = “Women”, “leeftijd10” =
-“Age/10”, “as.factor(opl)1” = “Educ prim/sec”, “as.factor(opl)2” = “Educ
-tert low”, “as.factor(work)1” = “Working”, “as.factor(income)1” =
-“&lt;=modal income”, “as.factor(income)3” = “Unkn income”,
-“as.factor(migr3)2” = “West backgr”, “as.factor(migr3)3” = “non-West
-backgr”, “hhsize” = “Household size”, “as.factor(politics)1” = “Right
-vote”, “as.factor(politics)3” = “No/blanco vote”, “neighdens” = “Neigh.
-density”, “worthhouse” = “WOZ-values” )) + theme(legend.position =
-“none”, axis.text = element_text(color = “grey”)) + theme_minimal() +
-#ggtitle(“A) Negative binomial model of network size”) + xlab(“B on
-Log(network size count)”)} %&gt;% add_brackets(four_brackets, fontSize =
-.6)</p>
-<p>{dwplot(modellm, dot_args = list(color = “black”, size = 0.75, shape
-= 1), # color for the dot whisker_args = list(size = 0.25, color =
-“darkgrey”, alpha = 0.5), # color for the whisker vline =
-ggplot2::geom_vline(xintercept = 0, # put vline <em>behind</em> coefs;
-see <a href="https://github.com/fsolt/dotwhisker/issues/84"
-class="uri">https://github.com/fsolt/dotwhisker/issues/84</a> colour =
-“grey60”, linetype = 2, size = 1)) %&gt;% # make model variable
-relabel_predictors(c( “as.factor(woman)1” = “Women”, “leeftijd10” =
-“Age/10”, “as.factor(opl)1” = “Educ prim/sec”, “as.factor(opl)2” = “Educ
-tert low”, “as.factor(work)1” = “Working”, “as.factor(income)1” =
-“&lt;=modal income”, “as.factor(income)3” = “Unkn income”,
-“as.factor(migr3)2” = “West backgr”, “as.factor(migr3)3” = “non-West
-backgr”, “hhsize” = “Household size”, “as.factor(politics)2” = “Left
-vote”, “as.factor(politics)3” = “No/blanco vote”, “neighdens” = “Neigh.
-density”, “worthhouse” = “WOZ-values” )) + theme(legend.position =
-“none”, axis.text = element_text(color = “grey”)) + theme_minimal() +
-#ggtitle(“A) Negative binomial model of network size”) + xlab(“B on
-Log(network size count)”)} %&gt;% add_brackets(four_brackets, fontSize =
-.6)</p>
-</div>
-<div id="save-3" class="section level1" number="175">
-<h1><span class="header-section-number">175</span> save</h1>
-<p>ggsave(“results_log.pdf”, plot = logmodel, device = “pdf”, scale = 1,
-width = 6, height = 6, units = c(“in”), dpi = “retina”)</p>
-</div>
-<div id="contrasting-low-en-sec-educ" class="section level1"
-number="176">
-<h1><span class="header-section-number">176</span> contrasting low en
-sec educ</h1>
-<p>models1 &lt;- list() df<span class="math inline">\(opl
-&lt;-relevel(df\)</span>opl, ref = 1) head(df$opl) for (i in 13:184) { #
-–&gt; 168 negative binomials with different netsizes. We then look at
-distributions of coefficients across those models1[[i]] &lt;-
-glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 +
-as.factor(opl) + migr + neighdens + worthhouse, data =
-df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log) }
-models1[sapply(models1, is.null)] &lt;- NULL dwplot(models1, dot_args =
-list(color = “black”, size = 0.75, shape = 1), # color for the dot
-whisker_args = list(size = 0.25, color = “darkgrey”, alpha = 0.5), #
-color for the whisker vline = ggplot2::geom_vline(xintercept = 0, # put
-vline <em>behind</em> coefs; see <a
-href="https://github.com/fsolt/dotwhisker/issues/84"
-class="uri">https://github.com/fsolt/dotwhisker/issues/84</a> colour =
-“grey60”, linetype = 2, size = 1))</p>
-<p>modelsint &lt;- list() for (i in 13:184) { # –&gt; 168 negative
-binomials with different netsizes. We then look at distributions of
-coefficients across those.</p>
-<p>#if (i %in% c(18, 61, 104, 147)) next #fascinating 18, 61, 104, 147
-–&gt; the corona estimator holdout initially didn’t work, removing
-outliers works, also has undue effects df[,c(i)] &lt;- round(df[, c(i)],
-0)</p>
-<p># main effects modelsint[[i]] &lt;- lm(df[!df[[i]]&gt;1000, c(i)] ~
-as.factor(woman) + as.factor(opl)*leeftijd10 + migr + worthhouse +
-neighdens + leeftijd10 , data = df[!df[[i]]&gt;1000,]) }
+
+
+#--------------------------------------------------------------------------------
+
+########################
+# DESCRIPTIONS Xs
+########################
+
+# 
+# aggregate(df[, 271:273], list(df$woman), mean)
+# aggregate(df[, 271:273], list(df$opl), mean)
+# aggregate(df[, 271:273], list(df$migr), mean)
+# 
+# aggregate(df[, 274:279], list(df$woman), mean)
+# aggregate(df[, 274:279], list(df$opl), mean)
+# aggregate(df[, 274:279], list(df$migr), mean)
+# 
+# aggregate(df[, 280:313], list(df$woman), mean)
+# aggregate(df[, 280:313], list(df$migr), mean)
+# aggregate(df[, 280:313], list(df$migr), mean)
+# 
+# xs &lt;- list()
+# for (i in 271:313) {
+#  xs[[i]] &lt;- lm(log10(df[, i]+1) ~ woman + opl + migr + leeftijd10 + neighdens + worthhouse, data = df)
+# }
+# xs[sapply(xs, is.null)] &lt;- NULL
+# summary(xs[[1]])
+# 
+# # main effects
+# one_bracket &lt;- list(
+#   c(&quot;Education tert. high = ref.&quot;, &quot;Educ. prim./sec.&quot;, &quot;Educ. tert. low&quot;))
+# 
+# for (i in 1:length(xs)){
+# xsm[[i]] &lt;- dwplot(xs[[i]],
+#               dot_args = list(color = &quot;black&quot;, size = 0.5, shape = 1), # color for the dot
+#               whisker_args = list(size = 1, color = &quot;darkgrey&quot;),   # color for the whisker
+#               vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+#                                           colour = &quot;grey60&quot;,
+#                                           linetype = 2,
+#                                           size = 1)) %&gt;%                                     # make model variable
+#     relabel_predictors(c(
+#       &quot;woman&quot; = &quot; &quot;,
+#       &quot;opl1&quot; = &quot;  &quot;,
+#       &quot;opl2&quot; = &quot;   &quot;,
+#       &quot;migr&quot; = &quot;    &quot;,
+#       &quot;migr&quot; = &quot;      &quot;,
+#       &quot;leeftijd10&quot; = &quot;       &quot;,
+#       &quot;neighdens&quot; = &quot;        &quot;,
+#       &quot;worthhouse&quot; = &quot;         &quot;
+#     )) + theme(legend.position = &quot;none&quot;,
+#                axis.text = element_text(color = &quot;grey&quot;)) + 
+#     theme_minimal() 
+# }
+# 
+# 
+# labs &lt;- dwplot(xs[[1]],
+#        dot_args = list(color = &quot;white&quot;, size = 0, shape = 1), # color for the dot
+#        whisker_args = list(size = 0, color = &quot;white&quot;)) %&gt;%                                    
+#   relabel_predictors(c(
+#     &quot;woman&quot; = &quot;Woman&quot;,
+#     &quot;opl1&quot; = &quot;Prim/Sec Educ&quot;,
+#     &quot;opl2&quot; = &quot;Lower Tert&quot;,
+#     &quot;migr&quot; = &quot;Migr Backgr&quot;,
+#     &quot;leeftijd10&quot; = &quot;Age/10&quot;,
+#     &quot;neighdens&quot; = &quot;Neighb Dens&quot;,
+#     &quot;worthhouse&quot; = &quot;House Val&quot;
+#   )) + theme(legend.position = &quot;none&quot;,
+#              axis.text = element_text(color = &quot;black&quot;),
+#              panel.grid.major = element_line(color = &quot;white&quot;),
+#              panel.grid.minor = element_line(color = &quot;white&quot;),
+#              panel.grid.major.x = element_blank(),
+#              panel.grid.major.y = element_blank(),
+#              panel.grid.minor.x = element_blank(),
+#              panel.grid.minor.y = element_blank(),
+#              panel.background = element_rect(fill = &quot;white&quot;),
+#              axis.text.x = element_blank(),
+#              axis.ticks.x = element_blank(),
+#              axis.ticks.y = element_blank())
+# 
+# # uni, hbo, mbo
+# school &lt;- plot_grid(labs, xsm[[1]], xsm[[2]], xsm[[3]], nrow = 1, labels = c(&quot;&quot;,names(df)[271:273]), label_size = 8, rel_widths = c(0.2,1,1,1))
+# 
+# # save
+# ggsave(&quot;school.pdf&quot;, plot = school, device = &quot;pdf&quot;,
+#        scale = 1, width = 10, height = 5, units = c(&quot;in&quot;),
+#        dpi = &quot;retina&quot;)
+# 
+# 
+# # vegan etc.
+# soceco &lt;- plot_grid(labs, xsm[[4]], xsm[[5]], xsm[[6]],xsm[[7]],xsm[[8]],xsm[[9]], nrow = 1, labels = c(&quot;&quot;,names(df)[274:279]), label_size = 8,
+#           rel_widths = c(0.2,1,1,1,1,1,1))
+# # save
+# ggsave(&quot;soceco.pdf&quot;, plot = soceco, device = &quot;pdf&quot;,
+#        scale = 1, width = 12, height = 5, units = c(&quot;in&quot;),
+#        dpi = &quot;retina&quot;)
+# 
+# 
+# 
+# 
+# # female names
+# femnames &lt;- plot_grid(xsm[[10]], xsm[[11]], xsm[[12]], xsm[[13]], xsm[[14]],xsm[[15]],
+#           xsm[[16]],xsm[[17]],xsm[[18]],xsm[[19]],xsm[[20]],
+#           xsm[[21]],xsm[[22]],xsm[[23]],xsm[[24]],xsm[[25]],
+#           xsm[[26]], nrow = 4, labels = names(df)[280:296], label_size = 6)
+# 
+# # male names
+# malnames &lt;- plot_grid(xsm[[27]], xsm[[28]], xsm[[29]], xsm[[30]], xsm[[31]],xsm[[32]],
+#           xsm[[33]],xsm[[34]],xsm[[35]],xsm[[36]],xsm[[37]],
+#           xsm[[38]],xsm[[39]],xsm[[40]],xsm[[41]],xsm[[42]],
+#           xsm[[43]], nrow = 4, labels = names(df)[297:313])
+# 
+# summary(xs[[43]])
+
+
+#--------------------------------------------------------------------------------
+
+
+########################
+# MODELS
+########################
+
+
+
+
+# paralellize the estimation
+# closeAllConnections()
+# numCores &lt;- detectCores()
+# registerDoParallel(cores = 8)
+
+
+
+c &lt;- 88
+# main effects
+summary(lm(df[!df[[c]]&gt;10000, c(c)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+                      data = df[!df[[c]]&gt;10000,]))
+
+
+class(as.factor(df$woman))
+
+
+models &lt;- list()
+modelsint &lt;- list()
+modelssq &lt;- list()
+modellog &lt;- list()
+modellm &lt;- list()
+est &lt;- list()
+estlm &lt;- list()
+
+df$opl &lt;-relevel(df$opl, ref = 1)
+df$migr3 &lt;-relevel(as.factor(df$migr3), ref = 1)
+df$politics &lt;-relevel(as.factor(df$politics), ref = 1)
+df$income &lt;-relevel(as.factor(df$income), ref = 2)
+#foreach (i = 13:184) %dopar% {
+for (i in 14:185) { # --&gt; 168 negative binomials with different netsizes. We then look at distributions of coefficients across those.
+  
+  #if (i %in% c(18, 61, 104, 147)) next #fascinating 18, 61, 104, 147 --&gt; the corona estimator holdout initially didn&#39;t work, removing outliers works, also has undue effects
+    df[,c(i)] &lt;- round(df[, c(i)], 0)
+    
+    # main effects
+    # models[[i]] &lt;- glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+    #                        data = df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log)
+
+    # # main effects
+    # modelsint[[i]] &lt;- glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+    #                       data = df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log)
+   
+    modellog[[i]] &lt;- lm(log10(df[!df[[i]]&gt;10000, c(i)]) ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+                        data = df[!df[[i]]&gt;10000,])
+
+    # modellm[[i]] &lt;- lm(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+    #                    data = df[!df[[i]]&gt;10000,])
+    # 
+    # # # u-shape for age negbin
+    # modelssq[[i]] &lt;- glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + leeftijd10sq + as.factor(opl) + migr + neighdens + worthhouse, 
+    #                        data = df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log)
+    
+    # get CIs for main effects, may be useful for viz later
+    #est[[i]] &lt;- cbind(Estimate = coef(models[[i]]), confint(models[[i]]))
+    #estlm[[i]] &lt;- cbind(Estimate = coef(modellm[[i]]), confint(modellm[[i]]))
+    
+}
+
+#est[sapply(est, is.null)] &lt;- NULL
+models[sapply(models, is.null)] &lt;- NULL
 modelsint[sapply(modelsint, is.null)] &lt;- NULL
-summary(modelsint[[170]])</p>
-<p>dwplot(modelsint, dot_args = list(color = “black”, size = 0.75, shape
-= 1), # color for the dot whisker_args = list(size = 0.25, color =
-“darkgrey”, alpha = 0.5), # color for the whisker vline =
-ggplot2::geom_vline(xintercept = 0, # put vline <em>behind</em> coefs;
-see <a href="https://github.com/fsolt/dotwhisker/issues/84"
-class="uri">https://github.com/fsolt/dotwhisker/issues/84</a> colour =
-“grey60”, linetype = 2, size = 1))</p>
-<p>#——————————————————————————– # lm logresults are similar</p>
-<p>log &lt;- dwplot(modellog, dot_args = list(color = “black”, size =
-0.75, shape = 1), # color for the dot whisker_args = list(size = 0.25),
-# color for the whisker vline = ggplot2::geom_vline(xintercept = 0, #
-put vline <em>behind</em> coefs; see <a
-href="https://github.com/fsolt/dotwhisker/issues/84"
-class="uri">https://github.com/fsolt/dotwhisker/issues/84</a> colour =
-“grey60”, linetype = 2, size = 1)) %&gt;% # make model variable
-relabel_predictors(c( “as.factor(woman)1” = ” “,”leeftijd10” = ”
-“,”as.factor(opl)1” = ” “,”as.factor(opl)2” = ” “,”migr” = ”
-“,”neighdens” = ” “,”worthhouse” = ” ” )) + theme(legend.position =
-“none”, axis.text = element_text(color = “white”), plot.margin =
-margin(2, 0, 2, 0, “cm”)) + theme_minimal() + ggtitle(“B) Linear model
-of log(network size)”) + xlab(“B on log(network size)”)</p>
-<p>#——————————————————————————– # lm results are similar</p>
-<p>lm &lt;- dwplot(modellm, dot_args = list(color = “black”, size =
-0.75, shape = 1), # color for the dot whisker_args = list(size = 0.25),
-# color for the whisker vline = ggplot2::geom_vline(xintercept = 0, #
-put vline <em>behind</em> coefs; see <a
-href="https://github.com/fsolt/dotwhisker/issues/84"
-class="uri">https://github.com/fsolt/dotwhisker/issues/84</a> colour =
-“grey60”, linetype = 2, size = 1)) %&gt;% # make model variable
-relabel_predictors(c( “as.factor(woman)1” = ” “,”leeftijd10” = ”
-“,”as.factor(opl)1” = ” “,”as.factor(opl)2” = ” “,”migr” = ”
-“,”neighdens” = ” “,”worthhouse” = ” ” )) + theme(legend.position =
-“none”, axis.text = element_text(color = “white”),plot.margin =
-unit(c(1,1,1,1), “cm”)) + theme_minimal() + ggtitle(“C) Linear model of
-network size”) + xlab(“B on network size count”)</p>
-</div>
-<div id="gotta-fix-the-margins" class="section level1" number="177">
-<h1><span class="header-section-number">177</span> gotta fix the
-margins</h1>
-<p>robust &lt;- plot_grid(nb, log, lm, nrow = 1) robust
-ggsave(“robust.pdf”, plot = robust, device = “pdf”, scale = 1, width =
-15, height = 9, units = c(“in”), dpi = “retina”)</p>
-<p>lm &lt;-</p>
-<p>summary(modellog[[185]])</p>
-<p>dwplot(models, dot_args = list(color = “black”, size = 0.75, shape =
-1), # color for the dot whisker_args = list(size = 0.25), # color for
-the whisker vline = ggplot2::geom_vline(xintercept = 0, # put vline
-<em>behind</em> coefs; see <a
-href="https://github.com/fsolt/dotwhisker/issues/84"
-class="uri">https://github.com/fsolt/dotwhisker/issues/84</a> colour =
-“grey60”, linetype = 2, size = 1))</p>
-<p>%&gt;% # make model variable relabel_predictors(c(
-“as.factor(woman)1” = ” “,”leeftijd10” = ” “,”as.factor(opl)1” = ”
-“,”as.factor(opl)2” = ” “,”migr” = ” “,”neighdens” = ” “,”worthhouse” =
-” ” )) + theme(legend.position = “none”, axis.text = element_text(color
-= “white”),plot.margin = unit(c(1,1,1,1), “cm”)) + theme_minimal() +
-ggtitle(“C) Linear model of network size”) + xlab(“B on network size
-count”)</p>
-</div>
-<div id="u-shape-age" class="section level1" number="178">
-<h1><span class="header-section-number">178</span> u-shape age</h1>
-<p>two_bracket &lt;- list( c(“Education tert. high = ref.”, “Education
-prim./sec.”, “Education tert. low”), c(“Age inverted U”, “Age/10”,
-“Age/10^2”)) x2 &lt;- {dwplot(modelssq, dot_args = list(color = “black”,
-size = 0.75, shape = 1), # color for the dot whisker_args = list(size =
-0.25), # color for the whisker vline = ggplot2::geom_vline(xintercept =
-0, # put vline <em>behind</em> coefs; see <a
-href="https://github.com/fsolt/dotwhisker/issues/84"
-class="uri">https://github.com/fsolt/dotwhisker/issues/84</a> colour =
-“grey60”, linetype = 2, size = 1)) %&gt;% # make model variable
-relabel_predictors(c( “as.factor(woman)1” = “Women”, “leeftijd10” =
-“Age/10”, “leeftijd10sq” = “Age/10^2”, “as.factor(opl)1” = “Education
-prim./sec.”, “as.factor(opl)2” = “Education tert. low”, “migr” =
-“Migration backgr.”, “neighdens” = “Neighb. density/1K”, “worthhouse” =
-“Neighb. WOZ-values/100K.” )) + theme(legend.position = “none”) +
-theme_minimal() + ggtitle(“B) Including main and squared age effect,
-inverted U-shape”) + xlab(“Log odds on network size count”) } %&gt;%
-add_brackets(two_bracket)</p>
-<p>results &lt;- plot_grid(nb, x2, nrow = 1)</p>
-</div>
-<div id="save-4" class="section level1" number="179">
-<h1><span class="header-section-number">179</span> save</h1>
-<p>ggsave(“results.pdf”, plot = results, device = “pdf”, scale = 1,
-width = 19, height = 9, units = c(“in”), dpi = “retina”)</p>
-<p>```</p>
+est[sapply(est, is.null)] &lt;- NULL
+estlm[sapply(estlm, is.null)] &lt;- NULL
+modellog[sapply(modellog, is.null)] &lt;- NULL
+modellm[sapply(modellm, is.null)] &lt;- NULL
+modelssq[sapply(modelssq, is.null)] &lt;- NULL
+
+
+
+# nice df with CIs
+estimates &lt;- list()     
+for (i in 1:length(est)) { # --&gt;  some data crunching to visualize
+  
+
+  estimates[[i]] &lt;- data.frame(t(est[[i]]))
+  estimates[[i]] &lt;- cbind(estimates[[i]], data.frame(c(&quot;est&quot;, &quot;lb&quot;, &quot;ub&quot;)))
+  names(estimates[[i]]) &lt;- c(&quot;intercept&quot;,  &quot;woman&quot;, &quot;age&quot;,  &quot;opl1&quot;,  &quot;opl2&quot;, &quot;migr&quot;,
+                             &quot;neighdens&quot;,&quot;worthhouse&quot;, &quot;var&quot;)
+  rownames(estimates[[i]]) &lt;- 1:nrow(estimates[[i]])
+
+}
+estimates &lt;- bind_rows(estimates)
+
+# nice df with CIs
+estimateslm &lt;- list()     
+for (i in 1:length(estlm)) { # --&gt;  some data crunching to visualize
+  
+  
+  estimateslm[[i]] &lt;- data.frame(t(estlm[[i]]))
+  estimateslm[[i]] &lt;- cbind(estimateslm[[i]], data.frame(c(&quot;est&quot;, &quot;lb&quot;, &quot;ub&quot;)))
+  names(estimateslm[[i]]) &lt;- c(&quot;intercept&quot;,  &quot;woman&quot;, &quot;age&quot;,  &quot;opl2&quot;,  &quot;opl1&quot;, &quot;migr&quot;,
+                             &quot;neighdens&quot;,&quot;worthhouse&quot;, &quot;var&quot;)
+  rownames(estimateslm[[i]]) &lt;- 1:nrow(estimateslm[[i]])
+  
+}
+estimateslm &lt;- bind_rows(estimateslm)
+summary(modellm[[1]])
+summary(estimateslm$opl1)
+summary(estimateslm$opl2)
+summary(modellm[[172]])
+#--------------------------------------------------------------------------------
+# Viz of results
+
+# main effects
+four_brackets &lt;- list(
+  c(&quot;Educ tert high=ref&quot;, &quot;Educ prim/sec&quot;, &quot;Educ tert low&quot;),
+  c(&quot;&gt;modal inc=ref&quot;, &quot;&lt;=modal income&quot;, &quot;Unkn income&quot;),
+  c(&quot;Dutch maj=ref&quot;, &quot;West backgr&quot;, &quot;non-West backgr&quot;),
+  c(&quot;Left vote=ref&quot;, &quot;Right vote&quot;, &quot;No/blanco vote&quot;))
+
+ logmodel &lt;- {dwplot(modellog,
+         dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+         whisker_args = list(size = 0.25, color = &quot;darkgrey&quot;, alpha = 0.5),   # color for the whisker
+         vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                     colour = &quot;grey60&quot;,
+                                     linetype = 2,
+                                     size = 1)) %&gt;%                                     # make model variable
+    relabel_predictors(c(
+      &quot;as.factor(woman)1&quot; = &quot;Women&quot;,
+      &quot;leeftijd10&quot; = &quot;Age/10&quot;,
+      &quot;as.factor(opl)1&quot; = &quot;Educ prim/sec&quot;,
+      &quot;as.factor(opl)2&quot; = &quot;Educ tert low&quot;,
+      &quot;as.factor(work)1&quot; = &quot;Working&quot;,
+      &quot;as.factor(income)1&quot; = &quot;&lt;=modal income&quot;,
+      &quot;as.factor(income)3&quot; = &quot;Unkn income&quot;,
+      &quot;as.factor(migr3)2&quot; = &quot;West backgr&quot;,
+      &quot;as.factor(migr3)3&quot; = &quot;non-West backgr&quot;,
+      &quot;hhsize&quot; = &quot;Household size&quot;,
+      &quot;as.factor(politics)1&quot; = &quot;Right vote&quot;,
+      &quot;as.factor(politics)3&quot; = &quot;No/blanco vote&quot;,
+      &quot;neighdens&quot; = &quot;Neigh. density&quot;,
+      &quot;worthhouse&quot; = &quot;WOZ-values&quot;
+    )) + theme(legend.position = &quot;none&quot;,
+               axis.text = element_text(color = &quot;grey&quot;)) + 
+    theme_minimal() +
+    #ggtitle(&quot;A) Negative binomial model of network size&quot;) +
+    xlab(&quot;B on Log(network size count)&quot;)}  %&gt;%
+  add_brackets(four_brackets, fontSize = .6)
+
+ 
+ 
+ {dwplot(modellm,
+         dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+         whisker_args = list(size = 0.25, color = &quot;darkgrey&quot;, alpha = 0.5),   # color for the whisker
+         vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                     colour = &quot;grey60&quot;,
+                                     linetype = 2,
+                                     size = 1)) %&gt;%                                     # make model variable
+     relabel_predictors(c(
+       &quot;as.factor(woman)1&quot; = &quot;Women&quot;,
+       &quot;leeftijd10&quot; = &quot;Age/10&quot;,
+       &quot;as.factor(opl)1&quot; = &quot;Educ prim/sec&quot;,
+       &quot;as.factor(opl)2&quot; = &quot;Educ tert low&quot;,
+       &quot;as.factor(work)1&quot; = &quot;Working&quot;,
+       &quot;as.factor(income)1&quot; = &quot;&lt;=modal income&quot;,
+       &quot;as.factor(income)3&quot; = &quot;Unkn income&quot;,
+       &quot;as.factor(migr3)2&quot; = &quot;West backgr&quot;,
+       &quot;as.factor(migr3)3&quot; = &quot;non-West backgr&quot;,
+       &quot;hhsize&quot; = &quot;Household size&quot;,
+       &quot;as.factor(politics)2&quot; = &quot;Left vote&quot;,
+       &quot;as.factor(politics)3&quot; = &quot;No/blanco vote&quot;,
+       &quot;neighdens&quot; = &quot;Neigh. density&quot;,
+       &quot;worthhouse&quot; = &quot;WOZ-values&quot;
+     )) + theme(legend.position = &quot;none&quot;,
+                axis.text = element_text(color = &quot;grey&quot;)) + 
+     theme_minimal() +
+     #ggtitle(&quot;A) Negative binomial model of network size&quot;) +
+     xlab(&quot;B on Log(network size count)&quot;)}  %&gt;%
+   add_brackets(four_brackets, fontSize = .6)
+
+# save
+ggsave(&quot;results_log.pdf&quot;, plot = logmodel, device = &quot;pdf&quot;,
+       scale = 1, width = 6, height = 6, units = c(&quot;in&quot;),
+       dpi = &quot;retina&quot;)
+
+
+# contrasting low en sec educ
+models1 &lt;- list()
+df$opl &lt;-relevel(df$opl, ref = 1)
+head(df$opl)
+for (i in 13:184) { # --&gt; 168 negative binomials with different netsizes. We then look at distributions of coefficients across those
+  models1[[i]] &lt;- glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + migr + neighdens + worthhouse, 
+                        data = df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log)
+}
+models1[sapply(models1, is.null)] &lt;- NULL
+dwplot(models1,
+        dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+        whisker_args = list(size = 0.25, color = &quot;darkgrey&quot;, alpha = 0.5),   # color for the whisker
+        vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                    colour = &quot;grey60&quot;,
+                                    linetype = 2,
+                                    size = 1)) 
+
+modelsint &lt;- list()
+for (i in 13:184) { # --&gt; 168 negative binomials with different netsizes. We then look at distributions of coefficients across those.
+  
+  #if (i %in% c(18, 61, 104, 147)) next #fascinating 18, 61, 104, 147 --&gt; the corona estimator holdout initially didn&#39;t work, removing outliers works, also has undue effects
+  df[,c(i)] &lt;- round(df[, c(i)], 0)
+  
+  # main effects
+  modelsint[[i]] &lt;- lm(df[!df[[i]]&gt;1000, c(i)] ~ as.factor(woman) + as.factor(opl)*leeftijd10 + migr + worthhouse + neighdens + leeftijd10 , 
+                           data = df[!df[[i]]&gt;1000,])
+}
+modelsint[sapply(modelsint, is.null)] &lt;- NULL
+summary(modelsint[[170]])
+
+dwplot(modelsint,
+       dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+       whisker_args = list(size = 0.25, color = &quot;darkgrey&quot;, alpha = 0.5),   # color for the whisker
+       vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                   colour = &quot;grey60&quot;,
+                                   linetype = 2,
+                                   size = 1)) 
+
+
+
+#--------------------------------------------------------------------------------
+# lm logresults are similar
+
+log &lt;- dwplot(modellog,
+        dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+        whisker_args = list(size = 0.25),   # color for the whisker
+        vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                    colour = &quot;grey60&quot;,
+                                    linetype = 2,
+                                    size = 1)) %&gt;%                                     # make model variable
+    relabel_predictors(c(
+      &quot;as.factor(woman)1&quot; = &quot; &quot;,
+      &quot;leeftijd10&quot; = &quot;  &quot;,
+      &quot;as.factor(opl)1&quot; = &quot;   &quot;,
+      &quot;as.factor(opl)2&quot; = &quot;    &quot;,
+      &quot;migr&quot; = &quot;      &quot;,
+      &quot;neighdens&quot; = &quot;       &quot;,
+      &quot;worthhouse&quot; = &quot;        &quot;
+    )) + theme(legend.position = &quot;none&quot;,
+               axis.text = element_text(color = &quot;white&quot;),
+               plot.margin = margin(2, 0, 2, 0, &quot;cm&quot;)) + 
+    theme_minimal() +
+    ggtitle(&quot;B) Linear model of log(network size)&quot;) +
+    xlab(&quot;B on log(network size)&quot;)
+
+
+#--------------------------------------------------------------------------------
+# lm results are similar
+
+lm &lt;- dwplot(modellm,
+               dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+               whisker_args = list(size = 0.25),   # color for the whisker
+               vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                           colour = &quot;grey60&quot;,
+                                           linetype = 2,
+                                           size = 1)) %&gt;%                                     # make model variable
+    relabel_predictors(c(
+      &quot;as.factor(woman)1&quot; = &quot; &quot;,
+      &quot;leeftijd10&quot; = &quot;  &quot;,
+      &quot;as.factor(opl)1&quot; = &quot;   &quot;,
+      &quot;as.factor(opl)2&quot; = &quot;    &quot;,
+      &quot;migr&quot; = &quot;      &quot;,
+      &quot;neighdens&quot; = &quot;       &quot;,
+      &quot;worthhouse&quot; = &quot;        &quot;
+    ))  + theme(legend.position = &quot;none&quot;,
+                axis.text = element_text(color = &quot;white&quot;),plot.margin = unit(c(1,1,1,1), &quot;cm&quot;)) + 
+    theme_minimal() +
+    ggtitle(&quot;C) Linear model of network size&quot;) +
+    xlab(&quot;B on network size count&quot;)
+
+# gotta fix the margins
+robust &lt;- plot_grid(nb, log, lm, nrow = 1)
+robust
+ggsave(&quot;robust.pdf&quot;, plot = robust, device = &quot;pdf&quot;,
+       scale = 1, width = 15, height = 9, units = c(&quot;in&quot;),
+       dpi = &quot;retina&quot;)
+
+
+lm &lt;- 
+  
+  summary(modellog[[185]])
+
+  dwplot(models,
+             dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+             whisker_args = list(size = 0.25),   # color for the whisker
+             vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                         colour = &quot;grey60&quot;,
+                                         linetype = 2,
+                                         size = 1))
+
+%&gt;%                                     # make model variable
+  relabel_predictors(c(
+    &quot;as.factor(woman)1&quot; = &quot; &quot;,
+    &quot;leeftijd10&quot; = &quot;  &quot;,
+    &quot;as.factor(opl)1&quot; = &quot;   &quot;,
+    &quot;as.factor(opl)2&quot; = &quot;    &quot;,
+    &quot;migr&quot; = &quot;      &quot;,
+    &quot;neighdens&quot; = &quot;       &quot;,
+    &quot;worthhouse&quot; = &quot;        &quot;
+  ))  + theme(legend.position = &quot;none&quot;,
+              axis.text = element_text(color = &quot;white&quot;),plot.margin = unit(c(1,1,1,1), &quot;cm&quot;)) + 
+  theme_minimal() +
+  ggtitle(&quot;C) Linear model of network size&quot;) +
+  xlab(&quot;B on network size count&quot;)
+
+
+
+
+
+
+
+
+
+
+
+
+
+# u-shape age
+two_bracket &lt;- list(
+  c(&quot;Education tert. high = ref.&quot;, &quot;Education prim./sec.&quot;, &quot;Education tert. low&quot;),
+  c(&quot;Age inverted U&quot;, &quot;Age/10&quot;, &quot;Age/10^2&quot;))
+x2 &lt;- {dwplot(modelssq,
+       dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+       whisker_args = list(size = 0.25),   # color for the whisker
+       vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                   colour = &quot;grey60&quot;,
+                                   linetype = 2,
+                                   size = 1)) %&gt;%                                     # make model variable
+  relabel_predictors(c(
+    &quot;as.factor(woman)1&quot; = &quot;Women&quot;,
+    &quot;leeftijd10&quot; = &quot;Age/10&quot;,
+    &quot;leeftijd10sq&quot; = &quot;Age/10^2&quot;,
+    &quot;as.factor(opl)1&quot; = &quot;Education prim./sec.&quot;,
+    &quot;as.factor(opl)2&quot; = &quot;Education tert. low&quot;,
+    &quot;migr&quot; = &quot;Migration backgr.&quot;,
+    &quot;neighdens&quot; = &quot;Neighb. density/1K&quot;,
+    &quot;worthhouse&quot; = &quot;Neighb. WOZ-values/100K.&quot;
+  )) + theme(legend.position = &quot;none&quot;) + 
+  theme_minimal()  +
+    ggtitle(&quot;B) Including main and squared age effect, inverted U-shape&quot;) +
+    xlab(&quot;Log odds on network size count&quot;)
+  } %&gt;%
+  add_brackets(two_bracket)
+
+
+results &lt;- plot_grid(nb, x2, nrow = 1)
+
+# save
+ggsave(&quot;results.pdf&quot;, plot = results, device = &quot;pdf&quot;,
+       scale = 1, width = 19, height = 9, units = c(&quot;in&quot;),
+       dpi = &quot;retina&quot;)</code></pre>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiVW50aXRsZWQiCm91dHB1dDogaHRtbF9kb2N1bWVudApkYXRlOiAiMjAyMy0wOC0yNSIKLS0tCgpgYGB7ciBzZXR1cCwgaW5jbHVkZT1GQUxTRX0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpgYGAKCiMjIFIgTWFya2Rvd24KClRoaXMgaXMgYW4gUiBNYXJrZG93biBkb2N1bWVudC4gTWFya2Rvd24gaXMgYSBzaW1wbGUgZm9ybWF0dGluZyBzeW50YXggZm9yIGF1dGhvcmluZyBIVE1MLCBQREYsIGFuZCBNUyBXb3JkIGRvY3VtZW50cy4gRm9yIG1vcmUgZGV0YWlscyBvbiB1c2luZyBSIE1hcmtkb3duIHNlZSA8aHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbT4uCgpXaGVuIHlvdSBjbGljayB0aGUgKipLbml0KiogYnV0dG9uIGEgZG9jdW1lbnQgd2lsbCBiZSBnZW5lcmF0ZWQgdGhhdCBpbmNsdWRlcyBib3RoIGNvbnRlbnQgYXMgd2VsbCBhcyB0aGUgb3V0cHV0IG9mIGFueSBlbWJlZGRlZCBSIGNvZGUgY2h1bmtzIHdpdGhpbiB0aGUgZG9jdW1lbnQuIFlvdSBjYW4gZW1iZWQgYW4gUiBjb2RlIGNodW5rIGxpa2UgdGhpczoKCmBgYHtyIGNhcnN9CnN1bW1hcnkoY2FycykKYGBgCgojIyBJbmNsdWRpbmcgUGxvdHMKCllvdSBjYW4gYWxzbyBlbWJlZCBwbG90cywgZm9yIGV4YW1wbGU6CgpgYGB7ciBwcmVzc3VyZSwgZWNobz1GQUxTRX0KcGxvdChwcmVzc3VyZSkKYGBgCgpOb3RlIHRoYXQgdGhlIGBlY2hvID0gRkFMU0VgIHBhcmFtZXRlciB3YXMgYWRkZWQgdG8gdGhlIGNvZGUgY2h1bmsgdG8gcHJldmVudCBwcmludGluZyBvZiB0aGUgUiBjb2RlIHRoYXQgZ2VuZXJhdGVkIHRoZSBwbG90LgoKCgoKCiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCiMgREVTQ1JJUFRJVkVTCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwoKIyBWSVogb2YgbmV0c2l6ZQpuZXRzaXplX2wgPC0gZ2F0aGVyKG5ldHNpemVzKQpkZW5zMSA8LSBnZ3Bsb3QobmV0c2l6ZV9sW25ldHNpemVfbCR2YWx1ZSA8IDIwMDAsXSwgYWVzKHg9dmFsdWUsIGNvbG9yID0ga2V5KSkgKyAKICBnZW9tX2RlbnNpdHkoYWxwaGEgPSAuMiwgc2l6ZSA9IDAuMSkgKyAKICB0aGVtZV9taW5pbWFsKCkgKyAKICB0aGVtZShsZWdlbmQucG9zaXRpb24gPSAibm9uZSIpICsKICBsYWJzKHggPSAiTmV0d29yayBzaXplIGVzdGltYXRlIiwgeSA9ICJEZW5zaXR5IikgKwogIGdlb21fdmxpbmUoeGludGVyY2VwdD1hcy5udW1lcmljKHBzeWNoOjpkZXNjcmliZShuZXRzaXplX2xbLCAyXSlbM10pLCBjb2xvciA9ICJkYXJrZ3JleSIsIGxpbmV0eXBlID0gMikgKwogIGdlb21fdmxpbmUoeGludGVyY2VwdD1hcy5udW1lcmljKHBzeWNoOjpkZXNjcmliZShuZXRzaXplX2xbLCAyXSlbNV0pLCBjb2xvciA9ICJkYXJrZ3JleSIsIGxpbmV0eXBlID0gMikgKwogIGFubm90YXRlKCJ0ZXh0IiwgeCA9IDQ5MCwgeSA9IDAuMDAwNCwgY29sb3IgPSAiZGFya2dyZXkiLCBhbmdsZSA9IDkwLCAKICAgICAgICAgICBsYWJlbCA9IHBhc3RlMCgiTWVhbiA9ICIsIHJvdW5kKGFzLm51bWVyaWMocHN5Y2g6OmRlc2NyaWJlKG5ldHNpemVfbFssIDJdKVszXSksIGRpZ2l0cyA9IDApKSkgKwogIGFubm90YXRlKCJ0ZXh0IiwgeCA9IDM0MCwgeSA9IDAuMDAwNCwgY29sb3IgPSAiZGFya2dyZXkiLCBhbmdsZSA9IDkwLCAKICAgICAgICAgICBsYWJlbCA9IHBhc3RlMCgiTWVkaWFuID0gIiwgcm91bmQoYXMubnVtZXJpYyhwc3ljaDo6ZGVzY3JpYmUobmV0c2l6ZV9sWywgMl0pWzVdKSwgZGlnaXRzID0gMCkpKSArCiAgZ2d0aXRsZSgiQikgRGlzdHJpYnV0aW9uIG9mIG5ldHdvcmsgc2l6ZXMsIGFsbCBzY2VuYXJpb3MiKQoKCiMgR2V0IGxvd2VyIHRyaWFuZ2xlIG9mIHRoZSBjb3JyZWxhdGlvbiBtYXRyaXgKZ2V0X2xvd2VyX3RyaTwtZnVuY3Rpb24oY29ybWF0KXsKICBjb3JtYXRbdXBwZXIudHJpKGNvcm1hdCldIDwtIE5BCiAgcmV0dXJuKGNvcm1hdCkKfQptYXQgPC0gY29yKG5ldHNpemVzKQpsb3dlcl90cmkgPC0gZ2V0X2xvd2VyX3RyaShtYXQpCm1lbHRlZF9jb3JtYXQgPC0gcmVzaGFwZTI6Om1lbHQobG93ZXJfdHJpKSAjIGRhdGEudGFibGUgYWxzbyBoYXMgbWVsdCBmdW5jaXRvbiB0aGF0IHdvbid0IHdvcmsgb24gbWF0cmljZXMKbWVsdGVkX2Nvcm1hdCRWYXIyIDwtIGFzLmNoYXJhY3RlcihtZWx0ZWRfY29ybWF0JFZhcjIpCm1lbHRlZF9jb3JtYXQkVmFyMSA8LSBhcy5jaGFyYWN0ZXIobWVsdGVkX2Nvcm1hdCRWYXIxKQptZWx0ZWRfY29ybWF0IDwtIG1lbHRlZF9jb3JtYXRbIW1lbHRlZF9jb3JtYXQkVmFyMiA9PSBtZWx0ZWRfY29ybWF0JFZhcjEsXQptZWx0ZWRfY29ybWF0IDwtIG1lbHRlZF9jb3JtYXRbIWlzLm5hKG1lbHRlZF9jb3JtYXQkdmFsdWUpLCBdCgojIFZpeiBvZiBjb3JyZWxhdGlvbnMgYmV0d2VlbiBuZXRzaXplIGVzdGltYXRlcwpkZW5zMiA8LSBnZ3Bsb3QobWVsdGVkX2Nvcm1hdCwgYWVzKHg9dmFsdWUpKSArIAogIGdlb21fZGVuc2l0eShzaXplID0gMC4zKSArIAogIHhsaW0oMC45MTUsIDEpICsgCiAgdGhlbWVfbWluaW1hbCgpICsgCiAgbGFicyh4PSJQZWFyc29uIGNvcnJlbGF0aW9uIiwgeSA9ICJEZW5zaXR5IikgKwogIGdlb21fdmxpbmUoeGludGVyY2VwdCA9IC45NSwgY29sb3IgPSAiZGFya2dyZXkiLCBsaW5ldHlwZSA9IDIpICsKICBnZ3RpdGxlKCJBKSBEaXN0cmlidXRpb25zIG9mIGNvcnJlbGF0aW9ucyBiZXR3ZWVuIG5ldHdvcmsgc2l6ZSBzY2VuYXJpb3MiKSAgKwogIGdlb21fc2VnbWVudCh4ID0gMC45NSwgeSA9IDEyNSwgeGVuZCA9IC45OSwgeWVuZCA9IDEyNSwgbGluZXR5cGUgPSAyLCBjb2xvciA9ICJkYXJrZ3JleSIsCiAgICAgICAgICAgICAgICBhcnJvdyA9IGFycm93KGxlbmd0aCA9IHVuaXQoMC4yNSwgImNtIikpKSAgKwogIGFubm90YXRlKCJ0ZXh0IiwgeCA9IC45NywgeSA9IDEzNSwgY29sb3IgPSAiZGFya2dyZXkiLCBhbmdsZSA9IDAsIAogICAgICAgICAgIGxhYmVsID0gcGFzdGUwKHJvdW5kKG5yb3cobWVsdGVkX2Nvcm1hdFttZWx0ZWRfY29ybWF0JHZhbHVlID4gLjk1LCBdKS9ucm93KG1lbHRlZF9jb3JtYXQpKjEwMCwgZGlnaXRzID0gMSksIiUgb2YgY29ycmVsYXRpb25zIGFyZSA+IC45NSIpKQoKIyBsYXkgJ20gb3V0IG9uIHRoZSBncmlkICAgICAgICAgICAKZGVuc2VzIDwtIHBsb3RfZ3JpZChkZW5zMiwgZGVuczEsIG5yb3cgPSAxKSAKCiMgc2F2ZQpnZ3NhdmUoImRlbnNpdGllcy5wZGYiLCBwbG90ID0gZGVuc2VzLCBkZXZpY2UgPSAicGRmIiwKICAgICAgIHNjYWxlID0gMSwgd2lkdGggPSAxMiwgaGVpZ2h0ID0gNCwgdW5pdHMgPSBjKCJpbiIpLAogICAgICAgZHBpID0gInJldGluYSIpCgoKCiMgZGVzY3JpcHRpdmUgdGFibGUgbm90IGF1dG9tYXRlZAoKcHN5Y2g6OmRlc2NyaWJlKGRmWywgYygid29tYW4iLCAibGVlZnRpamQxMCIsICJ3b3JrIiwgImhoc2l6ZSIsICJuZWlnaGRlbnMiLCAid29ydGhob3VzZSIpXSkKCnRhYmxlKGRmJG1pZ3IzKQp0YWJsZShkZiRvcGwpCnRhYmxlKGRmJGluY29tZSkKdGFibGUoZGYkcG9saXRpY3MpCgoKCmNvcihkZlssYygid29tYW4iLCAibWlnciIsICJsZWVmdGlqZDEwIiwgIndvcmsiLCAiaGhzaXplIiwgIm5laWdoZGVucyIsICJ3b3J0aGhvdXNlIiApXSkKCgojICMgRGVzY3JpcHRpdmUgdGFibGUKIyBkZiRvcGwxW2RmJG9wbD09MV0gPC0gMQojIGRmJG9wbDFbZGYkb3BsIT0xXSA8LSAwCiMgZGYkb3BsMltkZiRvcGw9PTJdIDwtIDEKIyBkZiRvcGwyW2RmJG9wbCE9Ml0gPC0gMAojIGRmJG9wbDNbZGYkb3BsPT0zXSA8LSAxCiMgZGYkb3BsM1tkZiRvcGwhPTNdIDwtIDAKIyAKIyAKIyB3IDwtIGRhdGEuZnJhbWUoYyhwc3ljaDo6ZGVzY3JpYmUoZGYkd29tYW4pW2MoMiwzLDQsIDgsOSldLCAiV29tYW4iKSkKIyBjb2xuYW1lcyh3KVs2XSA8LSAiVmFyaWFibGUiCiMgbCA8LSBkYXRhLmZyYW1lKGMocHN5Y2g6OmRlc2NyaWJlKGRmJGxlZWZ0aWpkMTApW2MoMiwzLDQsIDgsOSldLCAiQWdlLzEwIikpCiMgY29sbmFtZXMobClbNl0gPC0gIlZhcmlhYmxlIgojIG8xIDwtIGRhdGEuZnJhbWUoYyhwc3ljaDo6ZGVzY3JpYmUoZGYkb3BsMSlbYygyLDMsNCwgOCw5KV0sICJFZHVjYXRpb24gcHJpbWFyeS9zZWNvbmRhcnkiKSkKIyBjb2xuYW1lcyhvMSlbNl0gPC0gIlZhcmlhYmxlIgojIG8yIDwtIGRhdGEuZnJhbWUoYyhwc3ljaDo6ZGVzY3JpYmUoZGYkb3BsMilbYygyLDMsNCwgOCw5KV0sICJFZHVjYXRpb24gdGVydGlhcnkgbG93IikpCiMgY29sbmFtZXMobzIpWzZdIDwtICJWYXJpYWJsZSIKIyBvMyA8LSBkYXRhLmZyYW1lKGMocHN5Y2g6OmRlc2NyaWJlKGRmJG9wbDMpW2MoMiwzLDQsIDgsOSldLCAiRWR1Y2F0aW9uIHRlcnRpYXJ5IGhpZ2giKSkKIyBjb2xuYW1lcyhvMylbNl0gPC0gIlZhcmlhYmxlIgojIG0gPC0gZGF0YS5mcmFtZShjKHBzeWNoOjpkZXNjcmliZShkZiRtaWdyKVtjKDIsMyw0LCA4LDkpXSwgIk1pZ3JhdGlvbiBiYWNrZ3JvdW5kIikpCiMgY29sbmFtZXMobSlbNl0gPC0gIlZhcmlhYmxlIgojIG4gPC0gZGF0YS5mcmFtZShjKHBzeWNoOjpkZXNjcmliZShkZiRuZWlnaGRlbnMpW2MoMiwzLDQsIDgsOSldLCAiTmVpZ2hib3Job29kIGRlbnNpdHkvMUsiKSkKIyBjb2xuYW1lcyhuKVs2XSA8LSAiVmFyaWFibGUiCiMgaCA8LSBkYXRhLmZyYW1lKGMocHN5Y2g6OmRlc2NyaWJlKGRmJHdvcnRoaG91c2UpW2MoMiwzLDQsIDgsOSldLCAiTWVhbiBuZWlnaGJvcmhvb2QgV09aLXZhbHVlLzEwMEsiKSkKIyBjb2xuYW1lcyhoKVs2XSA8LSAiVmFyaWFibGUiCiMgZGVzYyA8LSBkYXRhLmZyYW1lKHJiaW5kKHcsbCxvMSxvMixvMyxtLG4saCkpCiMgCiMgZGVzYyRtaW4gPC0gcm91bmQoZGVzYyRtaW4sIGRpZ2l0cz0gMikKIyBkZXNjJG1heCA8LSByb3VuZChkZXNjJG1heCwgZGlnaXRzPSAyKQojIGRlc2MkbWVhbiA8LSByb3VuZChkZXNjJG1lYW4sIGRpZ2l0cz0gMikKIyBkZXNjJHNkIDwtIHJvdW5kKGRlc2Mkc2QsIGRpZ2l0cz0gMikKIyAKIyAKIyBkZXNjJG5bZGVzYyRWYXJpYWJsZSA9PSAiV29tYW4iXSA8LSBucm93KGRmW2RmJHdvbWFuPT0xLF0pCiMgZGVzYyRuW2Rlc2MkVmFyaWFibGUgPT0gIkVkdWNhdGlvbiBwcmltYXJ5L3NlY29uZGFyeSJdIDwtIG5yb3coZGZbZGYkb3BsMT09MSxdKQojIGRlc2MkbltkZXNjJFZhcmlhYmxlID09ICJFZHVjYXRpb24gdGVydGlhcnkgbG93Il0gPC0gbnJvdyhkZltkZiRvcGwyPT0xLF0pCiMgZGVzYyRuW2Rlc2MkVmFyaWFibGUgPT0gIkVkdWNhdGlvbiB0ZXJ0aWFyeSBoaWdoIl0gPC0gbnJvdyhkZltkZiRvcGwzPT0xLF0pCiMgZGVzYyRuW2Rlc2MkVmFyaWFibGUgPT0gIk1pZ3JhdGlvbiBiYWNrZ3JvdW5kIl0gPC0gbnJvdyhkZltkZiRtaWdyPT0xLF0pCiMgCiMgCiMgZGVzYyRzZFtkZXNjJFZhcmlhYmxlID09ICJXb21hbiJdIDwtICIiCiMgZGVzYyRzZFtkZXNjJFZhcmlhYmxlID09ICJFZHVjYXRpb24gcHJpbWFyeS9zZWNvbmRhcnkiXSA8LSAiIgojIGRlc2Mkc2RbZGVzYyRWYXJpYWJsZSA9PSAiRWR1Y2F0aW9uIHRlcnRpYXJ5IGxvdyJdIDwtICIiCiMgZGVzYyRzZFtkZXNjJFZhcmlhYmxlID09ICJFZHVjYXRpb24gdGVydGlhcnkgaGlnaCJdIDwtICIiCiMgZGVzYyRzZFtkZXNjJFZhcmlhYmxlID09ICJNaWdyYXRpb24gYmFja2dyb3VuZCJdIDwtICIiCiMgCiMgZGVzYyA8LSBkZXNjWywgYygiVmFyaWFibGUiLCAibWluIiwgIm1heCIsICJtZWFuIiwgInNkIiwgIm4iKV0KIyBkZXNjdGFibGUgPC0gZGVzYyAlPiUgZ3Q6Omd0KCkKIyAKIyBkZXNjdGFibGUgPC0gZGVzY3RhYmxlICU+JSAgdGFiX2hlYWRlcih0aXRsZSA9ICJUYWJsZSBYLiBEZXNjcmlwdGl2ZSBzdGF0aXN0aWNzIG9mIGNvdmFyaWF0ZXMiKQojIGRlc2N0YWJsZSAlPiUgZ3RzYXZlKGZpbGVuYW1lID0gInRhYmxlLnBkZiIsIHpvb20gPSAxKQojIAojIGRmJG9wbGMgPC0gYXMubnVtZXJpYyhhcy5jaGFyYWN0ZXIoZGYkb3BsKSkKIyBoZWFkKGRmJG9wbGMpCiMgaGVhZChkZiRvcGwpCiMgCiMgY29ydGFibGUgPC0gZGF0YS5mcmFtZShjb3IoZGZbLGMoIndvbWFuIiwgICJtaWdyIiwgIm9wbGMiLCAibGVlZnRpamQxMCIsICAibmVpZ2hkZW5zIiwgIndvcnRoaG91c2UiKV0pICkKIyAKIyBjb3J0YWJsZSRuYW1lcyA8LSByb3cubmFtZXMoY29ydGFibGUpCiMgY29ydGFibGUgPC0gY29ydGFibGVbLCBjKCJuYW1lcyIsIndvbWFuIiwgICJtaWdyIiwgIm9wbGMiLCAibGVlZnRpamQxMCIsICAibmVpZ2hkZW5zIiwgIndvcnRoaG91c2UiKV0KIyBuYW1lcyhjb3J0YWJsZSkgPC0gYygiVmFyaWFibGVzIiwgIldvbWFuIiwgIk1pZ3JhdGlvbiBiYWNrZ3IiLCAiRWR1YyIsICJBZ2UvMTAiLCAiTmVpZ2hiIGRlbnMiLCAiV09aLXZhbHVlIikKIyBjb3J0YWJsZVtjKDE6NiksIDFdIDwtIGMoIldvbWFuIiwgIk1pZ3JhdGlvbiBiYWNrZ3IiLCAiRWR1YyIsICJBZ2UvMTAiLCAiTmVpZ2hiIGRlbnMiLCAiV09aLXZhbHVlIikKIyAKIyBjb3J0YWJsZVssMl0gPC0gZm9ybWF0KHJvdW5kKGFzLm51bWVyaWMoY29ydGFibGVbLDJdKSwzKSwgbnNtYWxsID0gMykKIyBjb3J0YWJsZVssM10gPC0gZm9ybWF0KHJvdW5kKGFzLm51bWVyaWMoY29ydGFibGVbLDNdKSwzKSwgbnNtYWxsID0gMykKIyBjb3J0YWJsZVssNF0gPC0gZm9ybWF0KHJvdW5kKGFzLm51bWVyaWMoY29ydGFibGVbLDRdKSwzKSwgbnNtYWxsID0gMykKIyBjb3J0YWJsZVssNV0gPC0gZm9ybWF0KHJvdW5kKGFzLm51bWVyaWMoY29ydGFibGVbLDVdKSwzKSwgbnNtYWxsID0gMykKIyBjb3J0YWJsZVssNl0gPC0gZm9ybWF0KHJvdW5kKGFzLm51bWVyaWMoY29ydGFibGVbLDZdKSwzKSwgbnNtYWxsID0gMykKIyAKIyBjb3J0YWJsZVt1cHBlci50cmkoY29ydGFibGUpXSA8LSAiIgojIGNvcnRhYmxlPC1hcy5kYXRhLmZyYW1lKGNvcnRhYmxlKQojIGNvcnRhYmxlIDwtIGNvcnRhYmxlWy0xLF0KIyBjb3J0YWJsZSA8LSBjb3J0YWJsZVssLTddCiMgCiMgcHMgPC0gcHN5Y2g6OmNvcnIudGVzdChkZlssYygid29tYW4iLCAgIm1pZ3IiLCAib3BsYyIsICJsZWVmdGlqZDEwIiwgICJuZWlnaGRlbnMiLCAid29ydGhob3VzZSIpXSkkcAojIHBzIDwtIHBzWy0xLF0KIyBwcyA8LSBwc1ssLTZdCiMgcHMgPC0gZm9ybWF0KHJvdW5kKHBzLCAzKSwgbnNtYWxsID0gMykKIyBwc1t1cHBlci50cmkocHMpXSA8LSAiIgojIHBzPC1hcy5kYXRhLmZyYW1lKHBzKQojIAojIGNvcnRhYmxlIDwtIGNiaW5kKGNvcnRhYmxlLCBwcykKIyBjb3J0YWJsZSA8LSBjb3J0YWJsZVssIGMoIlZhcmlhYmxlcyIsICJXb21hbiIsICJ3b21hbiIsICJNaWdyYXRpb24gYmFja2dyIiwgIm1pZ3IiLCAiRWR1YyIsICJvcGxjIiwgIkFnZS8xMCIsICJsZWVmdGlqZDEwIiwgIk5laWdoYiBkZW5zIiwgIm5laWdoZGVucyIpXQojIG5hbWVzKGNvcnRhYmxlKSA8LSBjKCJWYXJpYWJsZXMiLCAiV29tYW4iLCAicC12YWx1ZSAiLCAiTWlncmF0aW9uIGJhY2tnciIsICJwLXZhbHVlICAiLCAiRWR1YyIsICJwLXZhbHVlICAgIiwgIkFnZS8xMCIsICJwLXZhbHVlICAgICIsICJOZWlnaGIgZGVucyIsICJwLXZhbHVlICAgICAiKQojIAojIGNvcnRhYmxlIDwtIGNvcnRhYmxlICU+JSBndDo6Z3QoKQojIGNvcnRhYmxlIDwtIGNvcnRhYmxlICU+JSAgdGFiX2hlYWRlcih0aXRsZSA9ICJUYWJsZSBYLiBDb3JyZWxhdGlvbiBtYXRyaXggb2YgY292YXJpYXRlcyIpCiMgCiMgY29ydGFibGUgJT4lIGd0c2F2ZShmaWxlbmFtZSA9ICJjb3JzLnBkZiIsIHpvb20gPSAxKQoKCgojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwojIERFU0NSSVBUSU9OUyBYcwojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCiMgCiMgYWdncmVnYXRlKGRmWywgMjcxOjI3M10sIGxpc3QoZGYkd29tYW4pLCBtZWFuKQojIGFnZ3JlZ2F0ZShkZlssIDI3MToyNzNdLCBsaXN0KGRmJG9wbCksIG1lYW4pCiMgYWdncmVnYXRlKGRmWywgMjcxOjI3M10sIGxpc3QoZGYkbWlnciksIG1lYW4pCiMgCiMgYWdncmVnYXRlKGRmWywgMjc0OjI3OV0sIGxpc3QoZGYkd29tYW4pLCBtZWFuKQojIGFnZ3JlZ2F0ZShkZlssIDI3NDoyNzldLCBsaXN0KGRmJG9wbCksIG1lYW4pCiMgYWdncmVnYXRlKGRmWywgMjc0OjI3OV0sIGxpc3QoZGYkbWlnciksIG1lYW4pCiMgCiMgYWdncmVnYXRlKGRmWywgMjgwOjMxM10sIGxpc3QoZGYkd29tYW4pLCBtZWFuKQojIGFnZ3JlZ2F0ZShkZlssIDI4MDozMTNdLCBsaXN0KGRmJG1pZ3IpLCBtZWFuKQojIGFnZ3JlZ2F0ZShkZlssIDI4MDozMTNdLCBsaXN0KGRmJG1pZ3IpLCBtZWFuKQojIAojIHhzIDwtIGxpc3QoKQojIGZvciAoaSBpbiAyNzE6MzEzKSB7CiMgIHhzW1tpXV0gPC0gbG0obG9nMTAoZGZbLCBpXSsxKSB+IHdvbWFuICsgb3BsICsgbWlnciArIGxlZWZ0aWpkMTAgKyBuZWlnaGRlbnMgKyB3b3J0aGhvdXNlLCBkYXRhID0gZGYpCiMgfQojIHhzW3NhcHBseSh4cywgaXMubnVsbCldIDwtIE5VTEwKIyBzdW1tYXJ5KHhzW1sxXV0pCiMgCiMgIyBtYWluIGVmZmVjdHMKIyBvbmVfYnJhY2tldCA8LSBsaXN0KAojICAgYygiRWR1Y2F0aW9uIHRlcnQuIGhpZ2ggPSByZWYuIiwgIkVkdWMuIHByaW0uL3NlYy4iLCAiRWR1Yy4gdGVydC4gbG93IikpCiMgCiMgZm9yIChpIGluIDE6bGVuZ3RoKHhzKSl7CiMgeHNtW1tpXV0gPC0gZHdwbG90KHhzW1tpXV0sCiMgICAgICAgICAgICAgICBkb3RfYXJncyA9IGxpc3QoY29sb3IgPSAiYmxhY2siLCBzaXplID0gMC41LCBzaGFwZSA9IDEpLCAjIGNvbG9yIGZvciB0aGUgZG90CiMgICAgICAgICAgICAgICB3aGlza2VyX2FyZ3MgPSBsaXN0KHNpemUgPSAxLCBjb2xvciA9ICJkYXJrZ3JleSIpLCAgICMgY29sb3IgZm9yIHRoZSB3aGlza2VyCiMgICAgICAgICAgICAgICB2bGluZSA9IGdncGxvdDI6Omdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsICAjIHB1dCB2bGluZSBfYmVoaW5kXyBjb2Vmczsgc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9mc29sdC9kb3R3aGlza2VyL2lzc3Vlcy84NAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmV0eXBlID0gMiwKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplID0gMSkpICU+JSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIG1ha2UgbW9kZWwgdmFyaWFibGUKIyAgICAgcmVsYWJlbF9wcmVkaWN0b3JzKGMoCiMgICAgICAgIndvbWFuIiA9ICIgIiwKIyAgICAgICAib3BsMSIgPSAiICAiLAojICAgICAgICJvcGwyIiA9ICIgICAiLAojICAgICAgICJtaWdyIiA9ICIgICAgIiwKIyAgICAgICAibWlnciIgPSAiICAgICAgIiwKIyAgICAgICAibGVlZnRpamQxMCIgPSAiICAgICAgICIsCiMgICAgICAgIm5laWdoZGVucyIgPSAiICAgICAgICAiLAojICAgICAgICJ3b3J0aGhvdXNlIiA9ICIgICAgICAgICAiCiMgICAgICkpICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLAojICAgICAgICAgICAgICAgIGF4aXMudGV4dCA9IGVsZW1lbnRfdGV4dChjb2xvciA9ICJncmV5IikpICsgCiMgICAgIHRoZW1lX21pbmltYWwoKSAKIyB9CiMgCiMgCiMgbGFicyA8LSBkd3Bsb3QoeHNbWzFdXSwKIyAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gIndoaXRlIiwgc2l6ZSA9IDAsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKIyAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMCwgY29sb3IgPSAid2hpdGUiKSkgJT4lICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKIyAgICAgIndvbWFuIiA9ICJXb21hbiIsCiMgICAgICJvcGwxIiA9ICJQcmltL1NlYyBFZHVjIiwKIyAgICAgIm9wbDIiID0gIkxvd2VyIFRlcnQiLAojICAgICAibWlnciIgPSAiTWlnciBCYWNrZ3IiLAojICAgICAibGVlZnRpamQxMCIgPSAiQWdlLzEwIiwKIyAgICAgIm5laWdoZGVucyIgPSAiTmVpZ2hiIERlbnMiLAojICAgICAid29ydGhob3VzZSIgPSAiSG91c2UgVmFsIgojICAgKSkgKyB0aGVtZShsZWdlbmQucG9zaXRpb24gPSAibm9uZSIsCiMgICAgICAgICAgICAgIGF4aXMudGV4dCA9IGVsZW1lbnRfdGV4dChjb2xvciA9ICJibGFjayIpLAojICAgICAgICAgICAgICBwYW5lbC5ncmlkLm1ham9yID0gZWxlbWVudF9saW5lKGNvbG9yID0gIndoaXRlIiksCiMgICAgICAgICAgICAgIHBhbmVsLmdyaWQubWlub3IgPSBlbGVtZW50X2xpbmUoY29sb3IgPSAid2hpdGUiKSwKIyAgICAgICAgICAgICAgcGFuZWwuZ3JpZC5tYWpvci54ID0gZWxlbWVudF9ibGFuaygpLAojICAgICAgICAgICAgICBwYW5lbC5ncmlkLm1ham9yLnkgPSBlbGVtZW50X2JsYW5rKCksCiMgICAgICAgICAgICAgIHBhbmVsLmdyaWQubWlub3IueCA9IGVsZW1lbnRfYmxhbmsoKSwKIyAgICAgICAgICAgICAgcGFuZWwuZ3JpZC5taW5vci55ID0gZWxlbWVudF9ibGFuaygpLAojICAgICAgICAgICAgICBwYW5lbC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGZpbGwgPSAid2hpdGUiKSwKIyAgICAgICAgICAgICAgYXhpcy50ZXh0LnggPSBlbGVtZW50X2JsYW5rKCksCiMgICAgICAgICAgICAgIGF4aXMudGlja3MueCA9IGVsZW1lbnRfYmxhbmsoKSwKIyAgICAgICAgICAgICAgYXhpcy50aWNrcy55ID0gZWxlbWVudF9ibGFuaygpKQojIAojICMgdW5pLCBoYm8sIG1ibwojIHNjaG9vbCA8LSBwbG90X2dyaWQobGFicywgeHNtW1sxXV0sIHhzbVtbMl1dLCB4c21bWzNdXSwgbnJvdyA9IDEsIGxhYmVscyA9IGMoIiIsbmFtZXMoZGYpWzI3MToyNzNdKSwgbGFiZWxfc2l6ZSA9IDgsIHJlbF93aWR0aHMgPSBjKDAuMiwxLDEsMSkpCiMgCiMgIyBzYXZlCiMgZ2dzYXZlKCJzY2hvb2wucGRmIiwgcGxvdCA9IHNjaG9vbCwgZGV2aWNlID0gInBkZiIsCiMgICAgICAgIHNjYWxlID0gMSwgd2lkdGggPSAxMCwgaGVpZ2h0ID0gNSwgdW5pdHMgPSBjKCJpbiIpLAojICAgICAgICBkcGkgPSAicmV0aW5hIikKIyAKIyAKIyAjIHZlZ2FuIGV0Yy4KIyBzb2NlY28gPC0gcGxvdF9ncmlkKGxhYnMsIHhzbVtbNF1dLCB4c21bWzVdXSwgeHNtW1s2XV0seHNtW1s3XV0seHNtW1s4XV0seHNtW1s5XV0sIG5yb3cgPSAxLCBsYWJlbHMgPSBjKCIiLG5hbWVzKGRmKVsyNzQ6Mjc5XSksIGxhYmVsX3NpemUgPSA4LAojICAgICAgICAgICByZWxfd2lkdGhzID0gYygwLjIsMSwxLDEsMSwxLDEpKQojICMgc2F2ZQojIGdnc2F2ZSgic29jZWNvLnBkZiIsIHBsb3QgPSBzb2NlY28sIGRldmljZSA9ICJwZGYiLAojICAgICAgICBzY2FsZSA9IDEsIHdpZHRoID0gMTIsIGhlaWdodCA9IDUsIHVuaXRzID0gYygiaW4iKSwKIyAgICAgICAgZHBpID0gInJldGluYSIpCiMgCiMgCiMgCiMgCiMgIyBmZW1hbGUgbmFtZXMKIyBmZW1uYW1lcyA8LSBwbG90X2dyaWQoeHNtW1sxMF1dLCB4c21bWzExXV0sIHhzbVtbMTJdXSwgeHNtW1sxM11dLCB4c21bWzE0XV0seHNtW1sxNV1dLAojICAgICAgICAgICB4c21bWzE2XV0seHNtW1sxN11dLHhzbVtbMThdXSx4c21bWzE5XV0seHNtW1syMF1dLAojICAgICAgICAgICB4c21bWzIxXV0seHNtW1syMl1dLHhzbVtbMjNdXSx4c21bWzI0XV0seHNtW1syNV1dLAojICAgICAgICAgICB4c21bWzI2XV0sIG5yb3cgPSA0LCBsYWJlbHMgPSBuYW1lcyhkZilbMjgwOjI5Nl0sIGxhYmVsX3NpemUgPSA2KQojIAojICMgbWFsZSBuYW1lcwojIG1hbG5hbWVzIDwtIHBsb3RfZ3JpZCh4c21bWzI3XV0sIHhzbVtbMjhdXSwgeHNtW1syOV1dLCB4c21bWzMwXV0sIHhzbVtbMzFdXSx4c21bWzMyXV0sCiMgICAgICAgICAgIHhzbVtbMzNdXSx4c21bWzM0XV0seHNtW1szNV1dLHhzbVtbMzZdXSx4c21bWzM3XV0sCiMgICAgICAgICAgIHhzbVtbMzhdXSx4c21bWzM5XV0seHNtW1s0MF1dLHhzbVtbNDFdXSx4c21bWzQyXV0sCiMgICAgICAgICAgIHhzbVtbNDNdXSwgbnJvdyA9IDQsIGxhYmVscyA9IG5hbWVzKGRmKVsyOTc6MzEzXSkKIyAKIyBzdW1tYXJ5KHhzW1s0M11dKQoKCiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwojIE1PREVMUwojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCgoKCiMgcGFyYWxlbGxpemUgdGhlIGVzdGltYXRpb24KIyBjbG9zZUFsbENvbm5lY3Rpb25zKCkKIyBudW1Db3JlcyA8LSBkZXRlY3RDb3JlcygpCiMgcmVnaXN0ZXJEb1BhcmFsbGVsKGNvcmVzID0gOCkKCgoKYyA8LSA4OAojIG1haW4gZWZmZWN0cwpzdW1tYXJ5KGxtKGRmWyFkZltbY11dPjEwMDAwLCBjKGMpXSB+IGFzLmZhY3Rvcih3b21hbikgKyBsZWVmdGlqZDEwICsgYXMuZmFjdG9yKG9wbCkgKyBhcy5mYWN0b3Iod29yaykgKyBhcy5mYWN0b3IoaW5jb21lKSArIGFzLmZhY3RvcihtaWdyMykgKyBoaHNpemUgKyBhcy5mYWN0b3IocG9saXRpY3MpICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwKICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2NdXT4xMDAwMCxdKSkKCgpjbGFzcyhhcy5mYWN0b3IoZGYkd29tYW4pKQoKCm1vZGVscyA8LSBsaXN0KCkKbW9kZWxzaW50IDwtIGxpc3QoKQptb2RlbHNzcSA8LSBsaXN0KCkKbW9kZWxsb2cgPC0gbGlzdCgpCm1vZGVsbG0gPC0gbGlzdCgpCmVzdCA8LSBsaXN0KCkKZXN0bG0gPC0gbGlzdCgpCgpkZiRvcGwgPC1yZWxldmVsKGRmJG9wbCwgcmVmID0gMSkKZGYkbWlncjMgPC1yZWxldmVsKGFzLmZhY3RvcihkZiRtaWdyMyksIHJlZiA9IDEpCmRmJHBvbGl0aWNzIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkcG9saXRpY3MpLCByZWYgPSAxKQpkZiRpbmNvbWUgPC1yZWxldmVsKGFzLmZhY3RvcihkZiRpbmNvbWUpLCByZWYgPSAyKQojZm9yZWFjaCAoaSA9IDEzOjE4NCkgJWRvcGFyJSB7CmZvciAoaSBpbiAxNDoxODUpIHsgIyAtLT4gMTY4IG5lZ2F0aXZlIGJpbm9taWFscyB3aXRoIGRpZmZlcmVudCBuZXRzaXplcy4gV2UgdGhlbiBsb29rIGF0IGRpc3RyaWJ1dGlvbnMgb2YgY29lZmZpY2llbnRzIGFjcm9zcyB0aG9zZS4KICAKICAjaWYgKGkgJWluJSBjKDE4LCA2MSwgMTA0LCAxNDcpKSBuZXh0ICNmYXNjaW5hdGluZyAxOCwgNjEsIDEwNCwgMTQ3IC0tPiB0aGUgY29yb25hIGVzdGltYXRvciBob2xkb3V0IGluaXRpYWxseSBkaWRuJ3Qgd29yaywgcmVtb3Zpbmcgb3V0bGllcnMgd29ya3MsIGFsc28gaGFzIHVuZHVlIGVmZmVjdHMKICAgIGRmWyxjKGkpXSA8LSByb3VuZChkZlssIGMoaSldLCAwKQogICAgCiAgICAjIG1haW4gZWZmZWN0cwogICAgIyBtb2RlbHNbW2ldXSA8LSBnbG0ubmIoZGZbIWRmW1tpXV0+MTAwMDAsIGMoaSldIH4gYXMuZmFjdG9yKHdvbWFuKSArIGxlZWZ0aWpkMTAgKyBhcy5mYWN0b3Iob3BsKSArIGFzLmZhY3Rvcih3b3JrKSArIGFzLmZhY3RvcihpbmNvbWUpICsgYXMuZmFjdG9yKG1pZ3IzKSArIGhoc2l6ZSArIGFzLmZhY3Rvcihwb2xpdGljcykgKyBuZWlnaGRlbnMgKyB3b3J0aGhvdXNlLAogICAgIyAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2ldXT4xMDAwMCxdLCBpbml0LnRoZXRhID0gMS4wMzI3MTMxNTYsIGxpbmsgPSBsb2cpCgogICAgIyAjIG1haW4gZWZmZWN0cwogICAgIyBtb2RlbHNpbnRbW2ldXSA8LSBnbG0ubmIoZGZbIWRmW1tpXV0+MTAwMDAsIGMoaSldIH4gYXMuZmFjdG9yKHdvbWFuKSArIGxlZWZ0aWpkMTAgKyBhcy5mYWN0b3Iob3BsKSArIGFzLmZhY3Rvcih3b3JrKSArIGFzLmZhY3RvcihpbmNvbWUpICsgYXMuZmFjdG9yKG1pZ3IzKSArIGhoc2l6ZSArIGFzLmZhY3Rvcihwb2xpdGljcykgKyBuZWlnaGRlbnMgKyB3b3J0aGhvdXNlLAogICAgIyAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbaV1dPjEwMDAwLF0sIGluaXQudGhldGEgPSAxLjAzMjcxMzE1NiwgbGluayA9IGxvZykKICAgCiAgICBtb2RlbGxvZ1tbaV1dIDwtIGxtKGxvZzEwKGRmWyFkZltbaV1dPjEwMDAwLCBjKGkpXSkgfiBhcy5mYWN0b3Iod29tYW4pICsgbGVlZnRpamQxMCArIGFzLmZhY3RvcihvcGwpICsgYXMuZmFjdG9yKHdvcmspICsgYXMuZmFjdG9yKGluY29tZSkgKyBhcy5mYWN0b3IobWlncjMpICsgaGhzaXplICsgYXMuZmFjdG9yKHBvbGl0aWNzKSArIG5laWdoZGVucyArIHdvcnRoaG91c2UsCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2ldXT4xMDAwMCxdKQoKICAgICMgbW9kZWxsbVtbaV1dIDwtIGxtKGRmWyFkZltbaV1dPjEwMDAwLCBjKGkpXSB+IGFzLmZhY3Rvcih3b21hbikgKyBsZWVmdGlqZDEwICsgYXMuZmFjdG9yKG9wbCkgKyBhcy5mYWN0b3Iod29yaykgKyBhcy5mYWN0b3IoaW5jb21lKSArIGFzLmZhY3RvcihtaWdyMykgKyBoaHNpemUgKyBhcy5mYWN0b3IocG9saXRpY3MpICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwKICAgICMgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2ldXT4xMDAwMCxdKQogICAgIyAKICAgICMgIyAjIHUtc2hhcGUgZm9yIGFnZSBuZWdiaW4KICAgICMgbW9kZWxzc3FbW2ldXSA8LSBnbG0ubmIoZGZbIWRmW1tpXV0+MTAwMDAsIGMoaSldIH4gYXMuZmFjdG9yKHdvbWFuKSArIGxlZWZ0aWpkMTAgKyBsZWVmdGlqZDEwc3EgKyBhcy5mYWN0b3Iob3BsKSArIG1pZ3IgKyBuZWlnaGRlbnMgKyB3b3J0aGhvdXNlLCAKICAgICMgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1tpXV0+MTAwMDAsXSwgaW5pdC50aGV0YSA9IDEuMDMyNzEzMTU2LCBsaW5rID0gbG9nKQogICAgCiAgICAjIGdldCBDSXMgZm9yIG1haW4gZWZmZWN0cywgbWF5IGJlIHVzZWZ1bCBmb3Igdml6IGxhdGVyCiAgICAjZXN0W1tpXV0gPC0gY2JpbmQoRXN0aW1hdGUgPSBjb2VmKG1vZGVsc1tbaV1dKSwgY29uZmludChtb2RlbHNbW2ldXSkpCiAgICAjZXN0bG1bW2ldXSA8LSBjYmluZChFc3RpbWF0ZSA9IGNvZWYobW9kZWxsbVtbaV1dKSwgY29uZmludChtb2RlbGxtW1tpXV0pKQogICAgCn0KCiNlc3Rbc2FwcGx5KGVzdCwgaXMubnVsbCldIDwtIE5VTEwKbW9kZWxzW3NhcHBseShtb2RlbHMsIGlzLm51bGwpXSA8LSBOVUxMCm1vZGVsc2ludFtzYXBwbHkobW9kZWxzaW50LCBpcy5udWxsKV0gPC0gTlVMTAplc3Rbc2FwcGx5KGVzdCwgaXMubnVsbCldIDwtIE5VTEwKZXN0bG1bc2FwcGx5KGVzdGxtLCBpcy5udWxsKV0gPC0gTlVMTAptb2RlbGxvZ1tzYXBwbHkobW9kZWxsb2csIGlzLm51bGwpXSA8LSBOVUxMCm1vZGVsbG1bc2FwcGx5KG1vZGVsbG0sIGlzLm51bGwpXSA8LSBOVUxMCm1vZGVsc3NxW3NhcHBseShtb2RlbHNzcSwgaXMubnVsbCldIDwtIE5VTEwKCgoKIyBuaWNlIGRmIHdpdGggQ0lzCmVzdGltYXRlcyA8LSBsaXN0KCkgICAgIApmb3IgKGkgaW4gMTpsZW5ndGgoZXN0KSkgeyAjIC0tPiAgc29tZSBkYXRhIGNydW5jaGluZyB0byB2aXN1YWxpemUKICAKCiAgZXN0aW1hdGVzW1tpXV0gPC0gZGF0YS5mcmFtZSh0KGVzdFtbaV1dKSkKICBlc3RpbWF0ZXNbW2ldXSA8LSBjYmluZChlc3RpbWF0ZXNbW2ldXSwgZGF0YS5mcmFtZShjKCJlc3QiLCAibGIiLCAidWIiKSkpCiAgbmFtZXMoZXN0aW1hdGVzW1tpXV0pIDwtIGMoImludGVyY2VwdCIsICAid29tYW4iLCAiYWdlIiwgICJvcGwxIiwgICJvcGwyIiwgIm1pZ3IiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuZWlnaGRlbnMiLCJ3b3J0aGhvdXNlIiwgInZhciIpCiAgcm93bmFtZXMoZXN0aW1hdGVzW1tpXV0pIDwtIDE6bnJvdyhlc3RpbWF0ZXNbW2ldXSkKCn0KZXN0aW1hdGVzIDwtIGJpbmRfcm93cyhlc3RpbWF0ZXMpCgojIG5pY2UgZGYgd2l0aCBDSXMKZXN0aW1hdGVzbG0gPC0gbGlzdCgpICAgICAKZm9yIChpIGluIDE6bGVuZ3RoKGVzdGxtKSkgeyAjIC0tPiAgc29tZSBkYXRhIGNydW5jaGluZyB0byB2aXN1YWxpemUKICAKICAKICBlc3RpbWF0ZXNsbVtbaV1dIDwtIGRhdGEuZnJhbWUodChlc3RsbVtbaV1dKSkKICBlc3RpbWF0ZXNsbVtbaV1dIDwtIGNiaW5kKGVzdGltYXRlc2xtW1tpXV0sIGRhdGEuZnJhbWUoYygiZXN0IiwgImxiIiwgInViIikpKQogIG5hbWVzKGVzdGltYXRlc2xtW1tpXV0pIDwtIGMoImludGVyY2VwdCIsICAid29tYW4iLCAiYWdlIiwgICJvcGwyIiwgICJvcGwxIiwgIm1pZ3IiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICJuZWlnaGRlbnMiLCJ3b3J0aGhvdXNlIiwgInZhciIpCiAgcm93bmFtZXMoZXN0aW1hdGVzbG1bW2ldXSkgPC0gMTpucm93KGVzdGltYXRlc2xtW1tpXV0pCiAgCn0KZXN0aW1hdGVzbG0gPC0gYmluZF9yb3dzKGVzdGltYXRlc2xtKQpzdW1tYXJ5KG1vZGVsbG1bWzFdXSkKc3VtbWFyeShlc3RpbWF0ZXNsbSRvcGwxKQpzdW1tYXJ5KGVzdGltYXRlc2xtJG9wbDIpCnN1bW1hcnkobW9kZWxsbVtbMTcyXV0pCiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQojIFZpeiBvZiByZXN1bHRzCgojIG1haW4gZWZmZWN0cwpmb3VyX2JyYWNrZXRzIDwtIGxpc3QoCiAgYygiRWR1YyB0ZXJ0IGhpZ2g9cmVmIiwgIkVkdWMgcHJpbS9zZWMiLCAiRWR1YyB0ZXJ0IGxvdyIpLAogIGMoIj5tb2RhbCBpbmM9cmVmIiwgIjw9bW9kYWwgaW5jb21lIiwgIlVua24gaW5jb21lIiksCiAgYygiRHV0Y2ggbWFqPXJlZiIsICJXZXN0IGJhY2tnciIsICJub24tV2VzdCBiYWNrZ3IiKSwKICBjKCJMZWZ0IHZvdGU9cmVmIiwgIlJpZ2h0IHZvdGUiLCAiTm8vYmxhbmNvIHZvdGUiKSkKCiBsb2dtb2RlbCA8LSB7ZHdwbG90KG1vZGVsbG9nLAogICAgICAgICBkb3RfYXJncyA9IGxpc3QoY29sb3IgPSAiYmxhY2siLCBzaXplID0gMC43NSwgc2hhcGUgPSAxKSwgIyBjb2xvciBmb3IgdGhlIGRvdAogICAgICAgICB3aGlza2VyX2FyZ3MgPSBsaXN0KHNpemUgPSAwLjI1LCBjb2xvciA9ICJkYXJrZ3JleSIsIGFscGhhID0gMC41KSwgICAjIGNvbG9yIGZvciB0aGUgd2hpc2tlcgogICAgICAgICB2bGluZSA9IGdncGxvdDI6Omdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsICAjIHB1dCB2bGluZSBfYmVoaW5kXyBjb2Vmczsgc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9mc29sdC9kb3R3aGlza2VyL2lzc3Vlcy84NAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gImdyZXk2MCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ldHlwZSA9IDIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplID0gMSkpICU+JSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIG1ha2UgbW9kZWwgdmFyaWFibGUKICAgIHJlbGFiZWxfcHJlZGljdG9ycyhjKAogICAgICAiYXMuZmFjdG9yKHdvbWFuKTEiID0gIldvbWVuIiwKICAgICAgImxlZWZ0aWpkMTAiID0gIkFnZS8xMCIsCiAgICAgICJhcy5mYWN0b3Iob3BsKTEiID0gIkVkdWMgcHJpbS9zZWMiLAogICAgICAiYXMuZmFjdG9yKG9wbCkyIiA9ICJFZHVjIHRlcnQgbG93IiwKICAgICAgImFzLmZhY3Rvcih3b3JrKTEiID0gIldvcmtpbmciLAogICAgICAiYXMuZmFjdG9yKGluY29tZSkxIiA9ICI8PW1vZGFsIGluY29tZSIsCiAgICAgICJhcy5mYWN0b3IoaW5jb21lKTMiID0gIlVua24gaW5jb21lIiwKICAgICAgImFzLmZhY3RvcihtaWdyMykyIiA9ICJXZXN0IGJhY2tnciIsCiAgICAgICJhcy5mYWN0b3IobWlncjMpMyIgPSAibm9uLVdlc3QgYmFja2dyIiwKICAgICAgImhoc2l6ZSIgPSAiSG91c2Vob2xkIHNpemUiLAogICAgICAiYXMuZmFjdG9yKHBvbGl0aWNzKTEiID0gIlJpZ2h0IHZvdGUiLAogICAgICAiYXMuZmFjdG9yKHBvbGl0aWNzKTMiID0gIk5vL2JsYW5jbyB2b3RlIiwKICAgICAgIm5laWdoZGVucyIgPSAiTmVpZ2guIGRlbnNpdHkiLAogICAgICAid29ydGhob3VzZSIgPSAiV09aLXZhbHVlcyIKICAgICkpICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLAogICAgICAgICAgICAgICBheGlzLnRleHQgPSBlbGVtZW50X3RleHQoY29sb3IgPSAiZ3JleSIpKSArIAogICAgdGhlbWVfbWluaW1hbCgpICsKICAgICNnZ3RpdGxlKCJBKSBOZWdhdGl2ZSBiaW5vbWlhbCBtb2RlbCBvZiBuZXR3b3JrIHNpemUiKSArCiAgICB4bGFiKCJCIG9uIExvZyhuZXR3b3JrIHNpemUgY291bnQpIil9ICAlPiUKICBhZGRfYnJhY2tldHMoZm91cl9icmFja2V0cywgZm9udFNpemUgPSAuNikKCiAKIAoge2R3cGxvdChtb2RlbGxtLAogICAgICAgICBkb3RfYXJncyA9IGxpc3QoY29sb3IgPSAiYmxhY2siLCBzaXplID0gMC43NSwgc2hhcGUgPSAxKSwgIyBjb2xvciBmb3IgdGhlIGRvdAogICAgICAgICB3aGlza2VyX2FyZ3MgPSBsaXN0KHNpemUgPSAwLjI1LCBjb2xvciA9ICJkYXJrZ3JleSIsIGFscGhhID0gMC41KSwgICAjIGNvbG9yIGZvciB0aGUgd2hpc2tlcgogICAgICAgICB2bGluZSA9IGdncGxvdDI6Omdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsICAjIHB1dCB2bGluZSBfYmVoaW5kXyBjb2Vmczsgc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9mc29sdC9kb3R3aGlza2VyL2lzc3Vlcy84NAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gImdyZXk2MCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ldHlwZSA9IDIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplID0gMSkpICU+JSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIG1ha2UgbW9kZWwgdmFyaWFibGUKICAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICAgICJhcy5mYWN0b3Iod29tYW4pMSIgPSAiV29tZW4iLAogICAgICAgImxlZWZ0aWpkMTAiID0gIkFnZS8xMCIsCiAgICAgICAiYXMuZmFjdG9yKG9wbCkxIiA9ICJFZHVjIHByaW0vc2VjIiwKICAgICAgICJhcy5mYWN0b3Iob3BsKTIiID0gIkVkdWMgdGVydCBsb3ciLAogICAgICAgImFzLmZhY3Rvcih3b3JrKTEiID0gIldvcmtpbmciLAogICAgICAgImFzLmZhY3RvcihpbmNvbWUpMSIgPSAiPD1tb2RhbCBpbmNvbWUiLAogICAgICAgImFzLmZhY3RvcihpbmNvbWUpMyIgPSAiVW5rbiBpbmNvbWUiLAogICAgICAgImFzLmZhY3RvcihtaWdyMykyIiA9ICJXZXN0IGJhY2tnciIsCiAgICAgICAiYXMuZmFjdG9yKG1pZ3IzKTMiID0gIm5vbi1XZXN0IGJhY2tnciIsCiAgICAgICAiaGhzaXplIiA9ICJIb3VzZWhvbGQgc2l6ZSIsCiAgICAgICAiYXMuZmFjdG9yKHBvbGl0aWNzKTIiID0gIkxlZnQgdm90ZSIsCiAgICAgICAiYXMuZmFjdG9yKHBvbGl0aWNzKTMiID0gIk5vL2JsYW5jbyB2b3RlIiwKICAgICAgICJuZWlnaGRlbnMiID0gIk5laWdoLiBkZW5zaXR5IiwKICAgICAgICJ3b3J0aGhvdXNlIiA9ICJXT1otdmFsdWVzIgogICAgICkpICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLAogICAgICAgICAgICAgICAgYXhpcy50ZXh0ID0gZWxlbWVudF90ZXh0KGNvbG9yID0gImdyZXkiKSkgKyAKICAgICB0aGVtZV9taW5pbWFsKCkgKwogICAgICNnZ3RpdGxlKCJBKSBOZWdhdGl2ZSBiaW5vbWlhbCBtb2RlbCBvZiBuZXR3b3JrIHNpemUiKSArCiAgICAgeGxhYigiQiBvbiBMb2cobmV0d29yayBzaXplIGNvdW50KSIpfSAgJT4lCiAgIGFkZF9icmFja2V0cyhmb3VyX2JyYWNrZXRzLCBmb250U2l6ZSA9IC42KQoKIyBzYXZlCmdnc2F2ZSgicmVzdWx0c19sb2cucGRmIiwgcGxvdCA9IGxvZ21vZGVsLCBkZXZpY2UgPSAicGRmIiwKICAgICAgIHNjYWxlID0gMSwgd2lkdGggPSA2LCBoZWlnaHQgPSA2LCB1bml0cyA9IGMoImluIiksCiAgICAgICBkcGkgPSAicmV0aW5hIikKCgojIGNvbnRyYXN0aW5nIGxvdyBlbiBzZWMgZWR1Ywptb2RlbHMxIDwtIGxpc3QoKQpkZiRvcGwgPC1yZWxldmVsKGRmJG9wbCwgcmVmID0gMSkKaGVhZChkZiRvcGwpCmZvciAoaSBpbiAxMzoxODQpIHsgIyAtLT4gMTY4IG5lZ2F0aXZlIGJpbm9taWFscyB3aXRoIGRpZmZlcmVudCBuZXRzaXplcy4gV2UgdGhlbiBsb29rIGF0IGRpc3RyaWJ1dGlvbnMgb2YgY29lZmZpY2llbnRzIGFjcm9zcyB0aG9zZQogIG1vZGVsczFbW2ldXSA8LSBnbG0ubmIoZGZbIWRmW1tpXV0+MTAwMDAsIGMoaSldIH4gYXMuZmFjdG9yKHdvbWFuKSArIGxlZWZ0aWpkMTAgKyBhcy5mYWN0b3Iob3BsKSArIG1pZ3IgKyBuZWlnaGRlbnMgKyB3b3J0aGhvdXNlLCAKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbaV1dPjEwMDAwLF0sIGluaXQudGhldGEgPSAxLjAzMjcxMzE1NiwgbGluayA9IGxvZykKfQptb2RlbHMxW3NhcHBseShtb2RlbHMxLCBpcy5udWxsKV0gPC0gTlVMTApkd3Bsb3QobW9kZWxzMSwKICAgICAgICBkb3RfYXJncyA9IGxpc3QoY29sb3IgPSAiYmxhY2siLCBzaXplID0gMC43NSwgc2hhcGUgPSAxKSwgIyBjb2xvciBmb3IgdGhlIGRvdAogICAgICAgIHdoaXNrZXJfYXJncyA9IGxpc3Qoc2l6ZSA9IDAuMjUsIGNvbG9yID0gImRhcmtncmV5IiwgYWxwaGEgPSAwLjUpLCAgICMgY29sb3IgZm9yIHRoZSB3aGlza2VyCiAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gImdyZXk2MCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmV0eXBlID0gMiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAKCm1vZGVsc2ludCA8LSBsaXN0KCkKZm9yIChpIGluIDEzOjE4NCkgeyAjIC0tPiAxNjggbmVnYXRpdmUgYmlub21pYWxzIHdpdGggZGlmZmVyZW50IG5ldHNpemVzLiBXZSB0aGVuIGxvb2sgYXQgZGlzdHJpYnV0aW9ucyBvZiBjb2VmZmljaWVudHMgYWNyb3NzIHRob3NlLgogIAogICNpZiAoaSAlaW4lIGMoMTgsIDYxLCAxMDQsIDE0NykpIG5leHQgI2Zhc2NpbmF0aW5nIDE4LCA2MSwgMTA0LCAxNDcgLS0+IHRoZSBjb3JvbmEgZXN0aW1hdG9yIGhvbGRvdXQgaW5pdGlhbGx5IGRpZG4ndCB3b3JrLCByZW1vdmluZyBvdXRsaWVycyB3b3JrcywgYWxzbyBoYXMgdW5kdWUgZWZmZWN0cwogIGRmWyxjKGkpXSA8LSByb3VuZChkZlssIGMoaSldLCAwKQogIAogICMgbWFpbiBlZmZlY3RzCiAgbW9kZWxzaW50W1tpXV0gPC0gbG0oZGZbIWRmW1tpXV0+MTAwMCwgYyhpKV0gfiBhcy5mYWN0b3Iod29tYW4pICsgYXMuZmFjdG9yKG9wbCkqbGVlZnRpamQxMCArIG1pZ3IgKyB3b3J0aGhvdXNlICsgbmVpZ2hkZW5zICsgbGVlZnRpamQxMCAsIAogICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1tpXV0+MTAwMCxdKQp9Cm1vZGVsc2ludFtzYXBwbHkobW9kZWxzaW50LCBpcy5udWxsKV0gPC0gTlVMTApzdW1tYXJ5KG1vZGVsc2ludFtbMTcwXV0pCgpkd3Bsb3QobW9kZWxzaW50LAogICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgIHdoaXNrZXJfYXJncyA9IGxpc3Qoc2l6ZSA9IDAuMjUsIGNvbG9yID0gImRhcmtncmV5IiwgYWxwaGEgPSAwLjUpLCAgICMgY29sb3IgZm9yIHRoZSB3aGlza2VyCiAgICAgICB2bGluZSA9IGdncGxvdDI6Omdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsICAjIHB1dCB2bGluZSBfYmVoaW5kXyBjb2Vmczsgc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9mc29sdC9kb3R3aGlza2VyL2lzc3Vlcy84NAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmV0eXBlID0gMiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplID0gMSkpIAoKCgojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyBsbSBsb2dyZXN1bHRzIGFyZSBzaW1pbGFyCgpsb2cgPC0gZHdwbG90KG1vZGVsbG9nLAogICAgICAgIGRvdF9hcmdzID0gbGlzdChjb2xvciA9ICJibGFjayIsIHNpemUgPSAwLjc1LCBzaGFwZSA9IDEpLCAjIGNvbG9yIGZvciB0aGUgZG90CiAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKICAgICAgICB2bGluZSA9IGdncGxvdDI6Omdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsICAjIHB1dCB2bGluZSBfYmVoaW5kXyBjb2Vmczsgc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9mc29sdC9kb3R3aGlza2VyL2lzc3Vlcy84NAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiZ3JleTYwIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplID0gMSkpICU+JSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIG1ha2UgbW9kZWwgdmFyaWFibGUKICAgIHJlbGFiZWxfcHJlZGljdG9ycyhjKAogICAgICAiYXMuZmFjdG9yKHdvbWFuKTEiID0gIiAiLAogICAgICAibGVlZnRpamQxMCIgPSAiICAiLAogICAgICAiYXMuZmFjdG9yKG9wbCkxIiA9ICIgICAiLAogICAgICAiYXMuZmFjdG9yKG9wbCkyIiA9ICIgICAgIiwKICAgICAgIm1pZ3IiID0gIiAgICAgICIsCiAgICAgICJuZWlnaGRlbnMiID0gIiAgICAgICAiLAogICAgICAid29ydGhob3VzZSIgPSAiICAgICAgICAiCiAgICApKSArIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIiwKICAgICAgICAgICAgICAgYXhpcy50ZXh0ID0gZWxlbWVudF90ZXh0KGNvbG9yID0gIndoaXRlIiksCiAgICAgICAgICAgICAgIHBsb3QubWFyZ2luID0gbWFyZ2luKDIsIDAsIDIsIDAsICJjbSIpKSArIAogICAgdGhlbWVfbWluaW1hbCgpICsKICAgIGdndGl0bGUoIkIpIExpbmVhciBtb2RlbCBvZiBsb2cobmV0d29yayBzaXplKSIpICsKICAgIHhsYWIoIkIgb24gbG9nKG5ldHdvcmsgc2l6ZSkiKQoKCiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQojIGxtIHJlc3VsdHMgYXJlIHNpbWlsYXIKCmxtIDwtIGR3cGxvdChtb2RlbGxtLAogICAgICAgICAgICAgICBkb3RfYXJncyA9IGxpc3QoY29sb3IgPSAiYmxhY2siLCBzaXplID0gMC43NSwgc2hhcGUgPSAxKSwgIyBjb2xvciBmb3IgdGhlIGRvdAogICAgICAgICAgICAgICB3aGlza2VyX2FyZ3MgPSBsaXN0KHNpemUgPSAwLjI1KSwgICAjIGNvbG9yIGZvciB0aGUgd2hpc2tlcgogICAgICAgICAgICAgICB2bGluZSA9IGdncGxvdDI6Omdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsICAjIHB1dCB2bGluZSBfYmVoaW5kXyBjb2Vmczsgc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9mc29sdC9kb3R3aGlza2VyL2lzc3Vlcy84NAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gImdyZXk2MCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ldHlwZSA9IDIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplID0gMSkpICU+JSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIG1ha2UgbW9kZWwgdmFyaWFibGUKICAgIHJlbGFiZWxfcHJlZGljdG9ycyhjKAogICAgICAiYXMuZmFjdG9yKHdvbWFuKTEiID0gIiAiLAogICAgICAibGVlZnRpamQxMCIgPSAiICAiLAogICAgICAiYXMuZmFjdG9yKG9wbCkxIiA9ICIgICAiLAogICAgICAiYXMuZmFjdG9yKG9wbCkyIiA9ICIgICAgIiwKICAgICAgIm1pZ3IiID0gIiAgICAgICIsCiAgICAgICJuZWlnaGRlbnMiID0gIiAgICAgICAiLAogICAgICAid29ydGhob3VzZSIgPSAiICAgICAgICAiCiAgICApKSAgKyB0aGVtZShsZWdlbmQucG9zaXRpb24gPSAibm9uZSIsCiAgICAgICAgICAgICAgICBheGlzLnRleHQgPSBlbGVtZW50X3RleHQoY29sb3IgPSAid2hpdGUiKSxwbG90Lm1hcmdpbiA9IHVuaXQoYygxLDEsMSwxKSwgImNtIikpICsgCiAgICB0aGVtZV9taW5pbWFsKCkgKwogICAgZ2d0aXRsZSgiQykgTGluZWFyIG1vZGVsIG9mIG5ldHdvcmsgc2l6ZSIpICsKICAgIHhsYWIoIkIgb24gbmV0d29yayBzaXplIGNvdW50IikKCiMgZ290dGEgZml4IHRoZSBtYXJnaW5zCnJvYnVzdCA8LSBwbG90X2dyaWQobmIsIGxvZywgbG0sIG5yb3cgPSAxKQpyb2J1c3QKZ2dzYXZlKCJyb2J1c3QucGRmIiwgcGxvdCA9IHJvYnVzdCwgZGV2aWNlID0gInBkZiIsCiAgICAgICBzY2FsZSA9IDEsIHdpZHRoID0gMTUsIGhlaWdodCA9IDksIHVuaXRzID0gYygiaW4iKSwKICAgICAgIGRwaSA9ICJyZXRpbmEiKQoKCmxtIDwtIAogIAogIHN1bW1hcnkobW9kZWxsb2dbWzE4NV1dKQoKICBkd3Bsb3QobW9kZWxzLAogICAgICAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgICAgICAgIHdoaXNrZXJfYXJncyA9IGxpc3Qoc2l6ZSA9IDAuMjUpLCAgICMgY29sb3IgZm9yIHRoZSB3aGlza2VyCiAgICAgICAgICAgICB2bGluZSA9IGdncGxvdDI6Omdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsICAjIHB1dCB2bGluZSBfYmVoaW5kXyBjb2Vmczsgc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9mc29sdC9kb3R3aGlza2VyL2lzc3Vlcy84NAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmV0eXBlID0gMiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplID0gMSkpCgolPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgcmVsYWJlbF9wcmVkaWN0b3JzKGMoCiAgICAiYXMuZmFjdG9yKHdvbWFuKTEiID0gIiAiLAogICAgImxlZWZ0aWpkMTAiID0gIiAgIiwKICAgICJhcy5mYWN0b3Iob3BsKTEiID0gIiAgICIsCiAgICAiYXMuZmFjdG9yKG9wbCkyIiA9ICIgICAgIiwKICAgICJtaWdyIiA9ICIgICAgICAiLAogICAgIm5laWdoZGVucyIgPSAiICAgICAgICIsCiAgICAid29ydGhob3VzZSIgPSAiICAgICAgICAiCiAgKSkgICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLAogICAgICAgICAgICAgIGF4aXMudGV4dCA9IGVsZW1lbnRfdGV4dChjb2xvciA9ICJ3aGl0ZSIpLHBsb3QubWFyZ2luID0gdW5pdChjKDEsMSwxLDEpLCAiY20iKSkgKyAKICB0aGVtZV9taW5pbWFsKCkgKwogIGdndGl0bGUoIkMpIExpbmVhciBtb2RlbCBvZiBuZXR3b3JrIHNpemUiKSArCiAgeGxhYigiQiBvbiBuZXR3b3JrIHNpemUgY291bnQiKQoKCgoKCgoKCgoKCgoKIyB1LXNoYXBlIGFnZQp0d29fYnJhY2tldCA8LSBsaXN0KAogIGMoIkVkdWNhdGlvbiB0ZXJ0LiBoaWdoID0gcmVmLiIsICJFZHVjYXRpb24gcHJpbS4vc2VjLiIsICJFZHVjYXRpb24gdGVydC4gbG93IiksCiAgYygiQWdlIGludmVydGVkIFUiLCAiQWdlLzEwIiwgIkFnZS8xMF4yIikpCngyIDwtIHtkd3Bsb3QobW9kZWxzc3EsCiAgICAgICBkb3RfYXJncyA9IGxpc3QoY29sb3IgPSAiYmxhY2siLCBzaXplID0gMC43NSwgc2hhcGUgPSAxKSwgIyBjb2xvciBmb3IgdGhlIGRvdAogICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKICAgICAgIHZsaW5lID0gZ2dwbG90Mjo6Z2VvbV92bGluZSh4aW50ZXJjZXB0ID0gMCwgICMgcHV0IHZsaW5lIF9iZWhpbmRfIGNvZWZzOyBzZWUgaHR0cHM6Ly9naXRodWIuY29tL2Zzb2x0L2RvdHdoaXNrZXIvaXNzdWVzLzg0CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gImdyZXk2MCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemUgPSAxKSkgJT4lICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMgbWFrZSBtb2RlbCB2YXJpYWJsZQogIHJlbGFiZWxfcHJlZGljdG9ycyhjKAogICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICJXb21lbiIsCiAgICAibGVlZnRpamQxMCIgPSAiQWdlLzEwIiwKICAgICJsZWVmdGlqZDEwc3EiID0gIkFnZS8xMF4yIiwKICAgICJhcy5mYWN0b3Iob3BsKTEiID0gIkVkdWNhdGlvbiBwcmltLi9zZWMuIiwKICAgICJhcy5mYWN0b3Iob3BsKTIiID0gIkVkdWNhdGlvbiB0ZXJ0LiBsb3ciLAogICAgIm1pZ3IiID0gIk1pZ3JhdGlvbiBiYWNrZ3IuIiwKICAgICJuZWlnaGRlbnMiID0gIk5laWdoYi4gZGVuc2l0eS8xSyIsCiAgICAid29ydGhob3VzZSIgPSAiTmVpZ2hiLiBXT1otdmFsdWVzLzEwMEsuIgogICkpICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiKSArIAogIHRoZW1lX21pbmltYWwoKSAgKwogICAgZ2d0aXRsZSgiQikgSW5jbHVkaW5nIG1haW4gYW5kIHNxdWFyZWQgYWdlIGVmZmVjdCwgaW52ZXJ0ZWQgVS1zaGFwZSIpICsKICAgIHhsYWIoIkxvZyBvZGRzIG9uIG5ldHdvcmsgc2l6ZSBjb3VudCIpCiAgfSAlPiUKICBhZGRfYnJhY2tldHModHdvX2JyYWNrZXQpCgoKcmVzdWx0cyA8LSBwbG90X2dyaWQobmIsIHgyLCBucm93ID0gMSkKCiMgc2F2ZQpnZ3NhdmUoInJlc3VsdHMucGRmIiwgcGxvdCA9IHJlc3VsdHMsIGRldmljZSA9ICJwZGYiLAogICAgICAgc2NhbGUgPSAxLCB3aWR0aCA9IDE5LCBoZWlnaHQgPSA5LCB1bml0cyA9IGMoImluIiksCiAgICAgICBkcGkgPSAicmV0aW5hIikKCgoKYGBgCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGVzY3JpcHRpdmUgYW5hbHlzZXMiCiNiaWJsaW9ncmFwaHk6IHJlZmVyZW5jZXMuYmliCmF1dGhvcjogIkJhcyBIb2ZzdHJhIgotLS0KCmBgYHtyLCBnbG9iYWxzZXR0aW5ncywgZWNobz1GQUxTRSwgd2FybmluZz1GQUxTRSwgcmVzdWx0cz0naGlkZSd9CmxpYnJhcnkoa25pdHIpCgprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpCm9wdHNfY2h1bmskc2V0KHRpZHkub3B0cz1saXN0KHdpZHRoLmN1dG9mZj0xMDApLHRpZHk9VFJVRSwgd2FybmluZyA9IEZBTFNFLCBtZXNzYWdlID0gRkFMU0UsY29tbWVudCA9ICIjPiIsIGNhY2hlPVRSVUUsIGNsYXNzLnNvdXJjZT1jKCJ0ZXN0IiksIGNsYXNzLm91dHB1dD1jKCJ0ZXN0MiIpKQpvcHRpb25zKHdpZHRoID0gMTAwKQpyZ2w6OnNldHVwS25pdHIoKQoKCgpjb2xvcml6ZSA8LSBmdW5jdGlvbih4LCBjb2xvcikge3NwcmludGYoIjxzcGFuIHN0eWxlPSdjb2xvcjogJXM7Jz4lczwvc3Bhbj4iLCBjb2xvciwgeCkgfQoKYGBgCgpgYGB7ciBrbGlwcHksIGVjaG89RkFMU0UsIGluY2x1ZGU9VFJVRX0Ka2xpcHB5OjprbGlwcHkocG9zaXRpb24gPSBjKCd0b3AnLCAncmlnaHQnKSkKI2tsaXBweTo6a2xpcHB5KGNvbG9yID0gJ2RhcmtyZWQnKQoja2xpcHB5OjprbGlwcHkodG9vbHRpcF9tZXNzYWdlID0gJ0NsaWNrIHRvIGNvcHknLCB0b29sdGlwX3N1Y2Nlc3MgPSAnRG9uZScpCmBgYAoKTGFzdCBjb21waWxlZCBvbiBgciBmb3JtYXQoU3lzLnRpbWUoKSwgJyVCLCAlWScpYAoKPGJyPgoKLS0tLQoKVGhpcyBpcyB0aGUgY29kZSB3aXRoIHdoaWNoIHdlIG1ha2Ugb3VyIGRlcGVuZGVudCB2YXJpYWJsZXMuCgo8YnI+CgotLS0tCgojIEluaXRhdGlhdGluZyBSIGVudmlyb25tZW50CgpTdGFydCBvdXQgd2l0aCBhIGN1c3RvbSBmdW5jdGlvbiB0byBsb2FkIGEgc2V0IG9mIHJlcXVpcmVkIHBhY2thZ2VzLgogIApgYGB7ciBwYWNrLCBldmFsPUZBTFNFfQojIHBhY2thZ2VzIGFuZCByZWFkIGRhdGEKcm0obGlzdCA9IGxzKCkpCgojIChjKSBKb2NoZW0gVG9sc21hCmZwYWNrYWdlLmNoZWNrIDwtIGZ1bmN0aW9uKHBhY2thZ2VzKSB7CiAgbGFwcGx5KHBhY2thZ2VzLCBGVU4gPSBmdW5jdGlvbih4KSB7CiAgICBpZiAoIXJlcXVpcmUoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKSkgewogICAgICBpbnN0YWxsLnBhY2thZ2VzKHgsIGRlcGVuZGVuY2llcyA9IFRSVUUpCiAgICAgIGxpYnJhcnkoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKQogICAgfQogIH0pCn0KcGFja2FnZXMgPSBjKCJoYXZlbiIsICJjb2RhIiwgIm1hdHJpeFN0YXRzIiwgInBhcmFsbGVsIiwgIk1BU1MiLCAiZG9QYXJhbGxlbCIsICJkcGx5ciIsICJjb3dwbG90IiwgCiAgICAgICAgICAgICAidGlkeXZlcnNlIiwgIm5hbmlhciIsICJkb3R3aGlza2VyIiAsImd0IiwgInJlc2hhcGUyIiwgIlZHQU0iLCAiZXhwc3MiKQpmcGFja2FnZS5jaGVjayhwYWNrYWdlcykKcm0ocGFja2FnZXMpCgoKCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwojIERFU0NSSVBUSVZFUwojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCiMgVklaIG9mIG5ldHNpemUKbmV0c2l6ZV9sIDwtIGdhdGhlcihuZXRzaXplcykKZGVuczEgPC0gZ2dwbG90KG5ldHNpemVfbFtuZXRzaXplX2wkdmFsdWUgPCAyMDAwLF0sIGFlcyh4PXZhbHVlLCBjb2xvciA9IGtleSkpICsgCiAgZ2VvbV9kZW5zaXR5KGFscGhhID0gLjIsIHNpemUgPSAwLjEpICsgCiAgdGhlbWVfbWluaW1hbCgpICsgCiAgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiKSArCiAgbGFicyh4ID0gIk5ldHdvcmsgc2l6ZSBlc3RpbWF0ZSIsIHkgPSAiRGVuc2l0eSIpICsKICBnZW9tX3ZsaW5lKHhpbnRlcmNlcHQ9YXMubnVtZXJpYyhwc3ljaDo6ZGVzY3JpYmUobmV0c2l6ZV9sWywgMl0pWzNdKSwgY29sb3IgPSAiZGFya2dyZXkiLCBsaW5ldHlwZSA9IDIpICsKICBnZW9tX3ZsaW5lKHhpbnRlcmNlcHQ9YXMubnVtZXJpYyhwc3ljaDo6ZGVzY3JpYmUobmV0c2l6ZV9sWywgMl0pWzVdKSwgY29sb3IgPSAiZGFya2dyZXkiLCBsaW5ldHlwZSA9IDIpICsKICBhbm5vdGF0ZSgidGV4dCIsIHggPSA0OTAsIHkgPSAwLjAwMDQsIGNvbG9yID0gImRhcmtncmV5IiwgYW5nbGUgPSA5MCwgCiAgICAgICAgICAgbGFiZWwgPSBwYXN0ZTAoIk1lYW4gPSAiLCByb3VuZChhcy5udW1lcmljKHBzeWNoOjpkZXNjcmliZShuZXRzaXplX2xbLCAyXSlbM10pLCBkaWdpdHMgPSAwKSkpICsKICBhbm5vdGF0ZSgidGV4dCIsIHggPSAzNDAsIHkgPSAwLjAwMDQsIGNvbG9yID0gImRhcmtncmV5IiwgYW5nbGUgPSA5MCwgCiAgICAgICAgICAgbGFiZWwgPSBwYXN0ZTAoIk1lZGlhbiA9ICIsIHJvdW5kKGFzLm51bWVyaWMocHN5Y2g6OmRlc2NyaWJlKG5ldHNpemVfbFssIDJdKVs1XSksIGRpZ2l0cyA9IDApKSkgKwogIGdndGl0bGUoIkIpIERpc3RyaWJ1dGlvbiBvZiBuZXR3b3JrIHNpemVzLCBhbGwgc2NlbmFyaW9zIikKCgojIEdldCBsb3dlciB0cmlhbmdsZSBvZiB0aGUgY29ycmVsYXRpb24gbWF0cml4CmdldF9sb3dlcl90cmk8LWZ1bmN0aW9uKGNvcm1hdCl7CiAgY29ybWF0W3VwcGVyLnRyaShjb3JtYXQpXSA8LSBOQQogIHJldHVybihjb3JtYXQpCn0KbWF0IDwtIGNvcihuZXRzaXplcykKbG93ZXJfdHJpIDwtIGdldF9sb3dlcl90cmkobWF0KQptZWx0ZWRfY29ybWF0IDwtIHJlc2hhcGUyOjptZWx0KGxvd2VyX3RyaSkgIyBkYXRhLnRhYmxlIGFsc28gaGFzIG1lbHQgZnVuY2l0b24gdGhhdCB3b24ndCB3b3JrIG9uIG1hdHJpY2VzCm1lbHRlZF9jb3JtYXQkVmFyMiA8LSBhcy5jaGFyYWN0ZXIobWVsdGVkX2Nvcm1hdCRWYXIyKQptZWx0ZWRfY29ybWF0JFZhcjEgPC0gYXMuY2hhcmFjdGVyKG1lbHRlZF9jb3JtYXQkVmFyMSkKbWVsdGVkX2Nvcm1hdCA8LSBtZWx0ZWRfY29ybWF0WyFtZWx0ZWRfY29ybWF0JFZhcjIgPT0gbWVsdGVkX2Nvcm1hdCRWYXIxLF0KbWVsdGVkX2Nvcm1hdCA8LSBtZWx0ZWRfY29ybWF0WyFpcy5uYShtZWx0ZWRfY29ybWF0JHZhbHVlKSwgXQoKIyBWaXogb2YgY29ycmVsYXRpb25zIGJldHdlZW4gbmV0c2l6ZSBlc3RpbWF0ZXMKZGVuczIgPC0gZ2dwbG90KG1lbHRlZF9jb3JtYXQsIGFlcyh4PXZhbHVlKSkgKyAKICBnZW9tX2RlbnNpdHkoc2l6ZSA9IDAuMykgKyAKICB4bGltKDAuOTE1LCAxKSArIAogIHRoZW1lX21pbmltYWwoKSArIAogIGxhYnMoeD0iUGVhcnNvbiBjb3JyZWxhdGlvbiIsIHkgPSAiRGVuc2l0eSIpICsKICBnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAuOTUsIGNvbG9yID0gImRhcmtncmV5IiwgbGluZXR5cGUgPSAyKSArCiAgZ2d0aXRsZSgiQSkgRGlzdHJpYnV0aW9ucyBvZiBjb3JyZWxhdGlvbnMgYmV0d2VlbiBuZXR3b3JrIHNpemUgc2NlbmFyaW9zIikgICsKICBnZW9tX3NlZ21lbnQoeCA9IDAuOTUsIHkgPSAxMjUsIHhlbmQgPSAuOTksIHllbmQgPSAxMjUsIGxpbmV0eXBlID0gMiwgY29sb3IgPSAiZGFya2dyZXkiLAogICAgICAgICAgICAgICAgYXJyb3cgPSBhcnJvdyhsZW5ndGggPSB1bml0KDAuMjUsICJjbSIpKSkgICsKICBhbm5vdGF0ZSgidGV4dCIsIHggPSAuOTcsIHkgPSAxMzUsIGNvbG9yID0gImRhcmtncmV5IiwgYW5nbGUgPSAwLCAKICAgICAgICAgICBsYWJlbCA9IHBhc3RlMChyb3VuZChucm93KG1lbHRlZF9jb3JtYXRbbWVsdGVkX2Nvcm1hdCR2YWx1ZSA+IC45NSwgXSkvbnJvdyhtZWx0ZWRfY29ybWF0KSoxMDAsIGRpZ2l0cyA9IDEpLCIlIG9mIGNvcnJlbGF0aW9ucyBhcmUgPiAuOTUiKSkKCiMgbGF5ICdtIG91dCBvbiB0aGUgZ3JpZCAgICAgICAgICAgCmRlbnNlcyA8LSBwbG90X2dyaWQoZGVuczIsIGRlbnMxLCBucm93ID0gMSkgCgojIHNhdmUKZ2dzYXZlKCJkZW5zaXRpZXMucGRmIiwgcGxvdCA9IGRlbnNlcywgZGV2aWNlID0gInBkZiIsCiAgICAgICBzY2FsZSA9IDEsIHdpZHRoID0gMTIsIGhlaWdodCA9IDQsIHVuaXRzID0gYygiaW4iKSwKICAgICAgIGRwaSA9ICJyZXRpbmEiKQoKCgojIGRlc2NyaXB0aXZlIHRhYmxlIG5vdCBhdXRvbWF0ZWQKCnBzeWNoOjpkZXNjcmliZShkZlssIGMoIndvbWFuIiwgImxlZWZ0aWpkMTAiLCAid29yayIsICJoaHNpemUiLCAibmVpZ2hkZW5zIiwgIndvcnRoaG91c2UiKV0pCgp0YWJsZShkZiRtaWdyMykKdGFibGUoZGYkb3BsKQp0YWJsZShkZiRpbmNvbWUpCnRhYmxlKGRmJHBvbGl0aWNzKQoKCgpjb3IoZGZbLGMoIndvbWFuIiwgIm1pZ3IiLCAibGVlZnRpamQxMCIsICJ3b3JrIiwgImhoc2l6ZSIsICJuZWlnaGRlbnMiLCAid29ydGhob3VzZSIgKV0pCgoKIyAjIERlc2NyaXB0aXZlIHRhYmxlCiMgZGYkb3BsMVtkZiRvcGw9PTFdIDwtIDEKIyBkZiRvcGwxW2RmJG9wbCE9MV0gPC0gMAojIGRmJG9wbDJbZGYkb3BsPT0yXSA8LSAxCiMgZGYkb3BsMltkZiRvcGwhPTJdIDwtIDAKIyBkZiRvcGwzW2RmJG9wbD09M10gPC0gMQojIGRmJG9wbDNbZGYkb3BsIT0zXSA8LSAwCiMgCiMgCiMgdyA8LSBkYXRhLmZyYW1lKGMocHN5Y2g6OmRlc2NyaWJlKGRmJHdvbWFuKVtjKDIsMyw0LCA4LDkpXSwgIldvbWFuIikpCiMgY29sbmFtZXModylbNl0gPC0gIlZhcmlhYmxlIgojIGwgPC0gZGF0YS5mcmFtZShjKHBzeWNoOjpkZXNjcmliZShkZiRsZWVmdGlqZDEwKVtjKDIsMyw0LCA4LDkpXSwgIkFnZS8xMCIpKQojIGNvbG5hbWVzKGwpWzZdIDwtICJWYXJpYWJsZSIKIyBvMSA8LSBkYXRhLmZyYW1lKGMocHN5Y2g6OmRlc2NyaWJlKGRmJG9wbDEpW2MoMiwzLDQsIDgsOSldLCAiRWR1Y2F0aW9uIHByaW1hcnkvc2Vjb25kYXJ5IikpCiMgY29sbmFtZXMobzEpWzZdIDwtICJWYXJpYWJsZSIKIyBvMiA8LSBkYXRhLmZyYW1lKGMocHN5Y2g6OmRlc2NyaWJlKGRmJG9wbDIpW2MoMiwzLDQsIDgsOSldLCAiRWR1Y2F0aW9uIHRlcnRpYXJ5IGxvdyIpKQojIGNvbG5hbWVzKG8yKVs2XSA8LSAiVmFyaWFibGUiCiMgbzMgPC0gZGF0YS5mcmFtZShjKHBzeWNoOjpkZXNjcmliZShkZiRvcGwzKVtjKDIsMyw0LCA4LDkpXSwgIkVkdWNhdGlvbiB0ZXJ0aWFyeSBoaWdoIikpCiMgY29sbmFtZXMobzMpWzZdIDwtICJWYXJpYWJsZSIKIyBtIDwtIGRhdGEuZnJhbWUoYyhwc3ljaDo6ZGVzY3JpYmUoZGYkbWlncilbYygyLDMsNCwgOCw5KV0sICJNaWdyYXRpb24gYmFja2dyb3VuZCIpKQojIGNvbG5hbWVzKG0pWzZdIDwtICJWYXJpYWJsZSIKIyBuIDwtIGRhdGEuZnJhbWUoYyhwc3ljaDo6ZGVzY3JpYmUoZGYkbmVpZ2hkZW5zKVtjKDIsMyw0LCA4LDkpXSwgIk5laWdoYm9yaG9vZCBkZW5zaXR5LzFLIikpCiMgY29sbmFtZXMobilbNl0gPC0gIlZhcmlhYmxlIgojIGggPC0gZGF0YS5mcmFtZShjKHBzeWNoOjpkZXNjcmliZShkZiR3b3J0aGhvdXNlKVtjKDIsMyw0LCA4LDkpXSwgIk1lYW4gbmVpZ2hib3Job29kIFdPWi12YWx1ZS8xMDBLIikpCiMgY29sbmFtZXMoaClbNl0gPC0gIlZhcmlhYmxlIgojIGRlc2MgPC0gZGF0YS5mcmFtZShyYmluZCh3LGwsbzEsbzIsbzMsbSxuLGgpKQojIAojIGRlc2MkbWluIDwtIHJvdW5kKGRlc2MkbWluLCBkaWdpdHM9IDIpCiMgZGVzYyRtYXggPC0gcm91bmQoZGVzYyRtYXgsIGRpZ2l0cz0gMikKIyBkZXNjJG1lYW4gPC0gcm91bmQoZGVzYyRtZWFuLCBkaWdpdHM9IDIpCiMgZGVzYyRzZCA8LSByb3VuZChkZXNjJHNkLCBkaWdpdHM9IDIpCiMgCiMgCiMgZGVzYyRuW2Rlc2MkVmFyaWFibGUgPT0gIldvbWFuIl0gPC0gbnJvdyhkZltkZiR3b21hbj09MSxdKQojIGRlc2MkbltkZXNjJFZhcmlhYmxlID09ICJFZHVjYXRpb24gcHJpbWFyeS9zZWNvbmRhcnkiXSA8LSBucm93KGRmW2RmJG9wbDE9PTEsXSkKIyBkZXNjJG5bZGVzYyRWYXJpYWJsZSA9PSAiRWR1Y2F0aW9uIHRlcnRpYXJ5IGxvdyJdIDwtIG5yb3coZGZbZGYkb3BsMj09MSxdKQojIGRlc2MkbltkZXNjJFZhcmlhYmxlID09ICJFZHVjYXRpb24gdGVydGlhcnkgaGlnaCJdIDwtIG5yb3coZGZbZGYkb3BsMz09MSxdKQojIGRlc2MkbltkZXNjJFZhcmlhYmxlID09ICJNaWdyYXRpb24gYmFja2dyb3VuZCJdIDwtIG5yb3coZGZbZGYkbWlncj09MSxdKQojIAojIAojIGRlc2Mkc2RbZGVzYyRWYXJpYWJsZSA9PSAiV29tYW4iXSA8LSAiIgojIGRlc2Mkc2RbZGVzYyRWYXJpYWJsZSA9PSAiRWR1Y2F0aW9uIHByaW1hcnkvc2Vjb25kYXJ5Il0gPC0gIiIKIyBkZXNjJHNkW2Rlc2MkVmFyaWFibGUgPT0gIkVkdWNhdGlvbiB0ZXJ0aWFyeSBsb3ciXSA8LSAiIgojIGRlc2Mkc2RbZGVzYyRWYXJpYWJsZSA9PSAiRWR1Y2F0aW9uIHRlcnRpYXJ5IGhpZ2giXSA8LSAiIgojIGRlc2Mkc2RbZGVzYyRWYXJpYWJsZSA9PSAiTWlncmF0aW9uIGJhY2tncm91bmQiXSA8LSAiIgojIAojIGRlc2MgPC0gZGVzY1ssIGMoIlZhcmlhYmxlIiwgIm1pbiIsICJtYXgiLCAibWVhbiIsICJzZCIsICJuIildCiMgZGVzY3RhYmxlIDwtIGRlc2MgJT4lIGd0OjpndCgpCiMgCiMgZGVzY3RhYmxlIDwtIGRlc2N0YWJsZSAlPiUgIHRhYl9oZWFkZXIodGl0bGUgPSAiVGFibGUgWC4gRGVzY3JpcHRpdmUgc3RhdGlzdGljcyBvZiBjb3ZhcmlhdGVzIikKIyBkZXNjdGFibGUgJT4lIGd0c2F2ZShmaWxlbmFtZSA9ICJ0YWJsZS5wZGYiLCB6b29tID0gMSkKIyAKIyBkZiRvcGxjIDwtIGFzLm51bWVyaWMoYXMuY2hhcmFjdGVyKGRmJG9wbCkpCiMgaGVhZChkZiRvcGxjKQojIGhlYWQoZGYkb3BsKQojIAojIGNvcnRhYmxlIDwtIGRhdGEuZnJhbWUoY29yKGRmWyxjKCJ3b21hbiIsICAibWlnciIsICJvcGxjIiwgImxlZWZ0aWpkMTAiLCAgIm5laWdoZGVucyIsICJ3b3J0aGhvdXNlIildKSApCiMgCiMgY29ydGFibGUkbmFtZXMgPC0gcm93Lm5hbWVzKGNvcnRhYmxlKQojIGNvcnRhYmxlIDwtIGNvcnRhYmxlWywgYygibmFtZXMiLCJ3b21hbiIsICAibWlnciIsICJvcGxjIiwgImxlZWZ0aWpkMTAiLCAgIm5laWdoZGVucyIsICJ3b3J0aGhvdXNlIildCiMgbmFtZXMoY29ydGFibGUpIDwtIGMoIlZhcmlhYmxlcyIsICJXb21hbiIsICJNaWdyYXRpb24gYmFja2dyIiwgIkVkdWMiLCAiQWdlLzEwIiwgIk5laWdoYiBkZW5zIiwgIldPWi12YWx1ZSIpCiMgY29ydGFibGVbYygxOjYpLCAxXSA8LSBjKCJXb21hbiIsICJNaWdyYXRpb24gYmFja2dyIiwgIkVkdWMiLCAiQWdlLzEwIiwgIk5laWdoYiBkZW5zIiwgIldPWi12YWx1ZSIpCiMgCiMgY29ydGFibGVbLDJdIDwtIGZvcm1hdChyb3VuZChhcy5udW1lcmljKGNvcnRhYmxlWywyXSksMyksIG5zbWFsbCA9IDMpCiMgY29ydGFibGVbLDNdIDwtIGZvcm1hdChyb3VuZChhcy5udW1lcmljKGNvcnRhYmxlWywzXSksMyksIG5zbWFsbCA9IDMpCiMgY29ydGFibGVbLDRdIDwtIGZvcm1hdChyb3VuZChhcy5udW1lcmljKGNvcnRhYmxlWyw0XSksMyksIG5zbWFsbCA9IDMpCiMgY29ydGFibGVbLDVdIDwtIGZvcm1hdChyb3VuZChhcy5udW1lcmljKGNvcnRhYmxlWyw1XSksMyksIG5zbWFsbCA9IDMpCiMgY29ydGFibGVbLDZdIDwtIGZvcm1hdChyb3VuZChhcy5udW1lcmljKGNvcnRhYmxlWyw2XSksMyksIG5zbWFsbCA9IDMpCiMgCiMgY29ydGFibGVbdXBwZXIudHJpKGNvcnRhYmxlKV0gPC0gIiIKIyBjb3J0YWJsZTwtYXMuZGF0YS5mcmFtZShjb3J0YWJsZSkKIyBjb3J0YWJsZSA8LSBjb3J0YWJsZVstMSxdCiMgY29ydGFibGUgPC0gY29ydGFibGVbLC03XQojIAojIHBzIDwtIHBzeWNoOjpjb3JyLnRlc3QoZGZbLGMoIndvbWFuIiwgICJtaWdyIiwgIm9wbGMiLCAibGVlZnRpamQxMCIsICAibmVpZ2hkZW5zIiwgIndvcnRoaG91c2UiKV0pJHAKIyBwcyA8LSBwc1stMSxdCiMgcHMgPC0gcHNbLC02XQojIHBzIDwtIGZvcm1hdChyb3VuZChwcywgMyksIG5zbWFsbCA9IDMpCiMgcHNbdXBwZXIudHJpKHBzKV0gPC0gIiIKIyBwczwtYXMuZGF0YS5mcmFtZShwcykKIyAKIyBjb3J0YWJsZSA8LSBjYmluZChjb3J0YWJsZSwgcHMpCiMgY29ydGFibGUgPC0gY29ydGFibGVbLCBjKCJWYXJpYWJsZXMiLCAiV29tYW4iLCAid29tYW4iLCAiTWlncmF0aW9uIGJhY2tnciIsICJtaWdyIiwgIkVkdWMiLCAib3BsYyIsICJBZ2UvMTAiLCAibGVlZnRpamQxMCIsICJOZWlnaGIgZGVucyIsICJuZWlnaGRlbnMiKV0KIyBuYW1lcyhjb3J0YWJsZSkgPC0gYygiVmFyaWFibGVzIiwgIldvbWFuIiwgInAtdmFsdWUgIiwgIk1pZ3JhdGlvbiBiYWNrZ3IiLCAicC12YWx1ZSAgIiwgIkVkdWMiLCAicC12YWx1ZSAgICIsICJBZ2UvMTAiLCAicC12YWx1ZSAgICAiLCAiTmVpZ2hiIGRlbnMiLCAicC12YWx1ZSAgICAgIikKIyAKIyBjb3J0YWJsZSA8LSBjb3J0YWJsZSAlPiUgZ3Q6Omd0KCkKIyBjb3J0YWJsZSA8LSBjb3J0YWJsZSAlPiUgIHRhYl9oZWFkZXIodGl0bGUgPSAiVGFibGUgWC4gQ29ycmVsYXRpb24gbWF0cml4IG9mIGNvdmFyaWF0ZXMiKQojIAojIGNvcnRhYmxlICU+JSBndHNhdmUoZmlsZW5hbWUgPSAiY29ycy5wZGYiLCB6b29tID0gMSkKCgoKIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIyBERVNDUklQVElPTlMgWHMKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCgojIAojIGFnZ3JlZ2F0ZShkZlssIDI3MToyNzNdLCBsaXN0KGRmJHdvbWFuKSwgbWVhbikKIyBhZ2dyZWdhdGUoZGZbLCAyNzE6MjczXSwgbGlzdChkZiRvcGwpLCBtZWFuKQojIGFnZ3JlZ2F0ZShkZlssIDI3MToyNzNdLCBsaXN0KGRmJG1pZ3IpLCBtZWFuKQojIAojIGFnZ3JlZ2F0ZShkZlssIDI3NDoyNzldLCBsaXN0KGRmJHdvbWFuKSwgbWVhbikKIyBhZ2dyZWdhdGUoZGZbLCAyNzQ6Mjc5XSwgbGlzdChkZiRvcGwpLCBtZWFuKQojIGFnZ3JlZ2F0ZShkZlssIDI3NDoyNzldLCBsaXN0KGRmJG1pZ3IpLCBtZWFuKQojIAojIGFnZ3JlZ2F0ZShkZlssIDI4MDozMTNdLCBsaXN0KGRmJHdvbWFuKSwgbWVhbikKIyBhZ2dyZWdhdGUoZGZbLCAyODA6MzEzXSwgbGlzdChkZiRtaWdyKSwgbWVhbikKIyBhZ2dyZWdhdGUoZGZbLCAyODA6MzEzXSwgbGlzdChkZiRtaWdyKSwgbWVhbikKIyAKIyB4cyA8LSBsaXN0KCkKIyBmb3IgKGkgaW4gMjcxOjMxMykgewojICB4c1tbaV1dIDwtIGxtKGxvZzEwKGRmWywgaV0rMSkgfiB3b21hbiArIG9wbCArIG1pZ3IgKyBsZWVmdGlqZDEwICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwgZGF0YSA9IGRmKQojIH0KIyB4c1tzYXBwbHkoeHMsIGlzLm51bGwpXSA8LSBOVUxMCiMgc3VtbWFyeSh4c1tbMV1dKQojIAojICMgbWFpbiBlZmZlY3RzCiMgb25lX2JyYWNrZXQgPC0gbGlzdCgKIyAgIGMoIkVkdWNhdGlvbiB0ZXJ0LiBoaWdoID0gcmVmLiIsICJFZHVjLiBwcmltLi9zZWMuIiwgIkVkdWMuIHRlcnQuIGxvdyIpKQojIAojIGZvciAoaSBpbiAxOmxlbmd0aCh4cykpewojIHhzbVtbaV1dIDwtIGR3cGxvdCh4c1tbaV1dLAojICAgICAgICAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNSwgc2hhcGUgPSAxKSwgIyBjb2xvciBmb3IgdGhlIGRvdAojICAgICAgICAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMSwgY29sb3IgPSAiZGFya2dyZXkiKSwgICAjIGNvbG9yIGZvciB0aGUgd2hpc2tlcgojICAgICAgICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiZ3JleTYwIiwKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ldHlwZSA9IDIsCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiMgICAgIHJlbGFiZWxfcHJlZGljdG9ycyhjKAojICAgICAgICJ3b21hbiIgPSAiICIsCiMgICAgICAgIm9wbDEiID0gIiAgIiwKIyAgICAgICAib3BsMiIgPSAiICAgIiwKIyAgICAgICAibWlnciIgPSAiICAgICIsCiMgICAgICAgIm1pZ3IiID0gIiAgICAgICIsCiMgICAgICAgImxlZWZ0aWpkMTAiID0gIiAgICAgICAiLAojICAgICAgICJuZWlnaGRlbnMiID0gIiAgICAgICAgIiwKIyAgICAgICAid29ydGhob3VzZSIgPSAiICAgICAgICAgIgojICAgICApKSArIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIiwKIyAgICAgICAgICAgICAgICBheGlzLnRleHQgPSBlbGVtZW50X3RleHQoY29sb3IgPSAiZ3JleSIpKSArIAojICAgICB0aGVtZV9taW5pbWFsKCkgCiMgfQojIAojIAojIGxhYnMgPC0gZHdwbG90KHhzW1sxXV0sCiMgICAgICAgIGRvdF9hcmdzID0gbGlzdChjb2xvciA9ICJ3aGl0ZSIsIHNpemUgPSAwLCBzaGFwZSA9IDEpLCAjIGNvbG9yIGZvciB0aGUgZG90CiMgICAgICAgIHdoaXNrZXJfYXJncyA9IGxpc3Qoc2l6ZSA9IDAsIGNvbG9yID0gIndoaXRlIikpICU+JSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgcmVsYWJlbF9wcmVkaWN0b3JzKGMoCiMgICAgICJ3b21hbiIgPSAiV29tYW4iLAojICAgICAib3BsMSIgPSAiUHJpbS9TZWMgRWR1YyIsCiMgICAgICJvcGwyIiA9ICJMb3dlciBUZXJ0IiwKIyAgICAgIm1pZ3IiID0gIk1pZ3IgQmFja2dyIiwKIyAgICAgImxlZWZ0aWpkMTAiID0gIkFnZS8xMCIsCiMgICAgICJuZWlnaGRlbnMiID0gIk5laWdoYiBEZW5zIiwKIyAgICAgIndvcnRoaG91c2UiID0gIkhvdXNlIFZhbCIKIyAgICkpICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLAojICAgICAgICAgICAgICBheGlzLnRleHQgPSBlbGVtZW50X3RleHQoY29sb3IgPSAiYmxhY2siKSwKIyAgICAgICAgICAgICAgcGFuZWwuZ3JpZC5tYWpvciA9IGVsZW1lbnRfbGluZShjb2xvciA9ICJ3aGl0ZSIpLAojICAgICAgICAgICAgICBwYW5lbC5ncmlkLm1pbm9yID0gZWxlbWVudF9saW5lKGNvbG9yID0gIndoaXRlIiksCiMgICAgICAgICAgICAgIHBhbmVsLmdyaWQubWFqb3IueCA9IGVsZW1lbnRfYmxhbmsoKSwKIyAgICAgICAgICAgICAgcGFuZWwuZ3JpZC5tYWpvci55ID0gZWxlbWVudF9ibGFuaygpLAojICAgICAgICAgICAgICBwYW5lbC5ncmlkLm1pbm9yLnggPSBlbGVtZW50X2JsYW5rKCksCiMgICAgICAgICAgICAgIHBhbmVsLmdyaWQubWlub3IueSA9IGVsZW1lbnRfYmxhbmsoKSwKIyAgICAgICAgICAgICAgcGFuZWwuYmFja2dyb3VuZCA9IGVsZW1lbnRfcmVjdChmaWxsID0gIndoaXRlIiksCiMgICAgICAgICAgICAgIGF4aXMudGV4dC54ID0gZWxlbWVudF9ibGFuaygpLAojICAgICAgICAgICAgICBheGlzLnRpY2tzLnggPSBlbGVtZW50X2JsYW5rKCksCiMgICAgICAgICAgICAgIGF4aXMudGlja3MueSA9IGVsZW1lbnRfYmxhbmsoKSkKIyAKIyAjIHVuaSwgaGJvLCBtYm8KIyBzY2hvb2wgPC0gcGxvdF9ncmlkKGxhYnMsIHhzbVtbMV1dLCB4c21bWzJdXSwgeHNtW1szXV0sIG5yb3cgPSAxLCBsYWJlbHMgPSBjKCIiLG5hbWVzKGRmKVsyNzE6MjczXSksIGxhYmVsX3NpemUgPSA4LCByZWxfd2lkdGhzID0gYygwLjIsMSwxLDEpKQojIAojICMgc2F2ZQojIGdnc2F2ZSgic2Nob29sLnBkZiIsIHBsb3QgPSBzY2hvb2wsIGRldmljZSA9ICJwZGYiLAojICAgICAgICBzY2FsZSA9IDEsIHdpZHRoID0gMTAsIGhlaWdodCA9IDUsIHVuaXRzID0gYygiaW4iKSwKIyAgICAgICAgZHBpID0gInJldGluYSIpCiMgCiMgCiMgIyB2ZWdhbiBldGMuCiMgc29jZWNvIDwtIHBsb3RfZ3JpZChsYWJzLCB4c21bWzRdXSwgeHNtW1s1XV0sIHhzbVtbNl1dLHhzbVtbN11dLHhzbVtbOF1dLHhzbVtbOV1dLCBucm93ID0gMSwgbGFiZWxzID0gYygiIixuYW1lcyhkZilbMjc0OjI3OV0pLCBsYWJlbF9zaXplID0gOCwKIyAgICAgICAgICAgcmVsX3dpZHRocyA9IGMoMC4yLDEsMSwxLDEsMSwxKSkKIyAjIHNhdmUKIyBnZ3NhdmUoInNvY2Vjby5wZGYiLCBwbG90ID0gc29jZWNvLCBkZXZpY2UgPSAicGRmIiwKIyAgICAgICAgc2NhbGUgPSAxLCB3aWR0aCA9IDEyLCBoZWlnaHQgPSA1LCB1bml0cyA9IGMoImluIiksCiMgICAgICAgIGRwaSA9ICJyZXRpbmEiKQojIAojIAojIAojIAojICMgZmVtYWxlIG5hbWVzCiMgZmVtbmFtZXMgPC0gcGxvdF9ncmlkKHhzbVtbMTBdXSwgeHNtW1sxMV1dLCB4c21bWzEyXV0sIHhzbVtbMTNdXSwgeHNtW1sxNF1dLHhzbVtbMTVdXSwKIyAgICAgICAgICAgeHNtW1sxNl1dLHhzbVtbMTddXSx4c21bWzE4XV0seHNtW1sxOV1dLHhzbVtbMjBdXSwKIyAgICAgICAgICAgeHNtW1syMV1dLHhzbVtbMjJdXSx4c21bWzIzXV0seHNtW1syNF1dLHhzbVtbMjVdXSwKIyAgICAgICAgICAgeHNtW1syNl1dLCBucm93ID0gNCwgbGFiZWxzID0gbmFtZXMoZGYpWzI4MDoyOTZdLCBsYWJlbF9zaXplID0gNikKIyAKIyAjIG1hbGUgbmFtZXMKIyBtYWxuYW1lcyA8LSBwbG90X2dyaWQoeHNtW1syN11dLCB4c21bWzI4XV0sIHhzbVtbMjldXSwgeHNtW1szMF1dLCB4c21bWzMxXV0seHNtW1szMl1dLAojICAgICAgICAgICB4c21bWzMzXV0seHNtW1szNF1dLHhzbVtbMzVdXSx4c21bWzM2XV0seHNtW1szN11dLAojICAgICAgICAgICB4c21bWzM4XV0seHNtW1szOV1dLHhzbVtbNDBdXSx4c21bWzQxXV0seHNtW1s0Ml1dLAojICAgICAgICAgICB4c21bWzQzXV0sIG5yb3cgPSA0LCBsYWJlbHMgPSBuYW1lcyhkZilbMjk3OjMxM10pCiMgCiMgc3VtbWFyeSh4c1tbNDNdXSkKCgojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCgojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIyBNT0RFTFMKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCgoKCgojIHBhcmFsZWxsaXplIHRoZSBlc3RpbWF0aW9uCiMgY2xvc2VBbGxDb25uZWN0aW9ucygpCiMgbnVtQ29yZXMgPC0gZGV0ZWN0Q29yZXMoKQojIHJlZ2lzdGVyRG9QYXJhbGxlbChjb3JlcyA9IDgpCgoKCmMgPC0gODgKIyBtYWluIGVmZmVjdHMKc3VtbWFyeShsbShkZlshZGZbW2NdXT4xMDAwMCwgYyhjKV0gfiBhcy5mYWN0b3Iod29tYW4pICsgbGVlZnRpamQxMCArIGFzLmZhY3RvcihvcGwpICsgYXMuZmFjdG9yKHdvcmspICsgYXMuZmFjdG9yKGluY29tZSkgKyBhcy5mYWN0b3IobWlncjMpICsgaGhzaXplICsgYXMuZmFjdG9yKHBvbGl0aWNzKSArIG5laWdoZGVucyArIHdvcnRoaG91c2UsCiAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1tjXV0+MTAwMDAsXSkpCgoKY2xhc3MoYXMuZmFjdG9yKGRmJHdvbWFuKSkKCgptb2RlbHMgPC0gbGlzdCgpCm1vZGVsc2ludCA8LSBsaXN0KCkKbW9kZWxzc3EgPC0gbGlzdCgpCm1vZGVsbG9nIDwtIGxpc3QoKQptb2RlbGxtIDwtIGxpc3QoKQplc3QgPC0gbGlzdCgpCmVzdGxtIDwtIGxpc3QoKQoKZGYkb3BsIDwtcmVsZXZlbChkZiRvcGwsIHJlZiA9IDEpCmRmJG1pZ3IzIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkbWlncjMpLCByZWYgPSAxKQpkZiRwb2xpdGljcyA8LXJlbGV2ZWwoYXMuZmFjdG9yKGRmJHBvbGl0aWNzKSwgcmVmID0gMSkKZGYkaW5jb21lIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkaW5jb21lKSwgcmVmID0gMikKI2ZvcmVhY2ggKGkgPSAxMzoxODQpICVkb3BhciUgewpmb3IgKGkgaW4gMTQ6MTg1KSB7ICMgLS0+IDE2OCBuZWdhdGl2ZSBiaW5vbWlhbHMgd2l0aCBkaWZmZXJlbnQgbmV0c2l6ZXMuIFdlIHRoZW4gbG9vayBhdCBkaXN0cmlidXRpb25zIG9mIGNvZWZmaWNpZW50cyBhY3Jvc3MgdGhvc2UuCiAgCiAgI2lmIChpICVpbiUgYygxOCwgNjEsIDEwNCwgMTQ3KSkgbmV4dCAjZmFzY2luYXRpbmcgMTgsIDYxLCAxMDQsIDE0NyAtLT4gdGhlIGNvcm9uYSBlc3RpbWF0b3IgaG9sZG91dCBpbml0aWFsbHkgZGlkbid0IHdvcmssIHJlbW92aW5nIG91dGxpZXJzIHdvcmtzLCBhbHNvIGhhcyB1bmR1ZSBlZmZlY3RzCiAgICBkZlssYyhpKV0gPC0gcm91bmQoZGZbLCBjKGkpXSwgMCkKICAgIAogICAgIyBtYWluIGVmZmVjdHMKICAgICMgbW9kZWxzW1tpXV0gPC0gZ2xtLm5iKGRmWyFkZltbaV1dPjEwMDAwLCBjKGkpXSB+IGFzLmZhY3Rvcih3b21hbikgKyBsZWVmdGlqZDEwICsgYXMuZmFjdG9yKG9wbCkgKyBhcy5mYWN0b3Iod29yaykgKyBhcy5mYWN0b3IoaW5jb21lKSArIGFzLmZhY3RvcihtaWdyMykgKyBoaHNpemUgKyBhcy5mYWN0b3IocG9saXRpY3MpICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwKICAgICMgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1tpXV0+MTAwMDAsXSwgaW5pdC50aGV0YSA9IDEuMDMyNzEzMTU2LCBsaW5rID0gbG9nKQoKICAgICMgIyBtYWluIGVmZmVjdHMKICAgICMgbW9kZWxzaW50W1tpXV0gPC0gZ2xtLm5iKGRmWyFkZltbaV1dPjEwMDAwLCBjKGkpXSB+IGFzLmZhY3Rvcih3b21hbikgKyBsZWVmdGlqZDEwICsgYXMuZmFjdG9yKG9wbCkgKyBhcy5mYWN0b3Iod29yaykgKyBhcy5mYWN0b3IoaW5jb21lKSArIGFzLmZhY3RvcihtaWdyMykgKyBoaHNpemUgKyBhcy5mYWN0b3IocG9saXRpY3MpICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwKICAgICMgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2ldXT4xMDAwMCxdLCBpbml0LnRoZXRhID0gMS4wMzI3MTMxNTYsIGxpbmsgPSBsb2cpCiAgIAogICAgbW9kZWxsb2dbW2ldXSA8LSBsbShsb2cxMChkZlshZGZbW2ldXT4xMDAwMCwgYyhpKV0pIH4gYXMuZmFjdG9yKHdvbWFuKSArIGxlZWZ0aWpkMTAgKyBhcy5mYWN0b3Iob3BsKSArIGFzLmZhY3Rvcih3b3JrKSArIGFzLmZhY3RvcihpbmNvbWUpICsgYXMuZmFjdG9yKG1pZ3IzKSArIGhoc2l6ZSArIGFzLmZhY3Rvcihwb2xpdGljcykgKyBuZWlnaGRlbnMgKyB3b3J0aGhvdXNlLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1tpXV0+MTAwMDAsXSkKCiAgICAjIG1vZGVsbG1bW2ldXSA8LSBsbShkZlshZGZbW2ldXT4xMDAwMCwgYyhpKV0gfiBhcy5mYWN0b3Iod29tYW4pICsgbGVlZnRpamQxMCArIGFzLmZhY3RvcihvcGwpICsgYXMuZmFjdG9yKHdvcmspICsgYXMuZmFjdG9yKGluY29tZSkgKyBhcy5mYWN0b3IobWlncjMpICsgaGhzaXplICsgYXMuZmFjdG9yKHBvbGl0aWNzKSArIG5laWdoZGVucyArIHdvcnRoaG91c2UsCiAgICAjICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1tpXV0+MTAwMDAsXSkKICAgICMgCiAgICAjICMgIyB1LXNoYXBlIGZvciBhZ2UgbmVnYmluCiAgICAjIG1vZGVsc3NxW1tpXV0gPC0gZ2xtLm5iKGRmWyFkZltbaV1dPjEwMDAwLCBjKGkpXSB+IGFzLmZhY3Rvcih3b21hbikgKyBsZWVmdGlqZDEwICsgbGVlZnRpamQxMHNxICsgYXMuZmFjdG9yKG9wbCkgKyBtaWdyICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwgCiAgICAjICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbaV1dPjEwMDAwLF0sIGluaXQudGhldGEgPSAxLjAzMjcxMzE1NiwgbGluayA9IGxvZykKICAgIAogICAgIyBnZXQgQ0lzIGZvciBtYWluIGVmZmVjdHMsIG1heSBiZSB1c2VmdWwgZm9yIHZpeiBsYXRlcgogICAgI2VzdFtbaV1dIDwtIGNiaW5kKEVzdGltYXRlID0gY29lZihtb2RlbHNbW2ldXSksIGNvbmZpbnQobW9kZWxzW1tpXV0pKQogICAgI2VzdGxtW1tpXV0gPC0gY2JpbmQoRXN0aW1hdGUgPSBjb2VmKG1vZGVsbG1bW2ldXSksIGNvbmZpbnQobW9kZWxsbVtbaV1dKSkKICAgIAp9CgojZXN0W3NhcHBseShlc3QsIGlzLm51bGwpXSA8LSBOVUxMCm1vZGVsc1tzYXBwbHkobW9kZWxzLCBpcy5udWxsKV0gPC0gTlVMTAptb2RlbHNpbnRbc2FwcGx5KG1vZGVsc2ludCwgaXMubnVsbCldIDwtIE5VTEwKZXN0W3NhcHBseShlc3QsIGlzLm51bGwpXSA8LSBOVUxMCmVzdGxtW3NhcHBseShlc3RsbSwgaXMubnVsbCldIDwtIE5VTEwKbW9kZWxsb2dbc2FwcGx5KG1vZGVsbG9nLCBpcy5udWxsKV0gPC0gTlVMTAptb2RlbGxtW3NhcHBseShtb2RlbGxtLCBpcy5udWxsKV0gPC0gTlVMTAptb2RlbHNzcVtzYXBwbHkobW9kZWxzc3EsIGlzLm51bGwpXSA8LSBOVUxMCgoKCiMgbmljZSBkZiB3aXRoIENJcwplc3RpbWF0ZXMgPC0gbGlzdCgpICAgICAKZm9yIChpIGluIDE6bGVuZ3RoKGVzdCkpIHsgIyAtLT4gIHNvbWUgZGF0YSBjcnVuY2hpbmcgdG8gdmlzdWFsaXplCiAgCgogIGVzdGltYXRlc1tbaV1dIDwtIGRhdGEuZnJhbWUodChlc3RbW2ldXSkpCiAgZXN0aW1hdGVzW1tpXV0gPC0gY2JpbmQoZXN0aW1hdGVzW1tpXV0sIGRhdGEuZnJhbWUoYygiZXN0IiwgImxiIiwgInViIikpKQogIG5hbWVzKGVzdGltYXRlc1tbaV1dKSA8LSBjKCJpbnRlcmNlcHQiLCAgIndvbWFuIiwgImFnZSIsICAib3BsMSIsICAib3BsMiIsICJtaWdyIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibmVpZ2hkZW5zIiwid29ydGhob3VzZSIsICJ2YXIiKQogIHJvd25hbWVzKGVzdGltYXRlc1tbaV1dKSA8LSAxOm5yb3coZXN0aW1hdGVzW1tpXV0pCgp9CmVzdGltYXRlcyA8LSBiaW5kX3Jvd3MoZXN0aW1hdGVzKQoKIyBuaWNlIGRmIHdpdGggQ0lzCmVzdGltYXRlc2xtIDwtIGxpc3QoKSAgICAgCmZvciAoaSBpbiAxOmxlbmd0aChlc3RsbSkpIHsgIyAtLT4gIHNvbWUgZGF0YSBjcnVuY2hpbmcgdG8gdmlzdWFsaXplCiAgCiAgCiAgZXN0aW1hdGVzbG1bW2ldXSA8LSBkYXRhLmZyYW1lKHQoZXN0bG1bW2ldXSkpCiAgZXN0aW1hdGVzbG1bW2ldXSA8LSBjYmluZChlc3RpbWF0ZXNsbVtbaV1dLCBkYXRhLmZyYW1lKGMoImVzdCIsICJsYiIsICJ1YiIpKSkKICBuYW1lcyhlc3RpbWF0ZXNsbVtbaV1dKSA8LSBjKCJpbnRlcmNlcHQiLCAgIndvbWFuIiwgImFnZSIsICAib3BsMiIsICAib3BsMSIsICJtaWdyIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibmVpZ2hkZW5zIiwid29ydGhob3VzZSIsICJ2YXIiKQogIHJvd25hbWVzKGVzdGltYXRlc2xtW1tpXV0pIDwtIDE6bnJvdyhlc3RpbWF0ZXNsbVtbaV1dKQogIAp9CmVzdGltYXRlc2xtIDwtIGJpbmRfcm93cyhlc3RpbWF0ZXNsbSkKc3VtbWFyeShtb2RlbGxtW1sxXV0pCnN1bW1hcnkoZXN0aW1hdGVzbG0kb3BsMSkKc3VtbWFyeShlc3RpbWF0ZXNsbSRvcGwyKQpzdW1tYXJ5KG1vZGVsbG1bWzE3Ml1dKQojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyBWaXogb2YgcmVzdWx0cwoKIyBtYWluIGVmZmVjdHMKZm91cl9icmFja2V0cyA8LSBsaXN0KAogIGMoIkVkdWMgdGVydCBoaWdoPXJlZiIsICJFZHVjIHByaW0vc2VjIiwgIkVkdWMgdGVydCBsb3ciKSwKICBjKCI+bW9kYWwgaW5jPXJlZiIsICI8PW1vZGFsIGluY29tZSIsICJVbmtuIGluY29tZSIpLAogIGMoIkR1dGNoIG1haj1yZWYiLCAiV2VzdCBiYWNrZ3IiLCAibm9uLVdlc3QgYmFja2dyIiksCiAgYygiTGVmdCB2b3RlPXJlZiIsICJSaWdodCB2b3RlIiwgIk5vL2JsYW5jbyB2b3RlIikpCgogbG9nbW9kZWwgPC0ge2R3cGxvdChtb2RlbGxvZywKICAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSwgY29sb3IgPSAiZGFya2dyZXkiLCBhbHBoYSA9IDAuNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICJXb21lbiIsCiAgICAgICJsZWVmdGlqZDEwIiA9ICJBZ2UvMTAiLAogICAgICAiYXMuZmFjdG9yKG9wbCkxIiA9ICJFZHVjIHByaW0vc2VjIiwKICAgICAgImFzLmZhY3RvcihvcGwpMiIgPSAiRWR1YyB0ZXJ0IGxvdyIsCiAgICAgICJhcy5mYWN0b3Iod29yaykxIiA9ICJXb3JraW5nIiwKICAgICAgImFzLmZhY3RvcihpbmNvbWUpMSIgPSAiPD1tb2RhbCBpbmNvbWUiLAogICAgICAiYXMuZmFjdG9yKGluY29tZSkzIiA9ICJVbmtuIGluY29tZSIsCiAgICAgICJhcy5mYWN0b3IobWlncjMpMiIgPSAiV2VzdCBiYWNrZ3IiLAogICAgICAiYXMuZmFjdG9yKG1pZ3IzKTMiID0gIm5vbi1XZXN0IGJhY2tnciIsCiAgICAgICJoaHNpemUiID0gIkhvdXNlaG9sZCBzaXplIiwKICAgICAgImFzLmZhY3Rvcihwb2xpdGljcykxIiA9ICJSaWdodCB2b3RlIiwKICAgICAgImFzLmZhY3Rvcihwb2xpdGljcykzIiA9ICJOby9ibGFuY28gdm90ZSIsCiAgICAgICJuZWlnaGRlbnMiID0gIk5laWdoLiBkZW5zaXR5IiwKICAgICAgIndvcnRoaG91c2UiID0gIldPWi12YWx1ZXMiCiAgICApKSArIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIiwKICAgICAgICAgICAgICAgYXhpcy50ZXh0ID0gZWxlbWVudF90ZXh0KGNvbG9yID0gImdyZXkiKSkgKyAKICAgIHRoZW1lX21pbmltYWwoKSArCiAgICAjZ2d0aXRsZSgiQSkgTmVnYXRpdmUgYmlub21pYWwgbW9kZWwgb2YgbmV0d29yayBzaXplIikgKwogICAgeGxhYigiQiBvbiBMb2cobmV0d29yayBzaXplIGNvdW50KSIpfSAgJT4lCiAgYWRkX2JyYWNrZXRzKGZvdXJfYnJhY2tldHMsIGZvbnRTaXplID0gLjYpCgogCiAKIHtkd3Bsb3QobW9kZWxsbSwKICAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSwgY29sb3IgPSAiZGFya2dyZXkiLCBhbHBoYSA9IDAuNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgICAgcmVsYWJlbF9wcmVkaWN0b3JzKGMoCiAgICAgICAiYXMuZmFjdG9yKHdvbWFuKTEiID0gIldvbWVuIiwKICAgICAgICJsZWVmdGlqZDEwIiA9ICJBZ2UvMTAiLAogICAgICAgImFzLmZhY3RvcihvcGwpMSIgPSAiRWR1YyBwcmltL3NlYyIsCiAgICAgICAiYXMuZmFjdG9yKG9wbCkyIiA9ICJFZHVjIHRlcnQgbG93IiwKICAgICAgICJhcy5mYWN0b3Iod29yaykxIiA9ICJXb3JraW5nIiwKICAgICAgICJhcy5mYWN0b3IoaW5jb21lKTEiID0gIjw9bW9kYWwgaW5jb21lIiwKICAgICAgICJhcy5mYWN0b3IoaW5jb21lKTMiID0gIlVua24gaW5jb21lIiwKICAgICAgICJhcy5mYWN0b3IobWlncjMpMiIgPSAiV2VzdCBiYWNrZ3IiLAogICAgICAgImFzLmZhY3RvcihtaWdyMykzIiA9ICJub24tV2VzdCBiYWNrZ3IiLAogICAgICAgImhoc2l6ZSIgPSAiSG91c2Vob2xkIHNpemUiLAogICAgICAgImFzLmZhY3Rvcihwb2xpdGljcykyIiA9ICJMZWZ0IHZvdGUiLAogICAgICAgImFzLmZhY3Rvcihwb2xpdGljcykzIiA9ICJOby9ibGFuY28gdm90ZSIsCiAgICAgICAibmVpZ2hkZW5zIiA9ICJOZWlnaC4gZGVuc2l0eSIsCiAgICAgICAid29ydGhob3VzZSIgPSAiV09aLXZhbHVlcyIKICAgICApKSArIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIiwKICAgICAgICAgICAgICAgIGF4aXMudGV4dCA9IGVsZW1lbnRfdGV4dChjb2xvciA9ICJncmV5IikpICsgCiAgICAgdGhlbWVfbWluaW1hbCgpICsKICAgICAjZ2d0aXRsZSgiQSkgTmVnYXRpdmUgYmlub21pYWwgbW9kZWwgb2YgbmV0d29yayBzaXplIikgKwogICAgIHhsYWIoIkIgb24gTG9nKG5ldHdvcmsgc2l6ZSBjb3VudCkiKX0gICU+JQogICBhZGRfYnJhY2tldHMoZm91cl9icmFja2V0cywgZm9udFNpemUgPSAuNikKCiMgc2F2ZQpnZ3NhdmUoInJlc3VsdHNfbG9nLnBkZiIsIHBsb3QgPSBsb2dtb2RlbCwgZGV2aWNlID0gInBkZiIsCiAgICAgICBzY2FsZSA9IDEsIHdpZHRoID0gNiwgaGVpZ2h0ID0gNiwgdW5pdHMgPSBjKCJpbiIpLAogICAgICAgZHBpID0gInJldGluYSIpCgoKIyBjb250cmFzdGluZyBsb3cgZW4gc2VjIGVkdWMKbW9kZWxzMSA8LSBsaXN0KCkKZGYkb3BsIDwtcmVsZXZlbChkZiRvcGwsIHJlZiA9IDEpCmhlYWQoZGYkb3BsKQpmb3IgKGkgaW4gMTM6MTg0KSB7ICMgLS0+IDE2OCBuZWdhdGl2ZSBiaW5vbWlhbHMgd2l0aCBkaWZmZXJlbnQgbmV0c2l6ZXMuIFdlIHRoZW4gbG9vayBhdCBkaXN0cmlidXRpb25zIG9mIGNvZWZmaWNpZW50cyBhY3Jvc3MgdGhvc2UKICBtb2RlbHMxW1tpXV0gPC0gZ2xtLm5iKGRmWyFkZltbaV1dPjEwMDAwLCBjKGkpXSB+IGFzLmZhY3Rvcih3b21hbikgKyBsZWVmdGlqZDEwICsgYXMuZmFjdG9yKG9wbCkgKyBtaWdyICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwgCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2ldXT4xMDAwMCxdLCBpbml0LnRoZXRhID0gMS4wMzI3MTMxNTYsIGxpbmsgPSBsb2cpCn0KbW9kZWxzMVtzYXBwbHkobW9kZWxzMSwgaXMubnVsbCldIDwtIE5VTEwKZHdwbG90KG1vZGVsczEsCiAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgICB3aGlza2VyX2FyZ3MgPSBsaXN0KHNpemUgPSAwLjI1LCBjb2xvciA9ICJkYXJrZ3JleSIsIGFscGhhID0gMC41KSwgICAjIGNvbG9yIGZvciB0aGUgd2hpc2tlcgogICAgICAgIHZsaW5lID0gZ2dwbG90Mjo6Z2VvbV92bGluZSh4aW50ZXJjZXB0ID0gMCwgICMgcHV0IHZsaW5lIF9iZWhpbmRfIGNvZWZzOyBzZWUgaHR0cHM6Ly9naXRodWIuY29tL2Zzb2x0L2RvdHdoaXNrZXIvaXNzdWVzLzg0CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ldHlwZSA9IDIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemUgPSAxKSkgCgptb2RlbHNpbnQgPC0gbGlzdCgpCmZvciAoaSBpbiAxMzoxODQpIHsgIyAtLT4gMTY4IG5lZ2F0aXZlIGJpbm9taWFscyB3aXRoIGRpZmZlcmVudCBuZXRzaXplcy4gV2UgdGhlbiBsb29rIGF0IGRpc3RyaWJ1dGlvbnMgb2YgY29lZmZpY2llbnRzIGFjcm9zcyB0aG9zZS4KICAKICAjaWYgKGkgJWluJSBjKDE4LCA2MSwgMTA0LCAxNDcpKSBuZXh0ICNmYXNjaW5hdGluZyAxOCwgNjEsIDEwNCwgMTQ3IC0tPiB0aGUgY29yb25hIGVzdGltYXRvciBob2xkb3V0IGluaXRpYWxseSBkaWRuJ3Qgd29yaywgcmVtb3Zpbmcgb3V0bGllcnMgd29ya3MsIGFsc28gaGFzIHVuZHVlIGVmZmVjdHMKICBkZlssYyhpKV0gPC0gcm91bmQoZGZbLCBjKGkpXSwgMCkKICAKICAjIG1haW4gZWZmZWN0cwogIG1vZGVsc2ludFtbaV1dIDwtIGxtKGRmWyFkZltbaV1dPjEwMDAsIGMoaSldIH4gYXMuZmFjdG9yKHdvbWFuKSArIGFzLmZhY3RvcihvcGwpKmxlZWZ0aWpkMTAgKyBtaWdyICsgd29ydGhob3VzZSArIG5laWdoZGVucyArIGxlZWZ0aWpkMTAgLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbaV1dPjEwMDAsXSkKfQptb2RlbHNpbnRbc2FwcGx5KG1vZGVsc2ludCwgaXMubnVsbCldIDwtIE5VTEwKc3VtbWFyeShtb2RlbHNpbnRbWzE3MF1dKQoKZHdwbG90KG1vZGVsc2ludCwKICAgICAgIGRvdF9hcmdzID0gbGlzdChjb2xvciA9ICJibGFjayIsIHNpemUgPSAwLjc1LCBzaGFwZSA9IDEpLCAjIGNvbG9yIGZvciB0aGUgZG90CiAgICAgICB3aGlza2VyX2FyZ3MgPSBsaXN0KHNpemUgPSAwLjI1LCBjb2xvciA9ICJkYXJrZ3JleSIsIGFscGhhID0gMC41KSwgICAjIGNvbG9yIGZvciB0aGUgd2hpc2tlcgogICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiZ3JleTYwIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ldHlwZSA9IDIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAKCgoKIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiMgbG0gbG9ncmVzdWx0cyBhcmUgc2ltaWxhcgoKbG9nIDwtIGR3cGxvdChtb2RlbGxvZywKICAgICAgICBkb3RfYXJncyA9IGxpc3QoY29sb3IgPSAiYmxhY2siLCBzaXplID0gMC43NSwgc2hhcGUgPSAxKSwgIyBjb2xvciBmb3IgdGhlIGRvdAogICAgICAgIHdoaXNrZXJfYXJncyA9IGxpc3Qoc2l6ZSA9IDAuMjUpLCAgICMgY29sb3IgZm9yIHRoZSB3aGlza2VyCiAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gImdyZXk2MCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmV0eXBlID0gMiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICIgIiwKICAgICAgImxlZWZ0aWpkMTAiID0gIiAgIiwKICAgICAgImFzLmZhY3RvcihvcGwpMSIgPSAiICAgIiwKICAgICAgImFzLmZhY3RvcihvcGwpMiIgPSAiICAgICIsCiAgICAgICJtaWdyIiA9ICIgICAgICAiLAogICAgICAibmVpZ2hkZW5zIiA9ICIgICAgICAgIiwKICAgICAgIndvcnRoaG91c2UiID0gIiAgICAgICAgIgogICAgKSkgKyB0aGVtZShsZWdlbmQucG9zaXRpb24gPSAibm9uZSIsCiAgICAgICAgICAgICAgIGF4aXMudGV4dCA9IGVsZW1lbnRfdGV4dChjb2xvciA9ICJ3aGl0ZSIpLAogICAgICAgICAgICAgICBwbG90Lm1hcmdpbiA9IG1hcmdpbigyLCAwLCAyLCAwLCAiY20iKSkgKyAKICAgIHRoZW1lX21pbmltYWwoKSArCiAgICBnZ3RpdGxlKCJCKSBMaW5lYXIgbW9kZWwgb2YgbG9nKG5ldHdvcmsgc2l6ZSkiKSArCiAgICB4bGFiKCJCIG9uIGxvZyhuZXR3b3JrIHNpemUpIikKCgojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyBsbSByZXN1bHRzIGFyZSBzaW1pbGFyCgpsbSA8LSBkd3Bsb3QobW9kZWxsbSwKICAgICAgICAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgICAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKICAgICAgICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICIgIiwKICAgICAgImxlZWZ0aWpkMTAiID0gIiAgIiwKICAgICAgImFzLmZhY3RvcihvcGwpMSIgPSAiICAgIiwKICAgICAgImFzLmZhY3RvcihvcGwpMiIgPSAiICAgICIsCiAgICAgICJtaWdyIiA9ICIgICAgICAiLAogICAgICAibmVpZ2hkZW5zIiA9ICIgICAgICAgIiwKICAgICAgIndvcnRoaG91c2UiID0gIiAgICAgICAgIgogICAgKSkgICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLAogICAgICAgICAgICAgICAgYXhpcy50ZXh0ID0gZWxlbWVudF90ZXh0KGNvbG9yID0gIndoaXRlIikscGxvdC5tYXJnaW4gPSB1bml0KGMoMSwxLDEsMSksICJjbSIpKSArIAogICAgdGhlbWVfbWluaW1hbCgpICsKICAgIGdndGl0bGUoIkMpIExpbmVhciBtb2RlbCBvZiBuZXR3b3JrIHNpemUiKSArCiAgICB4bGFiKCJCIG9uIG5ldHdvcmsgc2l6ZSBjb3VudCIpCgojIGdvdHRhIGZpeCB0aGUgbWFyZ2lucwpyb2J1c3QgPC0gcGxvdF9ncmlkKG5iLCBsb2csIGxtLCBucm93ID0gMSkKcm9idXN0Cmdnc2F2ZSgicm9idXN0LnBkZiIsIHBsb3QgPSByb2J1c3QsIGRldmljZSA9ICJwZGYiLAogICAgICAgc2NhbGUgPSAxLCB3aWR0aCA9IDE1LCBoZWlnaHQgPSA5LCB1bml0cyA9IGMoImluIiksCiAgICAgICBkcGkgPSAicmV0aW5hIikKCgpsbSA8LSAKICAKICBzdW1tYXJ5KG1vZGVsbG9nW1sxODVdXSkKCiAgZHdwbG90KG1vZGVscywKICAgICAgICAgICAgIGRvdF9hcmdzID0gbGlzdChjb2xvciA9ICJibGFjayIsIHNpemUgPSAwLjc1LCBzaGFwZSA9IDEpLCAjIGNvbG9yIGZvciB0aGUgZG90CiAgICAgICAgICAgICB3aGlza2VyX2FyZ3MgPSBsaXN0KHNpemUgPSAwLjI1KSwgICAjIGNvbG9yIGZvciB0aGUgd2hpc2tlcgogICAgICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiZ3JleTYwIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ldHlwZSA9IDIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKQoKJT4lICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMgbWFrZSBtb2RlbCB2YXJpYWJsZQogIHJlbGFiZWxfcHJlZGljdG9ycyhjKAogICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICIgIiwKICAgICJsZWVmdGlqZDEwIiA9ICIgICIsCiAgICAiYXMuZmFjdG9yKG9wbCkxIiA9ICIgICAiLAogICAgImFzLmZhY3RvcihvcGwpMiIgPSAiICAgICIsCiAgICAibWlnciIgPSAiICAgICAgIiwKICAgICJuZWlnaGRlbnMiID0gIiAgICAgICAiLAogICAgIndvcnRoaG91c2UiID0gIiAgICAgICAgIgogICkpICArIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIiwKICAgICAgICAgICAgICBheGlzLnRleHQgPSBlbGVtZW50X3RleHQoY29sb3IgPSAid2hpdGUiKSxwbG90Lm1hcmdpbiA9IHVuaXQoYygxLDEsMSwxKSwgImNtIikpICsgCiAgdGhlbWVfbWluaW1hbCgpICsKICBnZ3RpdGxlKCJDKSBMaW5lYXIgbW9kZWwgb2YgbmV0d29yayBzaXplIikgKwogIHhsYWIoIkIgb24gbmV0d29yayBzaXplIGNvdW50IikKCgoKCgoKCgoKCgoKCiMgdS1zaGFwZSBhZ2UKdHdvX2JyYWNrZXQgPC0gbGlzdCgKICBjKCJFZHVjYXRpb24gdGVydC4gaGlnaCA9IHJlZi4iLCAiRWR1Y2F0aW9uIHByaW0uL3NlYy4iLCAiRWR1Y2F0aW9uIHRlcnQuIGxvdyIpLAogIGMoIkFnZSBpbnZlcnRlZCBVIiwgIkFnZS8xMCIsICJBZ2UvMTBeMiIpKQp4MiA8LSB7ZHdwbG90KG1vZGVsc3NxLAogICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgIHdoaXNrZXJfYXJncyA9IGxpc3Qoc2l6ZSA9IDAuMjUpLCAgICMgY29sb3IgZm9yIHRoZSB3aGlza2VyCiAgICAgICB2bGluZSA9IGdncGxvdDI6Omdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsICAjIHB1dCB2bGluZSBfYmVoaW5kXyBjb2Vmczsgc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9mc29sdC9kb3R3aGlza2VyL2lzc3Vlcy84NAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmV0eXBlID0gMiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplID0gMSkpICU+JSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIG1ha2UgbW9kZWwgdmFyaWFibGUKICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICJhcy5mYWN0b3Iod29tYW4pMSIgPSAiV29tZW4iLAogICAgImxlZWZ0aWpkMTAiID0gIkFnZS8xMCIsCiAgICAibGVlZnRpamQxMHNxIiA9ICJBZ2UvMTBeMiIsCiAgICAiYXMuZmFjdG9yKG9wbCkxIiA9ICJFZHVjYXRpb24gcHJpbS4vc2VjLiIsCiAgICAiYXMuZmFjdG9yKG9wbCkyIiA9ICJFZHVjYXRpb24gdGVydC4gbG93IiwKICAgICJtaWdyIiA9ICJNaWdyYXRpb24gYmFja2dyLiIsCiAgICAibmVpZ2hkZW5zIiA9ICJOZWlnaGIuIGRlbnNpdHkvMUsiLAogICAgIndvcnRoaG91c2UiID0gIk5laWdoYi4gV09aLXZhbHVlcy8xMDBLLiIKICApKSArIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikgKyAKICB0aGVtZV9taW5pbWFsKCkgICsKICAgIGdndGl0bGUoIkIpIEluY2x1ZGluZyBtYWluIGFuZCBzcXVhcmVkIGFnZSBlZmZlY3QsIGludmVydGVkIFUtc2hhcGUiKSArCiAgICB4bGFiKCJMb2cgb2RkcyBvbiBuZXR3b3JrIHNpemUgY291bnQiKQogIH0gJT4lCiAgYWRkX2JyYWNrZXRzKHR3b19icmFja2V0KQoKCnJlc3VsdHMgPC0gcGxvdF9ncmlkKG5iLCB4MiwgbnJvdyA9IDEpCgojIHNhdmUKZ2dzYXZlKCJyZXN1bHRzLnBkZiIsIHBsb3QgPSByZXN1bHRzLCBkZXZpY2UgPSAicGRmIiwKICAgICAgIHNjYWxlID0gMSwgd2lkdGggPSAxOSwgaGVpZ2h0ID0gOSwgdW5pdHMgPSBjKCJpbiIpLAogICAgICAgZHBpID0gInJldGluYSIpCgoKYGBgCg==</div>
 
 
 </div>

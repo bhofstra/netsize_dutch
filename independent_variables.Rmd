@@ -1,5 +1,5 @@
 ---
-title: "I&O research ID"
+title: "Independent variables"
 #bibliography: references.bib
 author: "Bas Hofstra"
 ---
