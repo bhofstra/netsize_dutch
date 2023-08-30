@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Bas Hofstra" />
+
+
+<title>Inferential analyses</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="tweaks.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Names
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="names_search.html">Names search</a>
+    </li>
+    <li>
+      <a href="names_selection.html">Names selection</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="questionnaire.html">Questionnaire</a>
+</li>
+<li>
+  <a href="nsum.html">NSUM</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="identifier.html">I&amp;O Identifier</a>
+    </li>
+    <li>
+      <a href="dependent_variables.html">Dependent Variables</a>
+    </li>
+    <li>
+      <a href="independent_variables.html">Independent Variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="descriptives.html">Descriptive analyses</a>
+    </li>
+    <li>
+      <a href="inferential.html">Regression analyses</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/bhofstra/netsize_dutch">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Inferential analyses</h1>
+<h4 class="author">Bas Hofstra</h4>
+
+</div>
+
+
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<p>Last compiled on August, 2023</p>
+<p><br></p>
+<hr />
+<p>This is the code with which we run our inferential analyses.</p>
+<p><br></p>
+<hr />
+<div id="initatiating-r-environment" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Initatiating R
+environment</h1>
+<p>Start out with a custom function to load a set of required
+packages.</p>
+<pre class="r test"><code># packages and read data
+rm(list = ls())
+
+# (c) Jochem Tolsma
+fpackage.check &lt;- function(packages) {
+    lapply(packages, FUN = function(x) {
+        if (!require(x, character.only = TRUE)) {
+            install.packages(x, dependencies = TRUE)
+            library(x, character.only = TRUE)
+        }
+    })
+}
+packages = c(&quot;haven&quot;, &quot;coda&quot;, &quot;matrixStats&quot;, &quot;parallel&quot;, &quot;MASS&quot;, &quot;doParallel&quot;, &quot;dplyr&quot;, &quot;cowplot&quot;, &quot;tidyverse&quot;,
+    &quot;naniar&quot;, &quot;dotwhisker&quot;, &quot;gt&quot;, &quot;reshape2&quot;, &quot;VGAM&quot;, &quot;expss&quot;, &quot;Hmisc&quot;)
+fpackage.check(packages)</code></pre>
+<pre class="test2"><code>#&gt; [[1]]
+#&gt; NULL
+#&gt; 
+#&gt; [[2]]
+#&gt; NULL
+#&gt; 
+#&gt; [[3]]
+#&gt; NULL
+#&gt; 
+#&gt; [[4]]
+#&gt; NULL
+#&gt; 
+#&gt; [[5]]
+#&gt; NULL
+#&gt; 
+#&gt; [[6]]
+#&gt; NULL
+#&gt; 
+#&gt; [[7]]
+#&gt; NULL
+#&gt; 
+#&gt; [[8]]
+#&gt; NULL
+#&gt; 
+#&gt; [[9]]
+#&gt; NULL
+#&gt; 
+#&gt; [[10]]
+#&gt; NULL
+#&gt; 
+#&gt; [[11]]
+#&gt; NULL
+#&gt; 
+#&gt; [[12]]
+#&gt; NULL
+#&gt; 
+#&gt; [[13]]
+#&gt; NULL
+#&gt; 
+#&gt; [[14]]
+#&gt; NULL
+#&gt; 
+#&gt; [[15]]
+#&gt; NULL
+#&gt; 
+#&gt; [[16]]
+#&gt; NULL</code></pre>
+<pre class="r test"><code>rm(packages)
+load(&quot;data/dutch_netsize_analyses.rda&quot;)</code></pre>
+<p><br></p>
+<hr />
+</div>
+<div id="models" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Models</h1>
+<pre class="r test"><code>########################
+# MODELS
+########################
+
+
+
+
+# paralellize the estimation
+# closeAllConnections()
+# numCores &lt;- detectCores()
+# registerDoParallel(cores = 8)
+
+
+
+c &lt;- 88
+# main effects
+summary(lm(df[!df[[c]]&gt;10000, c(c)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+                      data = df[!df[[c]]&gt;10000,]))
+
+
+class(as.factor(df$woman))
+
+
+models &lt;- list()
+modelsint &lt;- list()
+modelssq &lt;- list()
+modellog &lt;- list()
+modellm &lt;- list()
+est &lt;- list()
+estlm &lt;- list()
+
+df$opl &lt;-relevel(df$opl, ref = 1)
+df$migr3 &lt;-relevel(as.factor(df$migr3), ref = 1)
+#df$politics &lt;-relevel(as.factor(df$politics), ref = 1)
+df$income &lt;-relevel(as.factor(df$income), ref = 2)
+#foreach (i = 13:184) %dopar% {
+for (i in 14:185) { # --&gt; 168 negative binomials with different netsizes. We then look at distributions of coefficients across those.
+  
+  #if (i %in% c(18, 61, 104, 147)) next #fascinating 18, 61, 104, 147 --&gt; the corona estimator holdout initially didn&#39;t work, removing outliers works, also has undue effects
+    df[,c(i)] &lt;- round(df[, c(i)], 0)
+    
+    # main effects
+    # models[[i]] &lt;- glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+    #                        data = df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log)
+
+    # # main effects
+    # modelsint[[i]] &lt;- glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+    #                       data = df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log)
+   
+    modellog[[i]] &lt;- lm(log10(df[!df[[i]]&gt;10000, c(i)]) ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+                        data = df[!df[[i]]&gt;10000,])
+
+    # modellm[[i]] &lt;- lm(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
+    #                    data = df[!df[[i]]&gt;10000,])
+    # 
+    # # # u-shape for age negbin
+    # modelssq[[i]] &lt;- glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + leeftijd10sq + as.factor(opl) + migr + neighdens + worthhouse, 
+    #                        data = df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log)
+    
+    # get CIs for main effects, may be useful for viz later
+    #est[[i]] &lt;- cbind(Estimate = coef(models[[i]]), confint(models[[i]]))
+    #estlm[[i]] &lt;- cbind(Estimate = coef(modellm[[i]]), confint(modellm[[i]]))
+    
+}
+
+#est[sapply(est, is.null)] &lt;- NULL
+models[sapply(models, is.null)] &lt;- NULL
+modelsint[sapply(modelsint, is.null)] &lt;- NULL
+est[sapply(est, is.null)] &lt;- NULL
+estlm[sapply(estlm, is.null)] &lt;- NULL
+modellog[sapply(modellog, is.null)] &lt;- NULL
+modellm[sapply(modellm, is.null)] &lt;- NULL
+modelssq[sapply(modelssq, is.null)] &lt;- NULL
+
+
+
+# nice df with CIs
+estimates &lt;- list()     
+for (i in 1:length(est)) { # --&gt;  some data crunching to visualize
+  
+
+  estimates[[i]] &lt;- data.frame(t(est[[i]]))
+  estimates[[i]] &lt;- cbind(estimates[[i]], data.frame(c(&quot;est&quot;, &quot;lb&quot;, &quot;ub&quot;)))
+  names(estimates[[i]]) &lt;- c(&quot;intercept&quot;,  &quot;woman&quot;, &quot;age&quot;,  &quot;opl1&quot;,  &quot;opl2&quot;, &quot;migr&quot;,
+                             &quot;neighdens&quot;,&quot;worthhouse&quot;, &quot;var&quot;)
+  rownames(estimates[[i]]) &lt;- 1:nrow(estimates[[i]])
+
+}
+estimates &lt;- bind_rows(estimates)
+
+# nice df with CIs
+estimateslm &lt;- list()     
+for (i in 1:length(estlm)) { # --&gt;  some data crunching to visualize
+  
+  
+  estimateslm[[i]] &lt;- data.frame(t(estlm[[i]]))
+  estimateslm[[i]] &lt;- cbind(estimateslm[[i]], data.frame(c(&quot;est&quot;, &quot;lb&quot;, &quot;ub&quot;)))
+  names(estimateslm[[i]]) &lt;- c(&quot;intercept&quot;,  &quot;woman&quot;, &quot;age&quot;,  &quot;opl2&quot;,  &quot;opl1&quot;, &quot;migr&quot;,
+                             &quot;neighdens&quot;,&quot;worthhouse&quot;, &quot;var&quot;)
+  rownames(estimateslm[[i]]) &lt;- 1:nrow(estimateslm[[i]])
+  
+}
+estimateslm &lt;- bind_rows(estimateslm)
+summary(modellm[[1]])
+summary(estimateslm$opl1)
+summary(estimateslm$opl2)
+summary(modellm[[172]])
+#--------------------------------------------------------------------------------
+# Viz of results
+
+# main effects
+four_brackets &lt;- list(
+  c(&quot;Educ tert high=ref&quot;, &quot;Educ prim/sec&quot;, &quot;Educ tert low&quot;),
+  c(&quot;&gt;modal inc=ref&quot;, &quot;&lt;=modal income&quot;, &quot;Unkn income&quot;),
+  c(&quot;Dutch maj=ref&quot;, &quot;West backgr&quot;, &quot;non-West backgr&quot;),
+  c(&quot;Left vote=ref&quot;, &quot;Right vote&quot;, &quot;No/blanco vote&quot;))
+
+ logmodel &lt;- {dwplot(modellog,
+         dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+         whisker_args = list(size = 0.25, color = &quot;darkgrey&quot;, alpha = 0.5),   # color for the whisker
+         vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                     colour = &quot;grey60&quot;,
+                                     linetype = 2,
+                                     size = 1)) %&gt;%                                     # make model variable
+    relabel_predictors(c(
+      &quot;as.factor(woman)1&quot; = &quot;Women&quot;,
+      &quot;leeftijd10&quot; = &quot;Age/10&quot;,
+      &quot;as.factor(opl)1&quot; = &quot;Educ prim/sec&quot;,
+      &quot;as.factor(opl)2&quot; = &quot;Educ tert low&quot;,
+      &quot;as.factor(work)1&quot; = &quot;Working&quot;,
+      &quot;as.factor(income)1&quot; = &quot;&lt;=modal income&quot;,
+      &quot;as.factor(income)3&quot; = &quot;Unkn income&quot;,
+      &quot;as.factor(migr3)2&quot; = &quot;West backgr&quot;,
+      &quot;as.factor(migr3)3&quot; = &quot;non-West backgr&quot;,
+      &quot;hhsize&quot; = &quot;Household size&quot;,
+      &quot;as.factor(politics)1&quot; = &quot;Right vote&quot;,
+      &quot;as.factor(politics)3&quot; = &quot;No/blanco vote&quot;,
+      &quot;neighdens&quot; = &quot;Neigh. density&quot;,
+      &quot;worthhouse&quot; = &quot;WOZ-values&quot;
+    )) + theme(legend.position = &quot;none&quot;,
+               axis.text = element_text(color = &quot;grey&quot;)) + 
+    theme_minimal() +
+    #ggtitle(&quot;A) Negative binomial model of network size&quot;) +
+    xlab(&quot;B on Log(network size count)&quot;)}  %&gt;%
+  add_brackets(four_brackets, fontSize = .6)
+
+ 
+ 
+ {dwplot(modellm,
+         dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+         whisker_args = list(size = 0.25, color = &quot;darkgrey&quot;, alpha = 0.5),   # color for the whisker
+         vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                     colour = &quot;grey60&quot;,
+                                     linetype = 2,
+                                     size = 1)) %&gt;%                                     # make model variable
+     relabel_predictors(c(
+       &quot;as.factor(woman)1&quot; = &quot;Women&quot;,
+       &quot;leeftijd10&quot; = &quot;Age/10&quot;,
+       &quot;as.factor(opl)1&quot; = &quot;Educ prim/sec&quot;,
+       &quot;as.factor(opl)2&quot; = &quot;Educ tert low&quot;,
+       &quot;as.factor(work)1&quot; = &quot;Working&quot;,
+       &quot;as.factor(income)1&quot; = &quot;&lt;=modal income&quot;,
+       &quot;as.factor(income)3&quot; = &quot;Unkn income&quot;,
+       &quot;as.factor(migr3)2&quot; = &quot;West backgr&quot;,
+       &quot;as.factor(migr3)3&quot; = &quot;non-West backgr&quot;,
+       &quot;hhsize&quot; = &quot;Household size&quot;,
+       &quot;as.factor(politics)2&quot; = &quot;Left vote&quot;,
+       &quot;as.factor(politics)3&quot; = &quot;No/blanco vote&quot;,
+       &quot;neighdens&quot; = &quot;Neigh. density&quot;,
+       &quot;worthhouse&quot; = &quot;WOZ-values&quot;
+     )) + theme(legend.position = &quot;none&quot;,
+                axis.text = element_text(color = &quot;grey&quot;)) + 
+     theme_minimal() +
+     #ggtitle(&quot;A) Negative binomial model of network size&quot;) +
+     xlab(&quot;B on Log(network size count)&quot;)}  %&gt;%
+   add_brackets(four_brackets, fontSize = .6)
+
+# save
+ggsave(&quot;results_log.pdf&quot;, plot = logmodel, device = &quot;pdf&quot;,
+       scale = 1, width = 6, height = 6, units = c(&quot;in&quot;),
+       dpi = &quot;retina&quot;)
+
+
+# contrasting low en sec educ
+models1 &lt;- list()
+df$opl &lt;-relevel(df$opl, ref = 1)
+head(df$opl)
+for (i in 13:184) { # --&gt; 168 negative binomials with different netsizes. We then look at distributions of coefficients across those
+  models1[[i]] &lt;- glm.nb(df[!df[[i]]&gt;10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + migr + neighdens + worthhouse, 
+                        data = df[!df[[i]]&gt;10000,], init.theta = 1.032713156, link = log)
+}
+models1[sapply(models1, is.null)] &lt;- NULL
+dwplot(models1,
+        dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+        whisker_args = list(size = 0.25, color = &quot;darkgrey&quot;, alpha = 0.5),   # color for the whisker
+        vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                    colour = &quot;grey60&quot;,
+                                    linetype = 2,
+                                    size = 1)) 
+
+modelsint &lt;- list()
+for (i in 13:184) { # --&gt; 168 negative binomials with different netsizes. We then look at distributions of coefficients across those.
+  
+  #if (i %in% c(18, 61, 104, 147)) next #fascinating 18, 61, 104, 147 --&gt; the corona estimator holdout initially didn&#39;t work, removing outliers works, also has undue effects
+  df[,c(i)] &lt;- round(df[, c(i)], 0)
+  
+  # main effects
+  modelsint[[i]] &lt;- lm(df[!df[[i]]&gt;1000, c(i)] ~ as.factor(woman) + as.factor(opl)*leeftijd10 + migr + worthhouse + neighdens + leeftijd10 , 
+                           data = df[!df[[i]]&gt;1000,])
+}
+modelsint[sapply(modelsint, is.null)] &lt;- NULL
+summary(modelsint[[170]])
+
+dwplot(modelsint,
+       dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+       whisker_args = list(size = 0.25, color = &quot;darkgrey&quot;, alpha = 0.5),   # color for the whisker
+       vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                   colour = &quot;grey60&quot;,
+                                   linetype = 2,
+                                   size = 1)) 
+
+
+
+#--------------------------------------------------------------------------------
+# lm logresults are similar
+
+log &lt;- dwplot(modellog,
+        dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+        whisker_args = list(size = 0.25),   # color for the whisker
+        vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                    colour = &quot;grey60&quot;,
+                                    linetype = 2,
+                                    size = 1)) %&gt;%                                     # make model variable
+    relabel_predictors(c(
+      &quot;as.factor(woman)1&quot; = &quot; &quot;,
+      &quot;leeftijd10&quot; = &quot;  &quot;,
+      &quot;as.factor(opl)1&quot; = &quot;   &quot;,
+      &quot;as.factor(opl)2&quot; = &quot;    &quot;,
+      &quot;migr&quot; = &quot;      &quot;,
+      &quot;neighdens&quot; = &quot;       &quot;,
+      &quot;worthhouse&quot; = &quot;        &quot;
+    )) + theme(legend.position = &quot;none&quot;,
+               axis.text = element_text(color = &quot;white&quot;),
+               plot.margin = margin(2, 0, 2, 0, &quot;cm&quot;)) + 
+    theme_minimal() +
+    ggtitle(&quot;B) Linear model of log(network size)&quot;) +
+    xlab(&quot;B on log(network size)&quot;)
+
+
+#--------------------------------------------------------------------------------
+# lm results are similar
+
+lm &lt;- dwplot(modellm,
+               dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+               whisker_args = list(size = 0.25),   # color for the whisker
+               vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                           colour = &quot;grey60&quot;,
+                                           linetype = 2,
+                                           size = 1)) %&gt;%                                     # make model variable
+    relabel_predictors(c(
+      &quot;as.factor(woman)1&quot; = &quot; &quot;,
+      &quot;leeftijd10&quot; = &quot;  &quot;,
+      &quot;as.factor(opl)1&quot; = &quot;   &quot;,
+      &quot;as.factor(opl)2&quot; = &quot;    &quot;,
+      &quot;migr&quot; = &quot;      &quot;,
+      &quot;neighdens&quot; = &quot;       &quot;,
+      &quot;worthhouse&quot; = &quot;        &quot;
+    ))  + theme(legend.position = &quot;none&quot;,
+                axis.text = element_text(color = &quot;white&quot;),plot.margin = unit(c(1,1,1,1), &quot;cm&quot;)) + 
+    theme_minimal() +
+    ggtitle(&quot;C) Linear model of network size&quot;) +
+    xlab(&quot;B on network size count&quot;)
+
+# gotta fix the margins
+robust &lt;- plot_grid(nb, log, lm, nrow = 1)
+robust
+ggsave(&quot;robust.pdf&quot;, plot = robust, device = &quot;pdf&quot;,
+       scale = 1, width = 15, height = 9, units = c(&quot;in&quot;),
+       dpi = &quot;retina&quot;)
+
+
+lm &lt;- 
+  
+  summary(modellog[[185]])
+
+  dwplot(models,
+             dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+             whisker_args = list(size = 0.25),   # color for the whisker
+             vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                         colour = &quot;grey60&quot;,
+                                         linetype = 2,
+                                         size = 1))
+
+%&gt;%                                     # make model variable
+  relabel_predictors(c(
+    &quot;as.factor(woman)1&quot; = &quot; &quot;,
+    &quot;leeftijd10&quot; = &quot;  &quot;,
+    &quot;as.factor(opl)1&quot; = &quot;   &quot;,
+    &quot;as.factor(opl)2&quot; = &quot;    &quot;,
+    &quot;migr&quot; = &quot;      &quot;,
+    &quot;neighdens&quot; = &quot;       &quot;,
+    &quot;worthhouse&quot; = &quot;        &quot;
+  ))  + theme(legend.position = &quot;none&quot;,
+              axis.text = element_text(color = &quot;white&quot;),plot.margin = unit(c(1,1,1,1), &quot;cm&quot;)) + 
+  theme_minimal() +
+  ggtitle(&quot;C) Linear model of network size&quot;) +
+  xlab(&quot;B on network size count&quot;)
+
+
+
+
+
+
+
+
+
+
+
+
+
+# u-shape age
+two_bracket &lt;- list(
+  c(&quot;Education tert. high = ref.&quot;, &quot;Education prim./sec.&quot;, &quot;Education tert. low&quot;),
+  c(&quot;Age inverted U&quot;, &quot;Age/10&quot;, &quot;Age/10^2&quot;))
+x2 &lt;- {dwplot(modelssq,
+       dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
+       whisker_args = list(size = 0.25),   # color for the whisker
+       vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
+                                   colour = &quot;grey60&quot;,
+                                   linetype = 2,
+                                   size = 1)) %&gt;%                                     # make model variable
+  relabel_predictors(c(
+    &quot;as.factor(woman)1&quot; = &quot;Women&quot;,
+    &quot;leeftijd10&quot; = &quot;Age/10&quot;,
+    &quot;leeftijd10sq&quot; = &quot;Age/10^2&quot;,
+    &quot;as.factor(opl)1&quot; = &quot;Education prim./sec.&quot;,
+    &quot;as.factor(opl)2&quot; = &quot;Education tert. low&quot;,
+    &quot;migr&quot; = &quot;Migration backgr.&quot;,
+    &quot;neighdens&quot; = &quot;Neighb. density/1K&quot;,
+    &quot;worthhouse&quot; = &quot;Neighb. WOZ-values/100K.&quot;
+  )) + theme(legend.position = &quot;none&quot;) + 
+  theme_minimal()  +
+    ggtitle(&quot;B) Including main and squared age effect, inverted U-shape&quot;) +
+    xlab(&quot;Log odds on network size count&quot;)
+  } %&gt;%
+  add_brackets(two_bracket)
+
+
+results &lt;- plot_grid(nb, x2, nrow = 1)
+
+# save
+ggsave(&quot;results.pdf&quot;, plot = results, device = &quot;pdf&quot;,
+       scale = 1, width = 19, height = 9, units = c(&quot;in&quot;),
+       dpi = &quot;retina&quot;)</code></pre>
+</div>
+
+<div id="rmd-source-code">Ci0tLQp0aXRsZTogIkluZmVyZW50aWFsIGFuYWx5c2VzIgojYmlibGlvZ3JhcGh5OiByZWZlcmVuY2VzLmJpYgphdXRob3I6ICJCYXMgSG9mc3RyYSIKLS0tCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KCmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCkxhc3QgY29tcGlsZWQgb24gYHIgZm9ybWF0KFN5cy50aW1lKCksICclQiwgJVknKWAKCjxicj4KCi0tLS0KClRoaXMgaXMgdGhlIGNvZGUgd2l0aCB3aGljaCB3ZSBydW4gb3VyIGluZmVyZW50aWFsIGFuYWx5c2VzLgoKPGJyPgoKLS0tLQoKIyBJbml0YXRpYXRpbmcgUiBlbnZpcm9ubWVudAoKU3RhcnQgb3V0IHdpdGggYSBjdXN0b20gZnVuY3Rpb24gdG8gbG9hZCBhIHNldCBvZiByZXF1aXJlZCBwYWNrYWdlcy4KICAKYGBge3IgcGFjaywgZXZhbD1UUlVFfQojIHBhY2thZ2VzIGFuZCByZWFkIGRhdGEKcm0obGlzdCA9IGxzKCkpCgojIChjKSBKb2NoZW0gVG9sc21hCmZwYWNrYWdlLmNoZWNrIDwtIGZ1bmN0aW9uKHBhY2thZ2VzKSB7CiAgbGFwcGx5KHBhY2thZ2VzLCBGVU4gPSBmdW5jdGlvbih4KSB7CiAgICBpZiAoIXJlcXVpcmUoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKSkgewogICAgICBpbnN0YWxsLnBhY2thZ2VzKHgsIGRlcGVuZGVuY2llcyA9IFRSVUUpCiAgICAgIGxpYnJhcnkoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKQogICAgfQogIH0pCn0KcGFja2FnZXMgPSBjKCJoYXZlbiIsICJjb2RhIiwgIm1hdHJpeFN0YXRzIiwgInBhcmFsbGVsIiwgIk1BU1MiLCAiZG9QYXJhbGxlbCIsICJkcGx5ciIsICJjb3dwbG90IiwgCiAgICAgICAgICAgICAidGlkeXZlcnNlIiwgIm5hbmlhciIsICJkb3R3aGlza2VyIiAsImd0IiwgInJlc2hhcGUyIiwgIlZHQU0iLCAiZXhwc3MiLCAiSG1pc2MiKQpmcGFja2FnZS5jaGVjayhwYWNrYWdlcykKcm0ocGFja2FnZXMpCmxvYWQoImRhdGEvZHV0Y2hfbmV0c2l6ZV9hbmFseXNlcy5yZGEiKQpgYGAKCjxicj4KCi0tLS0KCiMgTW9kZWxzCgpgYGB7ciwgZXZhbCA9IEZBTFNFfQoKCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwojIE1PREVMUwojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCgoKCiMgcGFyYWxlbGxpemUgdGhlIGVzdGltYXRpb24KIyBjbG9zZUFsbENvbm5lY3Rpb25zKCkKIyBudW1Db3JlcyA8LSBkZXRlY3RDb3JlcygpCiMgcmVnaXN0ZXJEb1BhcmFsbGVsKGNvcmVzID0gOCkKCgoKYyA8LSA4OAojIG1haW4gZWZmZWN0cwpzdW1tYXJ5KGxtKGRmWyFkZltbY11dPjEwMDAwLCBjKGMpXSB+IGFzLmZhY3Rvcih3b21hbikgKyBsZWVmdGlqZDEwICsgYXMuZmFjdG9yKG9wbCkgKyBhcy5mYWN0b3Iod29yaykgKyBhcy5mYWN0b3IoaW5jb21lKSArIGFzLmZhY3RvcihtaWdyMykgKyBoaHNpemUgKyBhcy5mYWN0b3IocG9saXRpY3MpICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwKICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2NdXT4xMDAwMCxdKSkKCgpjbGFzcyhhcy5mYWN0b3IoZGYkd29tYW4pKQoKCm1vZGVscyA8LSBsaXN0KCkKbW9kZWxzaW50IDwtIGxpc3QoKQptb2RlbHNzcSA8LSBsaXN0KCkKbW9kZWxsb2cgPC0gbGlzdCgpCm1vZGVsbG0gPC0gbGlzdCgpCmVzdCA8LSBsaXN0KCkKZXN0bG0gPC0gbGlzdCgpCgpkZiRvcGwgPC1yZWxldmVsKGRmJG9wbCwgcmVmID0gMSkKZGYkbWlncjMgPC1yZWxldmVsKGFzLmZhY3RvcihkZiRtaWdyMyksIHJlZiA9IDEpCiNkZiRwb2xpdGljcyA8LXJlbGV2ZWwoYXMuZmFjdG9yKGRmJHBvbGl0aWNzKSwgcmVmID0gMSkKZGYkaW5jb21lIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkaW5jb21lKSwgcmVmID0gMikKI2ZvcmVhY2ggKGkgPSAxMzoxODQpICVkb3BhciUgewpmb3IgKGkgaW4gMTQ6MTg1KSB7ICMgLS0+IDE2OCBuZWdhdGl2ZSBiaW5vbWlhbHMgd2l0aCBkaWZmZXJlbnQgbmV0c2l6ZXMuIFdlIHRoZW4gbG9vayBhdCBkaXN0cmlidXRpb25zIG9mIGNvZWZmaWNpZW50cyBhY3Jvc3MgdGhvc2UuCiAgCiAgI2lmIChpICVpbiUgYygxOCwgNjEsIDEwNCwgMTQ3KSkgbmV4dCAjZmFzY2luYXRpbmcgMTgsIDYxLCAxMDQsIDE0NyAtLT4gdGhlIGNvcm9uYSBlc3RpbWF0b3IgaG9sZG91dCBpbml0aWFsbHkgZGlkbid0IHdvcmssIHJlbW92aW5nIG91dGxpZXJzIHdvcmtzLCBhbHNvIGhhcyB1bmR1ZSBlZmZlY3RzCiAgICBkZlssYyhpKV0gPC0gcm91bmQoZGZbLCBjKGkpXSwgMCkKICAgIAogICAgIyBtYWluIGVmZmVjdHMKICAgICMgbW9kZWxzW1tpXV0gPC0gZ2xtLm5iKGRmWyFkZltbaV1dPjEwMDAwLCBjKGkpXSB+IGFzLmZhY3Rvcih3b21hbikgKyBsZWVmdGlqZDEwICsgYXMuZmFjdG9yKG9wbCkgKyBhcy5mYWN0b3Iod29yaykgKyBhcy5mYWN0b3IoaW5jb21lKSArIGFzLmZhY3RvcihtaWdyMykgKyBoaHNpemUgKyBhcy5mYWN0b3IocG9saXRpY3MpICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwKICAgICMgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1tpXV0+MTAwMDAsXSwgaW5pdC50aGV0YSA9IDEuMDMyNzEzMTU2LCBsaW5rID0gbG9nKQoKICAgICMgIyBtYWluIGVmZmVjdHMKICAgICMgbW9kZWxzaW50W1tpXV0gPC0gZ2xtLm5iKGRmWyFkZltbaV1dPjEwMDAwLCBjKGkpXSB+IGFzLmZhY3Rvcih3b21hbikgKyBsZWVmdGlqZDEwICsgYXMuZmFjdG9yKG9wbCkgKyBhcy5mYWN0b3Iod29yaykgKyBhcy5mYWN0b3IoaW5jb21lKSArIGFzLmZhY3RvcihtaWdyMykgKyBoaHNpemUgKyBhcy5mYWN0b3IocG9saXRpY3MpICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwKICAgICMgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2ldXT4xMDAwMCxdLCBpbml0LnRoZXRhID0gMS4wMzI3MTMxNTYsIGxpbmsgPSBsb2cpCiAgIAogICAgbW9kZWxsb2dbW2ldXSA8LSBsbShsb2cxMChkZlshZGZbW2ldXT4xMDAwMCwgYyhpKV0pIH4gYXMuZmFjdG9yKHdvbWFuKSArIGxlZWZ0aWpkMTAgKyBhcy5mYWN0b3Iob3BsKSArIGFzLmZhY3Rvcih3b3JrKSArIGFzLmZhY3RvcihpbmNvbWUpICsgYXMuZmFjdG9yKG1pZ3IzKSArIGhoc2l6ZSArIGFzLmZhY3Rvcihwb2xpdGljcykgKyBuZWlnaGRlbnMgKyB3b3J0aGhvdXNlLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1tpXV0+MTAwMDAsXSkKCiAgICAjIG1vZGVsbG1bW2ldXSA8LSBsbShkZlshZGZbW2ldXT4xMDAwMCwgYyhpKV0gfiBhcy5mYWN0b3Iod29tYW4pICsgbGVlZnRpamQxMCArIGFzLmZhY3RvcihvcGwpICsgYXMuZmFjdG9yKHdvcmspICsgYXMuZmFjdG9yKGluY29tZSkgKyBhcy5mYWN0b3IobWlncjMpICsgaGhzaXplICsgYXMuZmFjdG9yKHBvbGl0aWNzKSArIG5laWdoZGVucyArIHdvcnRoaG91c2UsCiAgICAjICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1tpXV0+MTAwMDAsXSkKICAgICMgCiAgICAjICMgIyB1LXNoYXBlIGZvciBhZ2UgbmVnYmluCiAgICAjIG1vZGVsc3NxW1tpXV0gPC0gZ2xtLm5iKGRmWyFkZltbaV1dPjEwMDAwLCBjKGkpXSB+IGFzLmZhY3Rvcih3b21hbikgKyBsZWVmdGlqZDEwICsgbGVlZnRpamQxMHNxICsgYXMuZmFjdG9yKG9wbCkgKyBtaWdyICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwgCiAgICAjICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbaV1dPjEwMDAwLF0sIGluaXQudGhldGEgPSAxLjAzMjcxMzE1NiwgbGluayA9IGxvZykKICAgIAogICAgIyBnZXQgQ0lzIGZvciBtYWluIGVmZmVjdHMsIG1heSBiZSB1c2VmdWwgZm9yIHZpeiBsYXRlcgogICAgI2VzdFtbaV1dIDwtIGNiaW5kKEVzdGltYXRlID0gY29lZihtb2RlbHNbW2ldXSksIGNvbmZpbnQobW9kZWxzW1tpXV0pKQogICAgI2VzdGxtW1tpXV0gPC0gY2JpbmQoRXN0aW1hdGUgPSBjb2VmKG1vZGVsbG1bW2ldXSksIGNvbmZpbnQobW9kZWxsbVtbaV1dKSkKICAgIAp9CgojZXN0W3NhcHBseShlc3QsIGlzLm51bGwpXSA8LSBOVUxMCm1vZGVsc1tzYXBwbHkobW9kZWxzLCBpcy5udWxsKV0gPC0gTlVMTAptb2RlbHNpbnRbc2FwcGx5KG1vZGVsc2ludCwgaXMubnVsbCldIDwtIE5VTEwKZXN0W3NhcHBseShlc3QsIGlzLm51bGwpXSA8LSBOVUxMCmVzdGxtW3NhcHBseShlc3RsbSwgaXMubnVsbCldIDwtIE5VTEwKbW9kZWxsb2dbc2FwcGx5KG1vZGVsbG9nLCBpcy5udWxsKV0gPC0gTlVMTAptb2RlbGxtW3NhcHBseShtb2RlbGxtLCBpcy5udWxsKV0gPC0gTlVMTAptb2RlbHNzcVtzYXBwbHkobW9kZWxzc3EsIGlzLm51bGwpXSA8LSBOVUxMCgoKCiMgbmljZSBkZiB3aXRoIENJcwplc3RpbWF0ZXMgPC0gbGlzdCgpICAgICAKZm9yIChpIGluIDE6bGVuZ3RoKGVzdCkpIHsgIyAtLT4gIHNvbWUgZGF0YSBjcnVuY2hpbmcgdG8gdmlzdWFsaXplCiAgCgogIGVzdGltYXRlc1tbaV1dIDwtIGRhdGEuZnJhbWUodChlc3RbW2ldXSkpCiAgZXN0aW1hdGVzW1tpXV0gPC0gY2JpbmQoZXN0aW1hdGVzW1tpXV0sIGRhdGEuZnJhbWUoYygiZXN0IiwgImxiIiwgInViIikpKQogIG5hbWVzKGVzdGltYXRlc1tbaV1dKSA8LSBjKCJpbnRlcmNlcHQiLCAgIndvbWFuIiwgImFnZSIsICAib3BsMSIsICAib3BsMiIsICJtaWdyIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibmVpZ2hkZW5zIiwid29ydGhob3VzZSIsICJ2YXIiKQogIHJvd25hbWVzKGVzdGltYXRlc1tbaV1dKSA8LSAxOm5yb3coZXN0aW1hdGVzW1tpXV0pCgp9CmVzdGltYXRlcyA8LSBiaW5kX3Jvd3MoZXN0aW1hdGVzKQoKIyBuaWNlIGRmIHdpdGggQ0lzCmVzdGltYXRlc2xtIDwtIGxpc3QoKSAgICAgCmZvciAoaSBpbiAxOmxlbmd0aChlc3RsbSkpIHsgIyAtLT4gIHNvbWUgZGF0YSBjcnVuY2hpbmcgdG8gdmlzdWFsaXplCiAgCiAgCiAgZXN0aW1hdGVzbG1bW2ldXSA8LSBkYXRhLmZyYW1lKHQoZXN0bG1bW2ldXSkpCiAgZXN0aW1hdGVzbG1bW2ldXSA8LSBjYmluZChlc3RpbWF0ZXNsbVtbaV1dLCBkYXRhLmZyYW1lKGMoImVzdCIsICJsYiIsICJ1YiIpKSkKICBuYW1lcyhlc3RpbWF0ZXNsbVtbaV1dKSA8LSBjKCJpbnRlcmNlcHQiLCAgIndvbWFuIiwgImFnZSIsICAib3BsMiIsICAib3BsMSIsICJtaWdyIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAibmVpZ2hkZW5zIiwid29ydGhob3VzZSIsICJ2YXIiKQogIHJvd25hbWVzKGVzdGltYXRlc2xtW1tpXV0pIDwtIDE6bnJvdyhlc3RpbWF0ZXNsbVtbaV1dKQogIAp9CmVzdGltYXRlc2xtIDwtIGJpbmRfcm93cyhlc3RpbWF0ZXNsbSkKc3VtbWFyeShtb2RlbGxtW1sxXV0pCnN1bW1hcnkoZXN0aW1hdGVzbG0kb3BsMSkKc3VtbWFyeShlc3RpbWF0ZXNsbSRvcGwyKQpzdW1tYXJ5KG1vZGVsbG1bWzE3Ml1dKQojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyBWaXogb2YgcmVzdWx0cwoKIyBtYWluIGVmZmVjdHMKZm91cl9icmFja2V0cyA8LSBsaXN0KAogIGMoIkVkdWMgdGVydCBoaWdoPXJlZiIsICJFZHVjIHByaW0vc2VjIiwgIkVkdWMgdGVydCBsb3ciKSwKICBjKCI+bW9kYWwgaW5jPXJlZiIsICI8PW1vZGFsIGluY29tZSIsICJVbmtuIGluY29tZSIpLAogIGMoIkR1dGNoIG1haj1yZWYiLCAiV2VzdCBiYWNrZ3IiLCAibm9uLVdlc3QgYmFja2dyIiksCiAgYygiTGVmdCB2b3RlPXJlZiIsICJSaWdodCB2b3RlIiwgIk5vL2JsYW5jbyB2b3RlIikpCgogbG9nbW9kZWwgPC0ge2R3cGxvdChtb2RlbGxvZywKICAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSwgY29sb3IgPSAiZGFya2dyZXkiLCBhbHBoYSA9IDAuNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICJXb21lbiIsCiAgICAgICJsZWVmdGlqZDEwIiA9ICJBZ2UvMTAiLAogICAgICAiYXMuZmFjdG9yKG9wbCkxIiA9ICJFZHVjIHByaW0vc2VjIiwKICAgICAgImFzLmZhY3RvcihvcGwpMiIgPSAiRWR1YyB0ZXJ0IGxvdyIsCiAgICAgICJhcy5mYWN0b3Iod29yaykxIiA9ICJXb3JraW5nIiwKICAgICAgImFzLmZhY3RvcihpbmNvbWUpMSIgPSAiPD1tb2RhbCBpbmNvbWUiLAogICAgICAiYXMuZmFjdG9yKGluY29tZSkzIiA9ICJVbmtuIGluY29tZSIsCiAgICAgICJhcy5mYWN0b3IobWlncjMpMiIgPSAiV2VzdCBiYWNrZ3IiLAogICAgICAiYXMuZmFjdG9yKG1pZ3IzKTMiID0gIm5vbi1XZXN0IGJhY2tnciIsCiAgICAgICJoaHNpemUiID0gIkhvdXNlaG9sZCBzaXplIiwKICAgICAgImFzLmZhY3Rvcihwb2xpdGljcykxIiA9ICJSaWdodCB2b3RlIiwKICAgICAgImFzLmZhY3Rvcihwb2xpdGljcykzIiA9ICJOby9ibGFuY28gdm90ZSIsCiAgICAgICJuZWlnaGRlbnMiID0gIk5laWdoLiBkZW5zaXR5IiwKICAgICAgIndvcnRoaG91c2UiID0gIldPWi12YWx1ZXMiCiAgICApKSArIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIiwKICAgICAgICAgICAgICAgYXhpcy50ZXh0ID0gZWxlbWVudF90ZXh0KGNvbG9yID0gImdyZXkiKSkgKyAKICAgIHRoZW1lX21pbmltYWwoKSArCiAgICAjZ2d0aXRsZSgiQSkgTmVnYXRpdmUgYmlub21pYWwgbW9kZWwgb2YgbmV0d29yayBzaXplIikgKwogICAgeGxhYigiQiBvbiBMb2cobmV0d29yayBzaXplIGNvdW50KSIpfSAgJT4lCiAgYWRkX2JyYWNrZXRzKGZvdXJfYnJhY2tldHMsIGZvbnRTaXplID0gLjYpCgogCiAKIHtkd3Bsb3QobW9kZWxsbSwKICAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSwgY29sb3IgPSAiZGFya2dyZXkiLCBhbHBoYSA9IDAuNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgICAgcmVsYWJlbF9wcmVkaWN0b3JzKGMoCiAgICAgICAiYXMuZmFjdG9yKHdvbWFuKTEiID0gIldvbWVuIiwKICAgICAgICJsZWVmdGlqZDEwIiA9ICJBZ2UvMTAiLAogICAgICAgImFzLmZhY3RvcihvcGwpMSIgPSAiRWR1YyBwcmltL3NlYyIsCiAgICAgICAiYXMuZmFjdG9yKG9wbCkyIiA9ICJFZHVjIHRlcnQgbG93IiwKICAgICAgICJhcy5mYWN0b3Iod29yaykxIiA9ICJXb3JraW5nIiwKICAgICAgICJhcy5mYWN0b3IoaW5jb21lKTEiID0gIjw9bW9kYWwgaW5jb21lIiwKICAgICAgICJhcy5mYWN0b3IoaW5jb21lKTMiID0gIlVua24gaW5jb21lIiwKICAgICAgICJhcy5mYWN0b3IobWlncjMpMiIgPSAiV2VzdCBiYWNrZ3IiLAogICAgICAgImFzLmZhY3RvcihtaWdyMykzIiA9ICJub24tV2VzdCBiYWNrZ3IiLAogICAgICAgImhoc2l6ZSIgPSAiSG91c2Vob2xkIHNpemUiLAogICAgICAgImFzLmZhY3Rvcihwb2xpdGljcykyIiA9ICJMZWZ0IHZvdGUiLAogICAgICAgImFzLmZhY3Rvcihwb2xpdGljcykzIiA9ICJOby9ibGFuY28gdm90ZSIsCiAgICAgICAibmVpZ2hkZW5zIiA9ICJOZWlnaC4gZGVuc2l0eSIsCiAgICAgICAid29ydGhob3VzZSIgPSAiV09aLXZhbHVlcyIKICAgICApKSArIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIiwKICAgICAgICAgICAgICAgIGF4aXMudGV4dCA9IGVsZW1lbnRfdGV4dChjb2xvciA9ICJncmV5IikpICsgCiAgICAgdGhlbWVfbWluaW1hbCgpICsKICAgICAjZ2d0aXRsZSgiQSkgTmVnYXRpdmUgYmlub21pYWwgbW9kZWwgb2YgbmV0d29yayBzaXplIikgKwogICAgIHhsYWIoIkIgb24gTG9nKG5ldHdvcmsgc2l6ZSBjb3VudCkiKX0gICU+JQogICBhZGRfYnJhY2tldHMoZm91cl9icmFja2V0cywgZm9udFNpemUgPSAuNikKCiMgc2F2ZQpnZ3NhdmUoInJlc3VsdHNfbG9nLnBkZiIsIHBsb3QgPSBsb2dtb2RlbCwgZGV2aWNlID0gInBkZiIsCiAgICAgICBzY2FsZSA9IDEsIHdpZHRoID0gNiwgaGVpZ2h0ID0gNiwgdW5pdHMgPSBjKCJpbiIpLAogICAgICAgZHBpID0gInJldGluYSIpCgoKIyBjb250cmFzdGluZyBsb3cgZW4gc2VjIGVkdWMKbW9kZWxzMSA8LSBsaXN0KCkKZGYkb3BsIDwtcmVsZXZlbChkZiRvcGwsIHJlZiA9IDEpCmhlYWQoZGYkb3BsKQpmb3IgKGkgaW4gMTM6MTg0KSB7ICMgLS0+IDE2OCBuZWdhdGl2ZSBiaW5vbWlhbHMgd2l0aCBkaWZmZXJlbnQgbmV0c2l6ZXMuIFdlIHRoZW4gbG9vayBhdCBkaXN0cmlidXRpb25zIG9mIGNvZWZmaWNpZW50cyBhY3Jvc3MgdGhvc2UKICBtb2RlbHMxW1tpXV0gPC0gZ2xtLm5iKGRmWyFkZltbaV1dPjEwMDAwLCBjKGkpXSB+IGFzLmZhY3Rvcih3b21hbikgKyBsZWVmdGlqZDEwICsgYXMuZmFjdG9yKG9wbCkgKyBtaWdyICsgbmVpZ2hkZW5zICsgd29ydGhob3VzZSwgCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2ldXT4xMDAwMCxdLCBpbml0LnRoZXRhID0gMS4wMzI3MTMxNTYsIGxpbmsgPSBsb2cpCn0KbW9kZWxzMVtzYXBwbHkobW9kZWxzMSwgaXMubnVsbCldIDwtIE5VTEwKZHdwbG90KG1vZGVsczEsCiAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgICB3aGlza2VyX2FyZ3MgPSBsaXN0KHNpemUgPSAwLjI1LCBjb2xvciA9ICJkYXJrZ3JleSIsIGFscGhhID0gMC41KSwgICAjIGNvbG9yIGZvciB0aGUgd2hpc2tlcgogICAgICAgIHZsaW5lID0gZ2dwbG90Mjo6Z2VvbV92bGluZSh4aW50ZXJjZXB0ID0gMCwgICMgcHV0IHZsaW5lIF9iZWhpbmRfIGNvZWZzOyBzZWUgaHR0cHM6Ly9naXRodWIuY29tL2Zzb2x0L2RvdHdoaXNrZXIvaXNzdWVzLzg0CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ldHlwZSA9IDIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemUgPSAxKSkgCgptb2RlbHNpbnQgPC0gbGlzdCgpCmZvciAoaSBpbiAxMzoxODQpIHsgIyAtLT4gMTY4IG5lZ2F0aXZlIGJpbm9taWFscyB3aXRoIGRpZmZlcmVudCBuZXRzaXplcy4gV2UgdGhlbiBsb29rIGF0IGRpc3RyaWJ1dGlvbnMgb2YgY29lZmZpY2llbnRzIGFjcm9zcyB0aG9zZS4KICAKICAjaWYgKGkgJWluJSBjKDE4LCA2MSwgMTA0LCAxNDcpKSBuZXh0ICNmYXNjaW5hdGluZyAxOCwgNjEsIDEwNCwgMTQ3IC0tPiB0aGUgY29yb25hIGVzdGltYXRvciBob2xkb3V0IGluaXRpYWxseSBkaWRuJ3Qgd29yaywgcmVtb3Zpbmcgb3V0bGllcnMgd29ya3MsIGFsc28gaGFzIHVuZHVlIGVmZmVjdHMKICBkZlssYyhpKV0gPC0gcm91bmQoZGZbLCBjKGkpXSwgMCkKICAKICAjIG1haW4gZWZmZWN0cwogIG1vZGVsc2ludFtbaV1dIDwtIGxtKGRmWyFkZltbaV1dPjEwMDAsIGMoaSldIH4gYXMuZmFjdG9yKHdvbWFuKSArIGFzLmZhY3RvcihvcGwpKmxlZWZ0aWpkMTAgKyBtaWdyICsgd29ydGhob3VzZSArIG5laWdoZGVucyArIGxlZWZ0aWpkMTAgLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbaV1dPjEwMDAsXSkKfQptb2RlbHNpbnRbc2FwcGx5KG1vZGVsc2ludCwgaXMubnVsbCldIDwtIE5VTEwKc3VtbWFyeShtb2RlbHNpbnRbWzE3MF1dKQoKZHdwbG90KG1vZGVsc2ludCwKICAgICAgIGRvdF9hcmdzID0gbGlzdChjb2xvciA9ICJibGFjayIsIHNpemUgPSAwLjc1LCBzaGFwZSA9IDEpLCAjIGNvbG9yIGZvciB0aGUgZG90CiAgICAgICB3aGlza2VyX2FyZ3MgPSBsaXN0KHNpemUgPSAwLjI1LCBjb2xvciA9ICJkYXJrZ3JleSIsIGFscGhhID0gMC41KSwgICAjIGNvbG9yIGZvciB0aGUgd2hpc2tlcgogICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiZ3JleTYwIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ldHlwZSA9IDIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAKCgoKIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiMgbG0gbG9ncmVzdWx0cyBhcmUgc2ltaWxhcgoKbG9nIDwtIGR3cGxvdChtb2RlbGxvZywKICAgICAgICBkb3RfYXJncyA9IGxpc3QoY29sb3IgPSAiYmxhY2siLCBzaXplID0gMC43NSwgc2hhcGUgPSAxKSwgIyBjb2xvciBmb3IgdGhlIGRvdAogICAgICAgIHdoaXNrZXJfYXJncyA9IGxpc3Qoc2l6ZSA9IDAuMjUpLCAgICMgY29sb3IgZm9yIHRoZSB3aGlza2VyCiAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gImdyZXk2MCIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmV0eXBlID0gMiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICIgIiwKICAgICAgImxlZWZ0aWpkMTAiID0gIiAgIiwKICAgICAgImFzLmZhY3RvcihvcGwpMSIgPSAiICAgIiwKICAgICAgImFzLmZhY3RvcihvcGwpMiIgPSAiICAgICIsCiAgICAgICJtaWdyIiA9ICIgICAgICAiLAogICAgICAibmVpZ2hkZW5zIiA9ICIgICAgICAgIiwKICAgICAgIndvcnRoaG91c2UiID0gIiAgICAgICAgIgogICAgKSkgKyB0aGVtZShsZWdlbmQucG9zaXRpb24gPSAibm9uZSIsCiAgICAgICAgICAgICAgIGF4aXMudGV4dCA9IGVsZW1lbnRfdGV4dChjb2xvciA9ICJ3aGl0ZSIpLAogICAgICAgICAgICAgICBwbG90Lm1hcmdpbiA9IG1hcmdpbigyLCAwLCAyLCAwLCAiY20iKSkgKyAKICAgIHRoZW1lX21pbmltYWwoKSArCiAgICBnZ3RpdGxlKCJCKSBMaW5lYXIgbW9kZWwgb2YgbG9nKG5ldHdvcmsgc2l6ZSkiKSArCiAgICB4bGFiKCJCIG9uIGxvZyhuZXR3b3JrIHNpemUpIikKCgojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyBsbSByZXN1bHRzIGFyZSBzaW1pbGFyCgpsbSA8LSBkd3Bsb3QobW9kZWxsbSwKICAgICAgICAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgICAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKICAgICAgICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICIgIiwKICAgICAgImxlZWZ0aWpkMTAiID0gIiAgIiwKICAgICAgImFzLmZhY3RvcihvcGwpMSIgPSAiICAgIiwKICAgICAgImFzLmZhY3RvcihvcGwpMiIgPSAiICAgICIsCiAgICAgICJtaWdyIiA9ICIgICAgICAiLAogICAgICAibmVpZ2hkZW5zIiA9ICIgICAgICAgIiwKICAgICAgIndvcnRoaG91c2UiID0gIiAgICAgICAgIgogICAgKSkgICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLAogICAgICAgICAgICAgICAgYXhpcy50ZXh0ID0gZWxlbWVudF90ZXh0KGNvbG9yID0gIndoaXRlIikscGxvdC5tYXJnaW4gPSB1bml0KGMoMSwxLDEsMSksICJjbSIpKSArIAogICAgdGhlbWVfbWluaW1hbCgpICsKICAgIGdndGl0bGUoIkMpIExpbmVhciBtb2RlbCBvZiBuZXR3b3JrIHNpemUiKSArCiAgICB4bGFiKCJCIG9uIG5ldHdvcmsgc2l6ZSBjb3VudCIpCgojIGdvdHRhIGZpeCB0aGUgbWFyZ2lucwpyb2J1c3QgPC0gcGxvdF9ncmlkKG5iLCBsb2csIGxtLCBucm93ID0gMSkKcm9idXN0Cmdnc2F2ZSgicm9idXN0LnBkZiIsIHBsb3QgPSByb2J1c3QsIGRldmljZSA9ICJwZGYiLAogICAgICAgc2NhbGUgPSAxLCB3aWR0aCA9IDE1LCBoZWlnaHQgPSA5LCB1bml0cyA9IGMoImluIiksCiAgICAgICBkcGkgPSAicmV0aW5hIikKCgpsbSA8LSAKICAKICBzdW1tYXJ5KG1vZGVsbG9nW1sxODVdXSkKCiAgZHdwbG90KG1vZGVscywKICAgICAgICAgICAgIGRvdF9hcmdzID0gbGlzdChjb2xvciA9ICJibGFjayIsIHNpemUgPSAwLjc1LCBzaGFwZSA9IDEpLCAjIGNvbG9yIGZvciB0aGUgZG90CiAgICAgICAgICAgICB3aGlza2VyX2FyZ3MgPSBsaXN0KHNpemUgPSAwLjI1KSwgICAjIGNvbG9yIGZvciB0aGUgd2hpc2tlcgogICAgICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiZ3JleTYwIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ldHlwZSA9IDIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKQoKJT4lICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMgbWFrZSBtb2RlbCB2YXJpYWJsZQogIHJlbGFiZWxfcHJlZGljdG9ycyhjKAogICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICIgIiwKICAgICJsZWVmdGlqZDEwIiA9ICIgICIsCiAgICAiYXMuZmFjdG9yKG9wbCkxIiA9ICIgICAiLAogICAgImFzLmZhY3RvcihvcGwpMiIgPSAiICAgICIsCiAgICAibWlnciIgPSAiICAgICAgIiwKICAgICJuZWlnaGRlbnMiID0gIiAgICAgICAiLAogICAgIndvcnRoaG91c2UiID0gIiAgICAgICAgIgogICkpICArIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIiwKICAgICAgICAgICAgICBheGlzLnRleHQgPSBlbGVtZW50X3RleHQoY29sb3IgPSAid2hpdGUiKSxwbG90Lm1hcmdpbiA9IHVuaXQoYygxLDEsMSwxKSwgImNtIikpICsgCiAgdGhlbWVfbWluaW1hbCgpICsKICBnZ3RpdGxlKCJDKSBMaW5lYXIgbW9kZWwgb2YgbmV0d29yayBzaXplIikgKwogIHhsYWIoIkIgb24gbmV0d29yayBzaXplIGNvdW50IikKCgoKCgoKCgoKCgoKCiMgdS1zaGFwZSBhZ2UKdHdvX2JyYWNrZXQgPC0gbGlzdCgKICBjKCJFZHVjYXRpb24gdGVydC4gaGlnaCA9IHJlZi4iLCAiRWR1Y2F0aW9uIHByaW0uL3NlYy4iLCAiRWR1Y2F0aW9uIHRlcnQuIGxvdyIpLAogIGMoIkFnZSBpbnZlcnRlZCBVIiwgIkFnZS8xMCIsICJBZ2UvMTBeMiIpKQp4MiA8LSB7ZHdwbG90KG1vZGVsc3NxLAogICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgIHdoaXNrZXJfYXJncyA9IGxpc3Qoc2l6ZSA9IDAuMjUpLCAgICMgY29sb3IgZm9yIHRoZSB3aGlza2VyCiAgICAgICB2bGluZSA9IGdncGxvdDI6Omdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsICAjIHB1dCB2bGluZSBfYmVoaW5kXyBjb2Vmczsgc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9mc29sdC9kb3R3aGlza2VyL2lzc3Vlcy84NAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmV0eXBlID0gMiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplID0gMSkpICU+JSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIG1ha2UgbW9kZWwgdmFyaWFibGUKICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICJhcy5mYWN0b3Iod29tYW4pMSIgPSAiV29tZW4iLAogICAgImxlZWZ0aWpkMTAiID0gIkFnZS8xMCIsCiAgICAibGVlZnRpamQxMHNxIiA9ICJBZ2UvMTBeMiIsCiAgICAiYXMuZmFjdG9yKG9wbCkxIiA9ICJFZHVjYXRpb24gcHJpbS4vc2VjLiIsCiAgICAiYXMuZmFjdG9yKG9wbCkyIiA9ICJFZHVjYXRpb24gdGVydC4gbG93IiwKICAgICJtaWdyIiA9ICJNaWdyYXRpb24gYmFja2dyLiIsCiAgICAibmVpZ2hkZW5zIiA9ICJOZWlnaGIuIGRlbnNpdHkvMUsiLAogICAgIndvcnRoaG91c2UiID0gIk5laWdoYi4gV09aLXZhbHVlcy8xMDBLLiIKICApKSArIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikgKyAKICB0aGVtZV9taW5pbWFsKCkgICsKICAgIGdndGl0bGUoIkIpIEluY2x1ZGluZyBtYWluIGFuZCBzcXVhcmVkIGFnZSBlZmZlY3QsIGludmVydGVkIFUtc2hhcGUiKSArCiAgICB4bGFiKCJMb2cgb2RkcyBvbiBuZXR3b3JrIHNpemUgY291bnQiKQogIH0gJT4lCiAgYWRkX2JyYWNrZXRzKHR3b19icmFja2V0KQoKCnJlc3VsdHMgPC0gcGxvdF9ncmlkKG5iLCB4MiwgbnJvdyA9IDEpCgojIHNhdmUKZ2dzYXZlKCJyZXN1bHRzLnBkZiIsIHBsb3QgPSByZXN1bHRzLCBkZXZpY2UgPSAicGRmIiwKICAgICAgIHNjYWxlID0gMSwgd2lkdGggPSAxOSwgaGVpZ2h0ID0gOSwgdW5pdHMgPSBjKCJpbiIpLAogICAgICAgZHBpID0gInJldGluYSIpCgoKYGBgCg==</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("inferential.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -33,6 +33,8 @@ navbar:
       menu:
       - text: "Descriptive analyses"
         href: descriptives.html
+      - text: "Regression analyses"
+        href: inferential.html
 
 
   right:
