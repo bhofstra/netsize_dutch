@@ -65,127 +65,64 @@ load("data/dutch_netsize_analyses.rda")
 
 ----
 
-# Models
+# Linear regression models
 
-```{r, eval = FALSE}
+We run a series of regression models of logged acquantanceship network size (as it is right-skewed) on our independent and control variables. We thus run 172 different regression models (all scenarios).
+
+```{r regs, eval = TRUE}
 
 
 ########################
 # MODELS
-########################
+#######################
 
 
-
-
-# paralellize the estimation
-# closeAllConnections()
-# numCores <- detectCores()
-# registerDoParallel(cores = 8)
-
-
-
-c <- 88
-# main effects
-summary(lm(df[!df[[c]]>10000, c(c)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
-                      data = df[!df[[c]]>10000,]))
-
-
-class(as.factor(df$woman))
-
-
-models <- list()
-modelsint <- list()
-modelssq <- list()
-modellog <- list()
-modellm <- list()
-est <- list()
-estlm <- list()
-
+# some final data handling to assign the correct reference categories
 df$opl <-relevel(df$opl, ref = 1)
 df$migr3 <-relevel(as.factor(df$migr3), ref = 1)
-#df$politics <-relevel(as.factor(df$politics), ref = 1)
 df$income <-relevel(as.factor(df$income), ref = 2)
-#foreach (i = 13:184) %dopar% {
-for (i in 14:185) { # --> 168 negative binomials with different netsizes. We then look at distributions of coefficients across those.
-  
-  #if (i %in% c(18, 61, 104, 147)) next #fascinating 18, 61, 104, 147 --> the corona estimator holdout initially didn't work, removing outliers works, also has undue effects
+
+ # 172 regressions with different netsizes. We then look at distributions of coefficients across those.
+# note the log10 for network size and how we don't take into account extreme network size.
+modellog <- list()
+for (i in 14:185) {
+    
     df[,c(i)] <- round(df[, c(i)], 0)
     
-    # main effects
-    # models[[i]] <- glm.nb(df[!df[[i]]>10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
-    #                        data = df[!df[[i]]>10000,], init.theta = 1.032713156, link = log)
-
-    # # main effects
-    # modelsint[[i]] <- glm.nb(df[!df[[i]]>10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
-    #                       data = df[!df[[i]]>10000,], init.theta = 1.032713156, link = log)
-   
-    modellog[[i]] <- lm(log10(df[!df[[i]]>10000, c(i)]) ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
-                        data = df[!df[[i]]>10000,])
-
-    # modellm[[i]] <- lm(df[!df[[i]]>10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + as.factor(work) + as.factor(income) + as.factor(migr3) + hhsize + as.factor(politics) + neighdens + worthhouse,
-    #                    data = df[!df[[i]]>10000,])
-    # 
-    # # # u-shape for age negbin
-    # modelssq[[i]] <- glm.nb(df[!df[[i]]>10000, c(i)] ~ as.factor(woman) + leeftijd10 + leeftijd10sq + as.factor(opl) + migr + neighdens + worthhouse, 
-    #                        data = df[!df[[i]]>10000,], init.theta = 1.032713156, link = log)
-    
-    # get CIs for main effects, may be useful for viz later
-    #est[[i]] <- cbind(Estimate = coef(models[[i]]), confint(models[[i]]))
-    #estlm[[i]] <- cbind(Estimate = coef(modellm[[i]]), confint(modellm[[i]]))
+    modellog[[i]] <- lm(log10(df[!df[[i]]>5000, c(i)]) ~ 
+                          as.factor(work) + 
+                          hhsize + 
+                          as.factor(income) + 
+                          leeftijd10 + 
+                          as.factor(migr3) + 
+                          as.factor(woman) + 
+                          as.factor(opl) + 
+                          neighdens + 
+                          worthhouse,
+                        data = df[!df[[i]]>5000,])
     
 }
-
-#est[sapply(est, is.null)] <- NULL
-models[sapply(models, is.null)] <- NULL
-modelsint[sapply(modelsint, is.null)] <- NULL
-est[sapply(est, is.null)] <- NULL
-estlm[sapply(estlm, is.null)] <- NULL
 modellog[sapply(modellog, is.null)] <- NULL
-modellm[sapply(modellm, is.null)] <- NULL
-modelssq[sapply(modelssq, is.null)] <- NULL
+```
+
+<br>
+
+----
+
+# Visualization of regression models
+
+We then render all those models into one figure where we can show statistical signifance and that results do not vary over all those scenarios.
 
 
-
-# nice df with CIs
-estimates <- list()     
-for (i in 1:length(est)) { # -->  some data crunching to visualize
-  
-
-  estimates[[i]] <- data.frame(t(est[[i]]))
-  estimates[[i]] <- cbind(estimates[[i]], data.frame(c("est", "lb", "ub")))
-  names(estimates[[i]]) <- c("intercept",  "woman", "age",  "opl1",  "opl2", "migr",
-                             "neighdens","worthhouse", "var")
-  rownames(estimates[[i]]) <- 1:nrow(estimates[[i]])
-
-}
-estimates <- bind_rows(estimates)
-
-# nice df with CIs
-estimateslm <- list()     
-for (i in 1:length(estlm)) { # -->  some data crunching to visualize
-  
-  
-  estimateslm[[i]] <- data.frame(t(estlm[[i]]))
-  estimateslm[[i]] <- cbind(estimateslm[[i]], data.frame(c("est", "lb", "ub")))
-  names(estimateslm[[i]]) <- c("intercept",  "woman", "age",  "opl2",  "opl1", "migr",
-                             "neighdens","worthhouse", "var")
-  rownames(estimateslm[[i]]) <- 1:nrow(estimateslm[[i]])
-  
-}
-estimateslm <- bind_rows(estimateslm)
-summary(modellm[[1]])
-summary(estimateslm$opl1)
-summary(estimateslm$opl2)
-summary(modellm[[172]])
+```{r regviz, eval = TRUE}
 #--------------------------------------------------------------------------------
 # Viz of results
 
 # main effects
-four_brackets <- list(
-  c("Educ tert high=ref", "Educ prim/sec", "Educ tert low"),
+three_brackets <- list(
   c(">modal inc=ref", "<=modal income", "Unkn income"),
   c("Dutch maj=ref", "West backgr", "non-West backgr"),
-  c("Left vote=ref", "Right vote", "No/blanco vote"))
+  c("Educ tert high=ref", "Educ prim/sec", "Educ tert low"))
 
  logmodel <- {dwplot(modellog,
          dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
@@ -195,235 +132,68 @@ four_brackets <- list(
                                      linetype = 2,
                                      size = 1)) %>%                                     # make model variable
     relabel_predictors(c(
-      "as.factor(woman)1" = "Women",
-      "leeftijd10" = "Age/10",
-      "as.factor(opl)1" = "Educ prim/sec",
-      "as.factor(opl)2" = "Educ tert low",
       "as.factor(work)1" = "Working",
+      "hhsize" = "Household size",
       "as.factor(income)1" = "<=modal income",
       "as.factor(income)3" = "Unkn income",
+      "leeftijd10" = "Age/10",
       "as.factor(migr3)2" = "West backgr",
       "as.factor(migr3)3" = "non-West backgr",
-      "hhsize" = "Household size",
-      "as.factor(politics)1" = "Right vote",
-      "as.factor(politics)3" = "No/blanco vote",
+      "as.factor(woman)1" = "Women",
+      "as.factor(opl)1" = "Educ prim/sec",
+      "as.factor(opl)2" = "Educ tert low",
       "neighdens" = "Neigh. density",
       "worthhouse" = "WOZ-values"
     )) + theme(legend.position = "none",
                axis.text = element_text(color = "grey")) + 
     theme_minimal() +
-    #ggtitle("A) Negative binomial model of network size") +
     xlab("B on Log(network size count)")}  %>%
-  add_brackets(four_brackets, fontSize = .6)
-
+  add_brackets(three_brackets, fontSize = .6)
+logmodel
  
- 
- {dwplot(modellm,
-         dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
-         whisker_args = list(size = 0.25, color = "darkgrey", alpha = 0.5),   # color for the whisker
-         vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
-                                     colour = "grey60",
-                                     linetype = 2,
-                                     size = 1)) %>%                                     # make model variable
-     relabel_predictors(c(
-       "as.factor(woman)1" = "Women",
-       "leeftijd10" = "Age/10",
-       "as.factor(opl)1" = "Educ prim/sec",
-       "as.factor(opl)2" = "Educ tert low",
-       "as.factor(work)1" = "Working",
-       "as.factor(income)1" = "<=modal income",
-       "as.factor(income)3" = "Unkn income",
-       "as.factor(migr3)2" = "West backgr",
-       "as.factor(migr3)3" = "non-West backgr",
-       "hhsize" = "Household size",
-       "as.factor(politics)2" = "Left vote",
-       "as.factor(politics)3" = "No/blanco vote",
-       "neighdens" = "Neigh. density",
-       "worthhouse" = "WOZ-values"
-     )) + theme(legend.position = "none",
-                axis.text = element_text(color = "grey")) + 
-     theme_minimal() +
-     #ggtitle("A) Negative binomial model of network size") +
-     xlab("B on Log(network size count)")}  %>%
-   add_brackets(four_brackets, fontSize = .6)
-
-# save
-ggsave("results_log.pdf", plot = logmodel, device = "pdf",
-       scale = 1, width = 6, height = 6, units = c("in"),
-       dpi = "retina")
-
-
-# contrasting low en sec educ
-models1 <- list()
-df$opl <-relevel(df$opl, ref = 1)
-head(df$opl)
-for (i in 13:184) { # --> 168 negative binomials with different netsizes. We then look at distributions of coefficients across those
-  models1[[i]] <- glm.nb(df[!df[[i]]>10000, c(i)] ~ as.factor(woman) + leeftijd10 + as.factor(opl) + migr + neighdens + worthhouse, 
-                        data = df[!df[[i]]>10000,], init.theta = 1.032713156, link = log)
-}
-models1[sapply(models1, is.null)] <- NULL
-dwplot(models1,
-        dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
-        whisker_args = list(size = 0.25, color = "darkgrey", alpha = 0.5),   # color for the whisker
-        vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
-                                    colour = "grey60",
-                                    linetype = 2,
-                                    size = 1)) 
-
-modelsint <- list()
-for (i in 13:184) { # --> 168 negative binomials with different netsizes. We then look at distributions of coefficients across those.
-  
-  #if (i %in% c(18, 61, 104, 147)) next #fascinating 18, 61, 104, 147 --> the corona estimator holdout initially didn't work, removing outliers works, also has undue effects
-  df[,c(i)] <- round(df[, c(i)], 0)
-  
-  # main effects
-  modelsint[[i]] <- lm(df[!df[[i]]>1000, c(i)] ~ as.factor(woman) + as.factor(opl)*leeftijd10 + migr + worthhouse + neighdens + leeftijd10 , 
-                           data = df[!df[[i]]>1000,])
-}
-modelsint[sapply(modelsint, is.null)] <- NULL
-summary(modelsint[[170]])
-
-dwplot(modelsint,
-       dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
-       whisker_args = list(size = 0.25, color = "darkgrey", alpha = 0.5),   # color for the whisker
-       vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
-                                   colour = "grey60",
-                                   linetype = 2,
-                                   size = 1)) 
-
-
-
-#--------------------------------------------------------------------------------
-# lm logresults are similar
-
-log <- dwplot(modellog,
-        dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
-        whisker_args = list(size = 0.25),   # color for the whisker
-        vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
-                                    colour = "grey60",
-                                    linetype = 2,
-                                    size = 1)) %>%                                     # make model variable
-    relabel_predictors(c(
-      "as.factor(woman)1" = " ",
-      "leeftijd10" = "  ",
-      "as.factor(opl)1" = "   ",
-      "as.factor(opl)2" = "    ",
-      "migr" = "      ",
-      "neighdens" = "       ",
-      "worthhouse" = "        "
-    )) + theme(legend.position = "none",
-               axis.text = element_text(color = "white"),
-               plot.margin = margin(2, 0, 2, 0, "cm")) + 
-    theme_minimal() +
-    ggtitle("B) Linear model of log(network size)") +
-    xlab("B on log(network size)")
-
-
-#--------------------------------------------------------------------------------
-# lm results are similar
-
-lm <- dwplot(modellm,
-               dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
-               whisker_args = list(size = 0.25),   # color for the whisker
-               vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
-                                           colour = "grey60",
-                                           linetype = 2,
-                                           size = 1)) %>%                                     # make model variable
-    relabel_predictors(c(
-      "as.factor(woman)1" = " ",
-      "leeftijd10" = "  ",
-      "as.factor(opl)1" = "   ",
-      "as.factor(opl)2" = "    ",
-      "migr" = "      ",
-      "neighdens" = "       ",
-      "worthhouse" = "        "
-    ))  + theme(legend.position = "none",
-                axis.text = element_text(color = "white"),plot.margin = unit(c(1,1,1,1), "cm")) + 
-    theme_minimal() +
-    ggtitle("C) Linear model of network size") +
-    xlab("B on network size count")
-
-# gotta fix the margins
-robust <- plot_grid(nb, log, lm, nrow = 1)
-robust
-ggsave("robust.pdf", plot = robust, device = "pdf",
-       scale = 1, width = 15, height = 9, units = c("in"),
-       dpi = "retina")
-
-
-lm <- 
-  
-  summary(modellog[[185]])
-
-  dwplot(models,
-             dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
-             whisker_args = list(size = 0.25),   # color for the whisker
-             vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
-                                         colour = "grey60",
-                                         linetype = 2,
-                                         size = 1))
-
-%>%                                     # make model variable
-  relabel_predictors(c(
-    "as.factor(woman)1" = " ",
-    "leeftijd10" = "  ",
-    "as.factor(opl)1" = "   ",
-    "as.factor(opl)2" = "    ",
-    "migr" = "      ",
-    "neighdens" = "       ",
-    "worthhouse" = "        "
-  ))  + theme(legend.position = "none",
-              axis.text = element_text(color = "white"),plot.margin = unit(c(1,1,1,1), "cm")) + 
-  theme_minimal() +
-  ggtitle("C) Linear model of network size") +
-  xlab("B on network size count")
-
-
-
-
-
-
-
-
-
-
-
-
-
-# u-shape age
-two_bracket <- list(
-  c("Education tert. high = ref.", "Education prim./sec.", "Education tert. low"),
-  c("Age inverted U", "Age/10", "Age/10^2"))
-x2 <- {dwplot(modelssq,
-       dot_args = list(color = "black", size = 0.75, shape = 1), # color for the dot
-       whisker_args = list(size = 0.25),   # color for the whisker
-       vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
-                                   colour = "grey60",
-                                   linetype = 2,
-                                   size = 1)) %>%                                     # make model variable
-  relabel_predictors(c(
-    "as.factor(woman)1" = "Women",
-    "leeftijd10" = "Age/10",
-    "leeftijd10sq" = "Age/10^2",
-    "as.factor(opl)1" = "Education prim./sec.",
-    "as.factor(opl)2" = "Education tert. low",
-    "migr" = "Migration backgr.",
-    "neighdens" = "Neighb. density/1K",
-    "worthhouse" = "Neighb. WOZ-values/100K."
-  )) + theme(legend.position = "none") + 
-  theme_minimal()  +
-    ggtitle("B) Including main and squared age effect, inverted U-shape") +
-    xlab("Log odds on network size count")
-  } %>%
-  add_brackets(two_bracket)
-
-
-results <- plot_grid(nb, x2, nrow = 1)
-
-# save
-ggsave("results.pdf", plot = results, device = "pdf",
-       scale = 1, width = 19, height = 9, units = c("in"),
-       dpi = "retina")
-
 
 ```
+
+
+<br>
+
+----
+
+# Regression table
+
+We also average all 172 network size scenarios within respondents and run one single regression model so as to generate a table with coefficients.
+
+
+```{r regtable, eval = TRUE}
+
+df$netsize <- round(rowSums(df[,c(14:185)]) / length(14:185), 0)
+
+modell <- lm(log10(netsize) ~ 
+                          as.factor(work) + 
+                          hhsize + 
+                          as.factor(income) + 
+                          leeftijd10 + 
+                          as.factor(migr3) + 
+                          as.factor(woman) + 
+                          as.factor(opl) + 
+                          neighdens + 
+                          worthhouse,
+                        data = df[!df[["netsize"]]>5000,])
+
+modellin <- lm(netsize ~ 
+                          as.factor(work) + 
+                          hhsize + 
+                          as.factor(income) + 
+                          leeftijd10 + 
+                          as.factor(migr3) + 
+                          as.factor(woman) + 
+                          as.factor(opl) + 
+                          neighdens + 
+                          worthhouse,
+                        data = df[!df[["netsize"]]>5000,])
+  
+  
+fpackage.check("sjPlot")
+tab_model(modell, modellin)
+```
+
