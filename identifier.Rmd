@@ -43,7 +43,7 @@ Start out with a custom function to load a set of required packages.
 ```{r id, eval=FALSE}
 # packages and read data
 
-df <- haven::read_dta("DQUESTUU_eindbestand.dta")
+df <- haven::read_dta("data/DQUESTUU_eindbestand.dta")
 
 # first match tryout
 #set.seed(12981298)
@@ -57,7 +57,7 @@ iomatch <- df[, c("geslacht", "opleiding", "leeftijd", "postcode", "V5a", "V5a_a
 set.seed(12981298)
 personid <- sample(10000:20000, nrow(df), replace = F)
 iomatch <- cbind(personid, iomatch)
-write.csv(iomatch, "iomatch.csv", row.names = F)
+write.csv(iomatch, "data/iomatch.csv", row.names = F)
 
 ```
 

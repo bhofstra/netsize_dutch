@@ -69,7 +69,7 @@ We then load the data as we got them from IO research. Based on the questionnair
 
 ```{r datalaod, eval=FALSE}
 #repo <- "/yourscratch/" # yourpath
-df <- read_dta("DQUESTUU_eindbestand.dta")
+df <- read_dta("data/DQUESTUU_eindbestand.dta")
 #df <- data.frame(df)
 
 nrow(as.matrix(na.omit(df[,c(89:100)]))) # no NAs on the demographic variables, just a check
@@ -258,7 +258,7 @@ foreach (i = holdouts) %dopar% {
   data <- as.data.frame(data[[i]])
   
   # Save the data, new .txt for each iteration, if something goes wrong, we can always start at prior one and combine
-  write.csv(data, paste0("degree_estimates_tauk025_holdout", i, ".txt"))
+  write.csv(data, paste0("data/degree_estimates_tauk025_holdout", i, ".txt"))
   
 }
 ```
