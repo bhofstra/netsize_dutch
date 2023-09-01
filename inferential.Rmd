@@ -111,7 +111,7 @@ modellog[sapply(modellog, is.null)] <- NULL
 
 # Visualization of regression models
 
-We then render all those models into one figure where we can show statistical signifance and that results do not vary over all those scenarios.
+We then render all those models into one figure where we can show statistical signifance and that results do not vary over all those scenarios. This matches Figure 3 in the paper.
 
 
 ```{r regviz, eval = TRUE}
@@ -149,6 +149,12 @@ three_brackets <- list(
     theme_minimal() +
     xlab("B on Log(network size count)")}  %>%
   add_brackets(three_brackets, fontSize = .6)
+
+ ggsave("output/models.pdf", plot = logmodel, device = "pdf",
+       scale = 1, width = 6, height = 5, units = c("in"),
+       dpi = "retina")
+
+ # Figure 3 in the paper
 logmodel
  
 
@@ -161,7 +167,7 @@ logmodel
 
 # Regression table
 
-We also average all 172 network size scenarios within respondents and run one single regression model so as to generate a table with coefficients.
+We also average all 172 network size scenarios within respondents and run one single regression model so as to generate a table with coefficients. This matches Table 3 in the paper.
 
 
 ```{r regtable, eval = TRUE}
@@ -194,6 +200,8 @@ modellin <- lm(netsize ~
   
   
 fpackage.check("sjPlot")
-tab_model(modell, modellin)
+
+#table 3 in the paper
+tab_model(modell, modellin, show.se = TRUE)
 ```
 

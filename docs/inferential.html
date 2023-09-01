@@ -436,7 +436,7 @@ div.tocify {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<p>Last compiled on August, 2023</p>
+<p>Last compiled on September, 2023</p>
 <p><br></p>
 <hr />
 <p>This is the code with which we run our inferential analyses.</p>
@@ -551,7 +551,7 @@ number="3">
 regression models</h1>
 <p>We then render all those models into one figure where we can show
 statistical signifance and that results do not vary over all those
-scenarios.</p>
+scenarios. This matches Figure 3 in the paper.</p>
 <pre class="r test"><code>#--------------------------------------------------------------------------------
 # Viz of results
 
@@ -586,6 +586,12 @@ three_brackets &lt;- list(
     theme_minimal() +
     xlab(&quot;B on Log(network size count)&quot;)}  %&gt;%
   add_brackets(three_brackets, fontSize = .6)
+
+ ggsave(&quot;output/models.pdf&quot;, plot = logmodel, device = &quot;pdf&quot;,
+       scale = 1, width = 6, height = 5, units = c(&quot;in&quot;),
+       dpi = &quot;retina&quot;)
+
+ # Figure 3 in the paper
 logmodel</code></pre>
 <p><img src="inferential_files/figure-html/regviz-1.png" width="672" /></p>
 <p><br></p>
@@ -595,7 +601,7 @@ logmodel</code></pre>
 <h1><span class="header-section-number">4</span> Regression table</h1>
 <p>We also average all 172 network size scenarios within respondents and
 run one single regression model so as to generate a table with
-coefficients.</p>
+coefficients. This matches Table 3 in the paper.</p>
 <pre class="r test"><code>df$netsize &lt;- round(rowSums(df[, c(14:185)])/length(14:185), 0)
 
 modell &lt;- lm(log10(netsize) ~ as.factor(work) + hhsize + as.factor(income) + leeftijd10 + as.factor(migr3) +
@@ -608,16 +614,17 @@ modellin &lt;- lm(netsize ~ as.factor(work) + hhsize + as.factor(income) + leeft
 fpackage.check(&quot;sjPlot&quot;)</code></pre>
 <pre class="test2"><code>#&gt; [[1]]
 #&gt; NULL</code></pre>
-<pre class="r test"><code>tab_model(modell, modellin)</code></pre>
+<pre class="r test"><code># table 3 in the paper
+tab_model(modell, modellin, show.se = TRUE)</code></pre>
 <table style="border-collapse:collapse; border:none;">
 <tr>
 <th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
  
 </th>
-<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
 log10(netsize)
 </th>
-<th colspan="3" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
 netsize
 </th>
 </tr>
@@ -629,6 +636,9 @@ Predictors
 Estimates
 </td>
 <td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
 CI
 </td>
 <td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
@@ -637,10 +647,13 @@ p
 <td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
 Estimates
 </td>
-<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col7">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col8">
 CI
 </td>
-<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col7">
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col9">
 p
 </td>
 </tr>
@@ -652,6 +665,9 @@ p
 2.54
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 2.42 – 2.66
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -660,10 +676,13 @@ p
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 465.85
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+75.11
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 318.50 – 613.21
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 <strong>&lt;0.001</strong>
 </td>
 </tr>
@@ -675,6 +694,9 @@ work [1]
 0.09
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.04 – 0.13
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -683,10 +705,13 @@ work [1]
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 59.86
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+25.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 10.69 – 109.02
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 <strong>0.017</strong>
 </td>
 </tr>
@@ -698,6 +723,9 @@ hhsize
 0.04
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.01
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.02 – 0.06
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -706,10 +734,13 @@ hhsize
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 30.17
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+10.60
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 9.37 – 50.97
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 <strong>0.005</strong>
 </td>
 </tr>
@@ -721,6 +752,9 @@ income [1]
 -0.04
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -0.08 – 0.01
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -729,10 +763,13 @@ income [1]
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -25.78
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+27.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 -78.76 – 27.21
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.340
 </td>
 </tr>
@@ -744,6 +781,9 @@ income [3]
 -0.04
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.03
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -0.10 – 0.01
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -752,10 +792,13 @@ income [3]
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -21.90
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+35.41
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 -91.38 – 47.58
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.536
 </td>
 </tr>
@@ -767,6 +810,9 @@ leeftijd10
 -0.02
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.01
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -0.03 – -0.01
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -775,10 +821,13 @@ leeftijd10
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -20.17
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+7.93
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 -35.74 – -4.60
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 <strong>0.011</strong>
 </td>
 </tr>
@@ -790,6 +839,9 @@ migr3 [2]
 -0.05
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -0.13 – 0.03
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -798,10 +850,13 @@ migr3 [2]
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -32.58
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+50.19
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 -131.04 – 65.89
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.516
 </td>
 </tr>
@@ -813,6 +868,9 @@ migr3 [3]
 -0.00
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -0.09 – 0.08
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -821,10 +879,13 @@ migr3 [3]
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 19.46
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+53.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 -84.52 – 123.44
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.714
 </td>
 </tr>
@@ -836,6 +897,9 @@ woman [1]
 0.01
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -0.02 – 0.05
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -844,10 +908,13 @@ woman [1]
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 4.09
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+22.23
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 -39.52 – 47.70
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.854
 </td>
 </tr>
@@ -859,6 +926,9 @@ opl [1]
 -0.12
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.03
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -0.17 – -0.07
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -867,10 +937,13 @@ opl [1]
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -93.82
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+30.43
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 -153.52 – -34.12
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 <strong>0.002</strong>
 </td>
 </tr>
@@ -882,6 +955,9 @@ opl [2]
 -0.08
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -0.12 – -0.03
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -890,10 +966,13 @@ opl [2]
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -74.40
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+27.44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 -128.23 – -20.57
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 <strong>0.007</strong>
 </td>
 </tr>
@@ -905,6 +984,9 @@ neighdens
 -0.00
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.01
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -0.01 – 0.01
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -913,10 +995,13 @@ neighdens
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 -0.58
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+7.23
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 -14.77 – 13.61
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.936
 </td>
 </tr>
@@ -928,6 +1013,9 @@ worthhouse
 0.02
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.01
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.00 – 0.04
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
@@ -936,10 +1024,13 @@ worthhouse
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 26.89
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+12.64
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
 2.08 – 51.70
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 <strong>0.034</strong>
 </td>
 </tr>
@@ -947,10 +1038,10 @@ worthhouse
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
 Observations
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
 1247
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="3">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
 1247
 </td>
 </tr>
@@ -958,17 +1049,17 @@ Observations
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
 R<sup>2</sup> / R<sup>2</sup> adjusted
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
 0.129 / 0.121
 </td>
-<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="3">
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
 0.066 / 0.057
 </td>
 </tr>
 </table>
 </div>
 
-<div id="rmd-source-code">Ci0tLQp0aXRsZTogIkluZmVyZW50aWFsIGFuYWx5c2VzIgojYmlibGlvZ3JhcGh5OiByZWZlcmVuY2VzLmJpYgphdXRob3I6ICJCYXMgSG9mc3RyYSIKLS0tCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KCmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCkxhc3QgY29tcGlsZWQgb24gYHIgZm9ybWF0KFN5cy50aW1lKCksICclQiwgJVknKWAKCjxicj4KCi0tLS0KClRoaXMgaXMgdGhlIGNvZGUgd2l0aCB3aGljaCB3ZSBydW4gb3VyIGluZmVyZW50aWFsIGFuYWx5c2VzLgoKPGJyPgoKLS0tLQoKIyBJbml0YXRpYXRpbmcgUiBlbnZpcm9ubWVudAoKU3RhcnQgb3V0IHdpdGggYSBjdXN0b20gZnVuY3Rpb24gdG8gbG9hZCBhIHNldCBvZiByZXF1aXJlZCBwYWNrYWdlcy4KICAKYGBge3IgcGFjaywgZXZhbD1UUlVFfQojIHBhY2thZ2VzIGFuZCByZWFkIGRhdGEKcm0obGlzdCA9IGxzKCkpCgojIChjKSBKb2NoZW0gVG9sc21hCmZwYWNrYWdlLmNoZWNrIDwtIGZ1bmN0aW9uKHBhY2thZ2VzKSB7CiAgbGFwcGx5KHBhY2thZ2VzLCBGVU4gPSBmdW5jdGlvbih4KSB7CiAgICBpZiAoIXJlcXVpcmUoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKSkgewogICAgICBpbnN0YWxsLnBhY2thZ2VzKHgsIGRlcGVuZGVuY2llcyA9IFRSVUUpCiAgICAgIGxpYnJhcnkoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKQogICAgfQogIH0pCn0KcGFja2FnZXMgPSBjKCJoYXZlbiIsICJjb2RhIiwgIm1hdHJpeFN0YXRzIiwgInBhcmFsbGVsIiwgIk1BU1MiLCAiZG9QYXJhbGxlbCIsICJkcGx5ciIsICJjb3dwbG90IiwgCiAgICAgICAgICAgICAidGlkeXZlcnNlIiwgIm5hbmlhciIsICJkb3R3aGlza2VyIiAsImd0IiwgInJlc2hhcGUyIiwgIlZHQU0iLCAiZXhwc3MiLCAiSG1pc2MiKQpmcGFja2FnZS5jaGVjayhwYWNrYWdlcykKcm0ocGFja2FnZXMpCmxvYWQoImRhdGEvZHV0Y2hfbmV0c2l6ZV9hbmFseXNlcy5yZGEiKQpgYGAKCjxicj4KCi0tLS0KCiMgTGluZWFyIHJlZ3Jlc3Npb24gbW9kZWxzCgpXZSBydW4gYSBzZXJpZXMgb2YgcmVncmVzc2lvbiBtb2RlbHMgb2YgbG9nZ2VkIGFjcXVhbnRhbmNlc2hpcCBuZXR3b3JrIHNpemUgKGFzIGl0IGlzIHJpZ2h0LXNrZXdlZCkgb24gb3VyIGluZGVwZW5kZW50IGFuZCBjb250cm9sIHZhcmlhYmxlcy4gV2UgdGh1cyBydW4gMTcyIGRpZmZlcmVudCByZWdyZXNzaW9uIG1vZGVscyAoYWxsIHNjZW5hcmlvcykuCgpgYGB7ciByZWdzLCBldmFsID0gVFJVRX0KCgojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIyBNT0RFTFMKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCgojIHNvbWUgZmluYWwgZGF0YSBoYW5kbGluZyB0byBhc3NpZ24gdGhlIGNvcnJlY3QgcmVmZXJlbmNlIGNhdGVnb3JpZXMKZGYkb3BsIDwtcmVsZXZlbChkZiRvcGwsIHJlZiA9IDEpCmRmJG1pZ3IzIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkbWlncjMpLCByZWYgPSAxKQpkZiRpbmNvbWUgPC1yZWxldmVsKGFzLmZhY3RvcihkZiRpbmNvbWUpLCByZWYgPSAyKQoKICMgMTcyIHJlZ3Jlc3Npb25zIHdpdGggZGlmZmVyZW50IG5ldHNpemVzLiBXZSB0aGVuIGxvb2sgYXQgZGlzdHJpYnV0aW9ucyBvZiBjb2VmZmljaWVudHMgYWNyb3NzIHRob3NlLgojIG5vdGUgdGhlIGxvZzEwIGZvciBuZXR3b3JrIHNpemUgYW5kIGhvdyB3ZSBkb24ndCB0YWtlIGludG8gYWNjb3VudCBleHRyZW1lIG5ldHdvcmsgc2l6ZS4KbW9kZWxsb2cgPC0gbGlzdCgpCmZvciAoaSBpbiAxNDoxODUpIHsKICAgIAogICAgZGZbLGMoaSldIDwtIHJvdW5kKGRmWywgYyhpKV0sIDApCiAgICAKICAgIG1vZGVsbG9nW1tpXV0gPC0gbG0obG9nMTAoZGZbIWRmW1tpXV0+NTAwMCwgYyhpKV0pIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBsZWVmdGlqZDEwICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIG5laWdoZGVucyArIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UsCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2ldXT41MDAwLF0pCiAgICAKfQptb2RlbGxvZ1tzYXBwbHkobW9kZWxsb2csIGlzLm51bGwpXSA8LSBOVUxMCmBgYAoKPGJyPgoKLS0tLQoKIyBWaXN1YWxpemF0aW9uIG9mIHJlZ3Jlc3Npb24gbW9kZWxzCgpXZSB0aGVuIHJlbmRlciBhbGwgdGhvc2UgbW9kZWxzIGludG8gb25lIGZpZ3VyZSB3aGVyZSB3ZSBjYW4gc2hvdyBzdGF0aXN0aWNhbCBzaWduaWZhbmNlIGFuZCB0aGF0IHJlc3VsdHMgZG8gbm90IHZhcnkgb3ZlciBhbGwgdGhvc2Ugc2NlbmFyaW9zLgoKCmBgYHtyIHJlZ3ZpeiwgZXZhbCA9IFRSVUV9CiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQojIFZpeiBvZiByZXN1bHRzCgojIG1haW4gZWZmZWN0cwp0aHJlZV9icmFja2V0cyA8LSBsaXN0KAogIGMoIj5tb2RhbCBpbmM9cmVmIiwgIjw9bW9kYWwgaW5jb21lIiwgIlVua24gaW5jb21lIiksCiAgYygiRHV0Y2ggbWFqPXJlZiIsICJXZXN0IGJhY2tnciIsICJub24tV2VzdCBiYWNrZ3IiKSwKICBjKCJFZHVjIHRlcnQgaGlnaD1yZWYiLCAiRWR1YyBwcmltL3NlYyIsICJFZHVjIHRlcnQgbG93IikpCgogbG9nbW9kZWwgPC0ge2R3cGxvdChtb2RlbGxvZywKICAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSwgY29sb3IgPSAiZGFya2dyZXkiLCBhbHBoYSA9IDAuNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICAgImFzLmZhY3Rvcih3b3JrKTEiID0gIldvcmtpbmciLAogICAgICAiaGhzaXplIiA9ICJIb3VzZWhvbGQgc2l6ZSIsCiAgICAgICJhcy5mYWN0b3IoaW5jb21lKTEiID0gIjw9bW9kYWwgaW5jb21lIiwKICAgICAgImFzLmZhY3RvcihpbmNvbWUpMyIgPSAiVW5rbiBpbmNvbWUiLAogICAgICAibGVlZnRpamQxMCIgPSAiQWdlLzEwIiwKICAgICAgImFzLmZhY3RvcihtaWdyMykyIiA9ICJXZXN0IGJhY2tnciIsCiAgICAgICJhcy5mYWN0b3IobWlncjMpMyIgPSAibm9uLVdlc3QgYmFja2dyIiwKICAgICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICJXb21lbiIsCiAgICAgICJhcy5mYWN0b3Iob3BsKTEiID0gIkVkdWMgcHJpbS9zZWMiLAogICAgICAiYXMuZmFjdG9yKG9wbCkyIiA9ICJFZHVjIHRlcnQgbG93IiwKICAgICAgIm5laWdoZGVucyIgPSAiTmVpZ2guIGRlbnNpdHkiLAogICAgICAid29ydGhob3VzZSIgPSAiV09aLXZhbHVlcyIKICAgICkpICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLAogICAgICAgICAgICAgICBheGlzLnRleHQgPSBlbGVtZW50X3RleHQoY29sb3IgPSAiZ3JleSIpKSArIAogICAgdGhlbWVfbWluaW1hbCgpICsKICAgIHhsYWIoIkIgb24gTG9nKG5ldHdvcmsgc2l6ZSBjb3VudCkiKX0gICU+JQogIGFkZF9icmFja2V0cyh0aHJlZV9icmFja2V0cywgZm9udFNpemUgPSAuNikKbG9nbW9kZWwKIAoKYGBgCgoKPGJyPgoKLS0tLQoKIyBSZWdyZXNzaW9uIHRhYmxlCgpXZSBhbHNvIGF2ZXJhZ2UgYWxsIDE3MiBuZXR3b3JrIHNpemUgc2NlbmFyaW9zIHdpdGhpbiByZXNwb25kZW50cyBhbmQgcnVuIG9uZSBzaW5nbGUgcmVncmVzc2lvbiBtb2RlbCBzbyBhcyB0byBnZW5lcmF0ZSBhIHRhYmxlIHdpdGggY29lZmZpY2llbnRzLgoKCmBgYHtyIHJlZ3RhYmxlLCBldmFsID0gVFJVRX0KCmRmJG5ldHNpemUgPC0gcm91bmQocm93U3VtcyhkZlssYygxNDoxODUpXSkgLyBsZW5ndGgoMTQ6MTg1KSwgMCkKCm1vZGVsbCA8LSBsbShsb2cxMChuZXRzaXplKSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgbGVlZnRpamQxMCArIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBuZWlnaGRlbnMgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c2l6ZSJdXT41MDAwLF0pCgptb2RlbGxpbiA8LSBsbShuZXRzaXplIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBsZWVmdGlqZDEwICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIG5laWdoZGVucyArIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UsCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzaXplIl1dPjUwMDAsXSkKICAKICAKZnBhY2thZ2UuY2hlY2soInNqUGxvdCIpCnRhYl9tb2RlbChtb2RlbGwsIG1vZGVsbGluKQpgYGAKCg==</div>
+<div id="rmd-source-code">Ci0tLQp0aXRsZTogIkluZmVyZW50aWFsIGFuYWx5c2VzIgojYmlibGlvZ3JhcGh5OiByZWZlcmVuY2VzLmJpYgphdXRob3I6ICJCYXMgSG9mc3RyYSIKLS0tCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KCmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCkxhc3QgY29tcGlsZWQgb24gYHIgZm9ybWF0KFN5cy50aW1lKCksICclQiwgJVknKWAKCjxicj4KCi0tLS0KClRoaXMgaXMgdGhlIGNvZGUgd2l0aCB3aGljaCB3ZSBydW4gb3VyIGluZmVyZW50aWFsIGFuYWx5c2VzLgoKPGJyPgoKLS0tLQoKIyBJbml0YXRpYXRpbmcgUiBlbnZpcm9ubWVudAoKU3RhcnQgb3V0IHdpdGggYSBjdXN0b20gZnVuY3Rpb24gdG8gbG9hZCBhIHNldCBvZiByZXF1aXJlZCBwYWNrYWdlcy4KICAKYGBge3IgcGFjaywgZXZhbD1UUlVFfQojIHBhY2thZ2VzIGFuZCByZWFkIGRhdGEKcm0obGlzdCA9IGxzKCkpCgojIChjKSBKb2NoZW0gVG9sc21hCmZwYWNrYWdlLmNoZWNrIDwtIGZ1bmN0aW9uKHBhY2thZ2VzKSB7CiAgbGFwcGx5KHBhY2thZ2VzLCBGVU4gPSBmdW5jdGlvbih4KSB7CiAgICBpZiAoIXJlcXVpcmUoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKSkgewogICAgICBpbnN0YWxsLnBhY2thZ2VzKHgsIGRlcGVuZGVuY2llcyA9IFRSVUUpCiAgICAgIGxpYnJhcnkoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKQogICAgfQogIH0pCn0KcGFja2FnZXMgPSBjKCJoYXZlbiIsICJjb2RhIiwgIm1hdHJpeFN0YXRzIiwgInBhcmFsbGVsIiwgIk1BU1MiLCAiZG9QYXJhbGxlbCIsICJkcGx5ciIsICJjb3dwbG90IiwgCiAgICAgICAgICAgICAidGlkeXZlcnNlIiwgIm5hbmlhciIsICJkb3R3aGlza2VyIiAsImd0IiwgInJlc2hhcGUyIiwgIlZHQU0iLCAiZXhwc3MiLCAiSG1pc2MiKQpmcGFja2FnZS5jaGVjayhwYWNrYWdlcykKcm0ocGFja2FnZXMpCmxvYWQoImRhdGEvZHV0Y2hfbmV0c2l6ZV9hbmFseXNlcy5yZGEiKQpgYGAKCjxicj4KCi0tLS0KCiMgTGluZWFyIHJlZ3Jlc3Npb24gbW9kZWxzCgpXZSBydW4gYSBzZXJpZXMgb2YgcmVncmVzc2lvbiBtb2RlbHMgb2YgbG9nZ2VkIGFjcXVhbnRhbmNlc2hpcCBuZXR3b3JrIHNpemUgKGFzIGl0IGlzIHJpZ2h0LXNrZXdlZCkgb24gb3VyIGluZGVwZW5kZW50IGFuZCBjb250cm9sIHZhcmlhYmxlcy4gV2UgdGh1cyBydW4gMTcyIGRpZmZlcmVudCByZWdyZXNzaW9uIG1vZGVscyAoYWxsIHNjZW5hcmlvcykuCgpgYGB7ciByZWdzLCBldmFsID0gVFJVRX0KCgojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIyBNT0RFTFMKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCgojIHNvbWUgZmluYWwgZGF0YSBoYW5kbGluZyB0byBhc3NpZ24gdGhlIGNvcnJlY3QgcmVmZXJlbmNlIGNhdGVnb3JpZXMKZGYkb3BsIDwtcmVsZXZlbChkZiRvcGwsIHJlZiA9IDEpCmRmJG1pZ3IzIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkbWlncjMpLCByZWYgPSAxKQpkZiRpbmNvbWUgPC1yZWxldmVsKGFzLmZhY3RvcihkZiRpbmNvbWUpLCByZWYgPSAyKQoKICMgMTcyIHJlZ3Jlc3Npb25zIHdpdGggZGlmZmVyZW50IG5ldHNpemVzLiBXZSB0aGVuIGxvb2sgYXQgZGlzdHJpYnV0aW9ucyBvZiBjb2VmZmljaWVudHMgYWNyb3NzIHRob3NlLgojIG5vdGUgdGhlIGxvZzEwIGZvciBuZXR3b3JrIHNpemUgYW5kIGhvdyB3ZSBkb24ndCB0YWtlIGludG8gYWNjb3VudCBleHRyZW1lIG5ldHdvcmsgc2l6ZS4KbW9kZWxsb2cgPC0gbGlzdCgpCmZvciAoaSBpbiAxNDoxODUpIHsKICAgIAogICAgZGZbLGMoaSldIDwtIHJvdW5kKGRmWywgYyhpKV0sIDApCiAgICAKICAgIG1vZGVsbG9nW1tpXV0gPC0gbG0obG9nMTAoZGZbIWRmW1tpXV0+NTAwMCwgYyhpKV0pIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBsZWVmdGlqZDEwICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIG5laWdoZGVucyArIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UsCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2ldXT41MDAwLF0pCiAgICAKfQptb2RlbGxvZ1tzYXBwbHkobW9kZWxsb2csIGlzLm51bGwpXSA8LSBOVUxMCmBgYAoKPGJyPgoKLS0tLQoKIyBWaXN1YWxpemF0aW9uIG9mIHJlZ3Jlc3Npb24gbW9kZWxzCgpXZSB0aGVuIHJlbmRlciBhbGwgdGhvc2UgbW9kZWxzIGludG8gb25lIGZpZ3VyZSB3aGVyZSB3ZSBjYW4gc2hvdyBzdGF0aXN0aWNhbCBzaWduaWZhbmNlIGFuZCB0aGF0IHJlc3VsdHMgZG8gbm90IHZhcnkgb3ZlciBhbGwgdGhvc2Ugc2NlbmFyaW9zLiBUaGlzIG1hdGNoZXMgRmlndXJlIDMgaW4gdGhlIHBhcGVyLgoKCmBgYHtyIHJlZ3ZpeiwgZXZhbCA9IFRSVUV9CiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQojIFZpeiBvZiByZXN1bHRzCgojIG1haW4gZWZmZWN0cwp0aHJlZV9icmFja2V0cyA8LSBsaXN0KAogIGMoIj5tb2RhbCBpbmM9cmVmIiwgIjw9bW9kYWwgaW5jb21lIiwgIlVua24gaW5jb21lIiksCiAgYygiRHV0Y2ggbWFqPXJlZiIsICJXZXN0IGJhY2tnciIsICJub24tV2VzdCBiYWNrZ3IiKSwKICBjKCJFZHVjIHRlcnQgaGlnaD1yZWYiLCAiRWR1YyBwcmltL3NlYyIsICJFZHVjIHRlcnQgbG93IikpCgogbG9nbW9kZWwgPC0ge2R3cGxvdChtb2RlbGxvZywKICAgICAgICAgZG90X2FyZ3MgPSBsaXN0KGNvbG9yID0gImJsYWNrIiwgc2l6ZSA9IDAuNzUsIHNoYXBlID0gMSksICMgY29sb3IgZm9yIHRoZSBkb3QKICAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSwgY29sb3IgPSAiZGFya2dyZXkiLCBhbHBoYSA9IDAuNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG91ciA9ICJncmV5NjAiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l6ZSA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICAgImFzLmZhY3Rvcih3b3JrKTEiID0gIldvcmtpbmciLAogICAgICAiaGhzaXplIiA9ICJIb3VzZWhvbGQgc2l6ZSIsCiAgICAgICJhcy5mYWN0b3IoaW5jb21lKTEiID0gIjw9bW9kYWwgaW5jb21lIiwKICAgICAgImFzLmZhY3RvcihpbmNvbWUpMyIgPSAiVW5rbiBpbmNvbWUiLAogICAgICAibGVlZnRpamQxMCIgPSAiQWdlLzEwIiwKICAgICAgImFzLmZhY3RvcihtaWdyMykyIiA9ICJXZXN0IGJhY2tnciIsCiAgICAgICJhcy5mYWN0b3IobWlncjMpMyIgPSAibm9uLVdlc3QgYmFja2dyIiwKICAgICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICJXb21lbiIsCiAgICAgICJhcy5mYWN0b3Iob3BsKTEiID0gIkVkdWMgcHJpbS9zZWMiLAogICAgICAiYXMuZmFjdG9yKG9wbCkyIiA9ICJFZHVjIHRlcnQgbG93IiwKICAgICAgIm5laWdoZGVucyIgPSAiTmVpZ2guIGRlbnNpdHkiLAogICAgICAid29ydGhob3VzZSIgPSAiV09aLXZhbHVlcyIKICAgICkpICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLAogICAgICAgICAgICAgICBheGlzLnRleHQgPSBlbGVtZW50X3RleHQoY29sb3IgPSAiZ3JleSIpKSArIAogICAgdGhlbWVfbWluaW1hbCgpICsKICAgIHhsYWIoIkIgb24gTG9nKG5ldHdvcmsgc2l6ZSBjb3VudCkiKX0gICU+JQogIGFkZF9icmFja2V0cyh0aHJlZV9icmFja2V0cywgZm9udFNpemUgPSAuNikKCiBnZ3NhdmUoIm91dHB1dC9tb2RlbHMucGRmIiwgcGxvdCA9IGxvZ21vZGVsLCBkZXZpY2UgPSAicGRmIiwKICAgICAgIHNjYWxlID0gMSwgd2lkdGggPSA2LCBoZWlnaHQgPSA1LCB1bml0cyA9IGMoImluIiksCiAgICAgICBkcGkgPSAicmV0aW5hIikKCiAjIEZpZ3VyZSAzIGluIHRoZSBwYXBlcgpsb2dtb2RlbAogCgpgYGAKCgo8YnI+CgotLS0tCgojIFJlZ3Jlc3Npb24gdGFibGUKCldlIGFsc28gYXZlcmFnZSBhbGwgMTcyIG5ldHdvcmsgc2l6ZSBzY2VuYXJpb3Mgd2l0aGluIHJlc3BvbmRlbnRzIGFuZCBydW4gb25lIHNpbmdsZSByZWdyZXNzaW9uIG1vZGVsIHNvIGFzIHRvIGdlbmVyYXRlIGEgdGFibGUgd2l0aCBjb2VmZmljaWVudHMuIFRoaXMgbWF0Y2hlcyBUYWJsZSAzIGluIHRoZSBwYXBlci4KCgpgYGB7ciByZWd0YWJsZSwgZXZhbCA9IFRSVUV9CgpkZiRuZXRzaXplIDwtIHJvdW5kKHJvd1N1bXMoZGZbLGMoMTQ6MTg1KV0pIC8gbGVuZ3RoKDE0OjE4NSksIDApCgptb2RlbGwgPC0gbG0obG9nMTAobmV0c2l6ZSkgfiAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIGxlZWZ0aWpkMTAgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgbmVpZ2hkZW5zICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSwKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNpemUiXV0+NTAwMCxdKQoKbW9kZWxsaW4gPC0gbG0obmV0c2l6ZSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgbGVlZnRpamQxMCArIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICBuZWlnaGRlbnMgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c2l6ZSJdXT41MDAwLF0pCiAgCiAgCmZwYWNrYWdlLmNoZWNrKCJzalBsb3QiKQoKI3RhYmxlIDMgaW4gdGhlIHBhcGVyCnRhYl9tb2RlbChtb2RlbGwsIG1vZGVsbGluLCBzaG93LnNlID0gVFJVRSkKYGBgCgo=</div>
 
 
 </div>

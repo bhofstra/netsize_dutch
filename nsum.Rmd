@@ -30,7 +30,7 @@ Last compiled on `r format(Sys.time(), '%B, %Y')`
 
 ----
 
-This page describes how we went about for the data manipulation ahead NSUM Bayesian estimation method, the different scenarios, and the estimation itself. Note that this was done on a computing cluster, and it will very likely take a while of you do this locally. Note the parellel computing as well to speed up the process.
+This page describes how we went about for the data manipulation ahead NSUM Bayesian estimation method, the different scenarios, and the estimation itself. Note that this was done on a computing cluster, and it will very likely take a while of you do this locally. Note the parellel computing as well to speed up the process. We start out with the data that was gathered [from the questionnaire](https://bhofstra.github.io/netsize_dutch/questionnaire.html).
 
 <br>
 

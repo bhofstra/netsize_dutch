@@ -40,7 +40,7 @@ This is the code with which we make our independent variables.
 
 Start out with a custom function to load a set of required packages. And load the necessary data.
   
-```{r pack, eval=FALSE, echo = FALSE}
+```{r pack, eval=FALSE}
 # packages and read data
 rm(list = ls())
 
