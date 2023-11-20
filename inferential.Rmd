@@ -76,11 +76,24 @@ We run a series of regression models of logged acquantanceship network size (as 
 # MODELS
 #######################
 
+# # age in categories, eval = false in "independent_variables.rmd" fix later
+df$agecat[df$agecat == "18-30"] <- 1
+df$agecat[df$agecat == "31-45"] <- 2
+df$agecat[df$agecat == "46-65"] <- 3
+df$agecat[df$agecat == ">65"] <- 4
+
+table(df$agecat)
+class(df$agecat)
+
 
 # some final data handling to assign the correct reference categories
 df$opl <-relevel(df$opl, ref = 1)
 df$migr3 <-relevel(as.factor(df$migr3), ref = 1)
 df$income <-relevel(as.factor(df$income), ref = 2)
+df$agecat <-relevel(as.factor(df$agecat), ref = 4)
+
+
+
 
  # 172 regressions with different netsizes. We then look at distributions of coefficients across those.
 # note the log10 for network size and how we don't take into account extreme network size.
@@ -90,19 +103,28 @@ for (i in 14:185) {
     df[,c(i)] <- round(df[, c(i)], 0)
     
     modellog[[i]] <- lm(log10(df[!df[[i]]>5000, c(i)]) ~ 
+                          
                           as.factor(work) + 
+                          
                           hhsize + 
-                          as.factor(income) + 
-                          leeftijd10 + 
+                          
                           as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
                           as.factor(woman) + 
-                          as.factor(opl) + 
-                          neighdens + 
-                          worthhouse,
+                          
+                          as.factor(opl),
+                          
                         data = df[!df[[i]]>5000,])
     
 }
 modellog[sapply(modellog, is.null)] <- NULL
+summary(modellog[[1]])
 ```
 
 <br>
@@ -115,13 +137,19 @@ We then render all those models into one figure where we can show statistical si
 
 
 ```{r regviz, eval = TRUE}
+
 #--------------------------------------------------------------------------------
 # Viz of results
 
 # main effects
-three_brackets <- list(
-  c(">modal inc=ref", "<=modal income", "Unkn income"),
+four_brackets <- list(
+  
   c("Dutch maj=ref", "West backgr", "non-West backgr"),
+  
+  c(">65=ref", "18-30", "46-65"),
+  
+  c(">modal inc=ref", "<=modal income", "Unkn income"),
+  
   c("Educ tert high=ref", "Educ prim/sec", "Educ tert low"))
 
  logmodel <- {dwplot(modellog,
@@ -130,25 +158,34 @@ three_brackets <- list(
          vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
                                      colour = "grey60",
                                      linetype = 2,
-                                     size = 1)) %>%                                     # make model variable
+                                     linewidth = 1)) %>%                                     # make model variable
     relabel_predictors(c(
       "as.factor(work)1" = "Working",
+      
       "hhsize" = "Household size",
-      "as.factor(income)1" = "<=modal income",
-      "as.factor(income)3" = "Unkn income",
-      "leeftijd10" = "Age/10",
+      
       "as.factor(migr3)2" = "West backgr",
       "as.factor(migr3)3" = "non-West backgr",
+      
+      "as.factor(agecat)1" = "18-30",
+      "as.factor(agecat)2" = "31-45",
+      "as.factor(agecat)3" = "46-65",
+      
+      "as.factor(income)1" = "<=modal income",
+      "as.factor(income)3" = "Unkn income",
+      
+      "worthhouse" = "House value",
+
       "as.factor(woman)1" = "Women",
+      
       "as.factor(opl)1" = "Educ prim/sec",
-      "as.factor(opl)2" = "Educ tert low",
-      "neighdens" = "Neigh. density",
-      "worthhouse" = "WOZ-values"
+      "as.factor(opl)2" = "Educ tert low"
+
     )) + theme(legend.position = "none",
                axis.text = element_text(color = "grey")) + 
     theme_minimal() +
     xlab("B on Log(network size count)")}  %>%
-  add_brackets(three_brackets, fontSize = .6)
+  add_brackets(four_brackets, fontSize = .6)
 
  ggsave("output/models.pdf", plot = logmodel, device = "pdf",
        scale = 1, width = 6, height = 5, units = c("in"),
@@ -176,26 +213,38 @@ df$netsize <- round(rowSums(df[,c(14:185)]) / length(14:185), 0)
 
 modell <- lm(log10(netsize) ~ 
                           as.factor(work) + 
+                          
                           hhsize + 
-                          as.factor(income) + 
-                          leeftijd10 + 
+                          
                           as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
                           as.factor(woman) + 
-                          as.factor(opl) + 
-                          neighdens + 
-                          worthhouse,
+                          
+                          as.factor(opl),
                         data = df[!df[["netsize"]]>5000,])
 
 modellin <- lm(netsize ~ 
                           as.factor(work) + 
+                          
                           hhsize + 
-                          as.factor(income) + 
-                          leeftijd10 + 
+                          
                           as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
                           as.factor(woman) + 
-                          as.factor(opl) + 
-                          neighdens + 
-                          worthhouse,
+                          
+                          as.factor(opl),
                         data = df[!df[["netsize"]]>5000,])
   
   
@@ -203,5 +252,46 @@ fpackage.check("sjPlot")
 
 #table 3 in the paper
 tab_model(modell, modellin, show.se = TRUE)
+```
+
+```{r regrobust, eval = TRUE}
+# # robustness, migration two cats, and income no missings lead to similar results
+# summary(x <-lm(log10(netsize) ~ 
+#                           as.factor(work) + 
+#                           
+#                           hhsize + 
+#                           
+#                           as.factor(migr) + 
+#                           
+#                           as.factor(agecat) + 
+#                           
+#                           as.factor(income) + 
+#                           
+#                           worthhouse +
+#                           
+#                           as.factor(woman) + 
+#                           
+#                           as.factor(opl),
+#                         data = df[!df[["netsize"]]>5000,]))
+# 
+# summary(x <-lm(log10(netsize) ~ 
+#                           as.factor(work) + 
+#                           
+#                           hhsize + 
+#                           
+#                           as.factor(migr3) + 
+#                           
+#                           as.factor(agecat) + 
+#                           
+#                           as.factor(income) + 
+#                           
+#                           worthhouse +
+#                           
+#                           as.factor(woman) + 
+#                           
+#                           as.factor(opl),
+#                         data = df[!df[["netsize"]]>5000 & df$income != 3,]))
+
+
 ```
 

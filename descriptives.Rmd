@@ -71,23 +71,29 @@ The code below generates the descriptive values which are used for Tables 1 and 
 
 ```{r descind, eval = TRUE}
 
+
+
+
 # descriptive table not automated: TABLE 1
 table(df$work)
 psych::describe(df$work)
-
 psych::describe(df$hhsize)
+
+
+table(df$migr3)
+# 1 Maj
+# 2 west
+# 3 nonwest
+
+table(df$agecat)
 
 table(df$income)
 # 1 < modal
 # 2 > modal
 # 3 unknown
 
-psych::describe(df$leeftijd10)
+psych::describe(df$worthhouse)
 
-table(df$migr3)
-# 1 Maj
-# 2 west
-# 3 nonwest
 
 table(df$woman)
 psych::describe(df$woman)
@@ -97,14 +103,16 @@ table(df$opl)
 # 2 lower tert
 # 3 higher tert
 
-psych::describe(df$neighdens)
-psych::describe(df$worthhouse)
+#psych::describe(df$neighdens)
+
 
 # this is for the correlation table
-df$educ3 <- df$opl
-df$educ3 <- as.numeric(as.character(df$educ3))
+#df$educ3 <- df$opl
+#df$educ3 <- as.numeric(as.character(df$educ3))
 
-rcorr(as.matrix(df[,c("work", "hhsize", "leeftijd10", "woman", "educ3", "neighdens", "worthhouse" )]), type = "pearson")
+cor(as.matrix(df[df$income!=3,c("income","worthhouse")]))
+
+#rcorr(as.matrix(df[,c("work", "hhsize", "leeftijd10", "woman", "educ3", "neighdens", "worthhouse" )]), type = "pearson")
 
 ```
 
@@ -119,18 +127,17 @@ The code below generates Figure 1 from the paper and runs a number of correlatio
 
 ```{r naicomps, eval = TRUE}
 
-comps <- gather(df[, c("nsize_naive", "nsize_b1", "nsize_b2", "nsize_b3", "nsize_n1", "nsize_n2", "nsize_n3", "nsize_n123")])
+comps <- gather(df[, c("nsize_naive", "nsize_b1b2", "nsize_b3", "nsize_n1", "nsize_n2", "nsize_n3", "nsize_n123")])
 
 comparisons <- ggplot(comps[comps$value < 2000, ], aes(x=value, color = key)) + 
   geom_density(size = 0.5) + 
   theme_minimal() +
   labs(x = "Network size estimate", y = "Density") +
   scale_color_manual(name = "Estimation scenario", 
-                      breaks = c("nsize_naive", "nsize_b1", "nsize_b2", "nsize_b3", "nsize_n1", "nsize_n2", "nsize_n3", "nsize_n123"), 
+                      breaks = c("nsize_naive", "nsize_b1b2", "nsize_b3", "nsize_n1", "nsize_n2", "nsize_n3", "nsize_n123"), 
                        labels = c("Naive estimator: all X's", 
-                                  "Battery 1: tertiary educ, etc.", 
-                                  "Battery 2: Elec vehicle, etc.", 
-                                  "Battery 3: all names", 
+                                  "Battery 1: Tert. educ., elec vehicle, etc.", 
+                                  "Battery 2: all names", 
                                   "Names 1: Sophie, Anna, Thomas, Willem", 
                                   "Names 2: Julia, Elisabeth, Max, Ali",
                                   "Names 3: Sanne, Cornelia, Kevin, Mohammed",
@@ -145,14 +152,14 @@ ggsave("output/comparisons.pdf", plot = comparisons, device = "pdf",
 
 
 
-# correlation battery 1 and 2
-cor(df$nsize_b1, df$nsize_b2)
+# # correlation battery 1 and 2
+# cor(df$nsize_b1, df$nsize_b2)
+# 
+# # correlation battery 1 and all
+# cor(df$nsize_b1, df$nsize_naive)
 
-# correlation battery 1 and all
-cor(df$nsize_b1, df$nsize_naive)
-
-# correlation battery 2 and all
-cor(df$nsize_b2, df$nsize_naive)
+# correlation battery 1+2 and all
+cor(df$nsize_b1b2, df$nsize_naive)
 
 # correlation battery 3 (names) and all
 cor(df$nsize_b3, df$nsize_naive)

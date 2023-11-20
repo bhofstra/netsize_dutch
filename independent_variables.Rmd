@@ -59,6 +59,7 @@ fpackage.check(packages)
 rm(packages)
 
 load(file = "data/dutch_netsize_analyses_deps.rda")
+#1-(1262/1325)
 
 #--------------------------------------------------------------------------------
 ```
@@ -375,12 +376,141 @@ We create age and age squared as variables.
 df$leeftijd10 <- df$leeftijd/10
 table(df$leeftijd10)
 df$leeftijd10sq <- df$leeftijd10^2
+
+df$agecat <- NA
+df$agecat[df$leeftijd < 31] <- "18-30"
+df$agecat[df$leeftijd > 30 & df$leeftijd < 46] <- "31-45"
+df$agecat[df$leeftijd > 45 & df$leeftijd < 66] <- "46-65"
+df$agecat[df$leeftijd > 65] <- ">65"
+
+table(df$agecat)
+# table(df$leeftijd)
+nrow(df[df$leeftijd < 31,])
+nrow(df[df$leeftijd > 30 & df$leeftijd < 46,])
+nrow(df[df$leeftijd > 45 & df$leeftijd < 66,])
+nrow(df[df$leeftijd > 65,])
+
 ```
 
 <br>
 
 ----
   
+
+  
+# Work situation
+  
+We create the current working situation of a respondent. (These are new variable obtained from I&O research, hence the hassle with the identifier before.)
+  
+```{r wor, eval=FALSE}
+#--------------------------------------------------------------------------------
+# NEW IO VARS
+#--------------------------------------------------------------------------------
+
+# working val_lab(df$werk)
+df$werk <- as.character(df$werk)
+df$work <- 1
+df$work[df$werk == "anders"] <- 0
+df$work[df$werk == "werkloos / werkzoekend / bijstand"] <- 0
+df$work[df$werk == "studerend /schoolgaand"] <- 0
+df$work[df$werk == "arbeidsongeschikt"] <- 0
+df$work[df$werk == "gepensioneerd of VUT"] <- 0
+df$work[df$werk == "huisvrouw / huisman"] <- 0
+
+table(df$work)
+
+table(df$werk)
+
+```
+
+<br>
+
+----
+  
+# Living situation
+  
+Whether respondents live alone or not.
+  
+```{r liv, eval=FALSE}
+#--------------------------------------------------------------------------------
+# livingalone
+# livingalone
+df$woonsituatie <- as.character(df$woonsituatie)
+
+df$livingalone <- 1
+df$livingalone[df$woonsituatie == "ik ben gehuwd/woon samen zonder thuiswonende kinderen"] <- 0
+df$livingalone[df$woonsituatie == "ik woon bij mijn ouder(s)/verzorger(s)"] <- 0
+df$livingalone[df$woonsituatie == "ik ben gehuwd/woon samen met thuiswonende kinderen"] <- 0
+df$livingalone[df$woonsituatie == "ik woon alleen (zonder partner) met kinderen"] <- 0
+df$livingalone[df$woonsituatie == "anders"] <- 0
+
+
+df$livingalone[is.na(df$woonsituatie)] <- 2
+df$livingalone[df$woonsituatie == "weet niet/wil niet zeggen"] <- 2  # --> should drop this one!
+
+table(df$livingalone)
+table(df$woonsituatie)
+
+
+```
+
+<br>
+
+----
+  
+# Household size
+
+Respondent household size.
+  
+```{r hhs, eval=FALSE}
+#--------------------------------------------------------------------------------
+# householdsize
+
+df$hhsize <- as.character(df$huishoudomvang)
+table(df$hhsize)
+df$hhsize[df$hhsize == "1 (alleen ikzelf)"] <- 1
+df$hhsize <- as.numeric(df$hhsize)
+table(df$hhsize)
+df$hhsize[df$livingalone == 1] <- 1  # this overrides with prior answer
+table(df$hhsize)
+table(df$huishoudomvang)
+```
+
+<br>
+
+----
+  
+# Income
+  
+Respondent income.
+  
+```{r inc, eval=FALSE}
+#--------------------------------------------------------------------------------
+# income
+
+
+table(df$inkomen)
+df$inkomen <- as.character(df$inkomen)
+nrow(df[is.na(df$inkomen), ])  # --> 37 missings
+
+df$income[df$inkomen == "minimum (Minder dan € 14.100)"] <- 1
+df$income[df$inkomen == "beneden modaal (€ 14.100 tot € 29.500)"] <- 1
+df$income[df$inkomen == "bijna modaal (€ 29.500 tot € 36.500)"] <- 1
+df$income[df$inkomen == "modaal (€ 36.500 tot € 43.500)"] <- 1
+df$income[df$inkomen == "tussen 1 en 2 keer modaal (€ 43.500 tot € 73.000)"] <- 2
+df$income[df$inkomen == "twee keer modaal (€ 73.000 tot € 87.100)"] <- 2
+df$income[df$inkomen == "meer dan 2 keer modaal (€ 87.100 of meer)"] <- 2
+df$income[df$inkomen == "weet ik niet / wil ik niet zeggen"] <- 3
+df$income[is.na(df$inkomen)] <- 3
+
+table(df$income)
+# 1 up to modal 2 modal and up 3 NA/doesn't know/doesn't want to say
+```
+
+<br>
+
+----
+
 # Zipcode info
   
 We create a number of variables that relate to folks' zipcodes.
@@ -418,122 +548,6 @@ summary(df$pdutch)
 <br>
 
 ----
-  
-# Work situation
-  
-We create the current working situation of a respondent. (These are new variable obtained from I&O research, hence the hassle with the identifier before.)
-  
-```{r wor, eval=FALSE}
-#--------------------------------------------------------------------------------
-# NEW IO VARS
-#--------------------------------------------------------------------------------
-
-# working
-#val_lab(df$werk)
-df$werk <- as.character(df$werk)
-df$work <- 1
-df$work[df$werk == "anders"] <- 0
-df$work[df$werk == "werkloos / werkzoekend / bijstand"] <- 0
-df$work[df$werk == "studerend /schoolgaand"] <- 0
-df$work[df$werk == "arbeidsongeschikt"] <- 0
-df$work[df$werk == "gepensioneerd of VUT"] <- 0
-df$work[df$werk == "huisvrouw / huisman"] <- 0
-
-table(df$work)
-
-table(df$werk)
-
-```
-
-<br>
-
-----
-  
-# Living situation
-  
-Whether respondents live alone or not.
-  
-```{r liv, eval=FALSE}
-#--------------------------------------------------------------------------------
-# livingalone
-df$woonsituatie <- as.character(df$woonsituatie)
-
-df$livingalone <- 1
-df$livingalone[df$woonsituatie == "ik ben gehuwd/woon samen zonder thuiswonende kinderen"] <- 0
-df$livingalone[df$woonsituatie == "ik woon bij mijn ouder(s)/verzorger(s)"] <- 0
-df$livingalone[df$woonsituatie == "ik ben gehuwd/woon samen met thuiswonende kinderen"] <- 0
-df$livingalone[df$woonsituatie == "ik woon alleen (zonder partner) met kinderen"] <- 0
-df$livingalone[df$woonsituatie == "anders"] <- 0
-
-
-df$livingalone[is.na(df$woonsituatie)] <- 2
-df$livingalone[df$woonsituatie == "weet niet/wil niet zeggen"] <- 2 # --> should drop this one!
-
-table(df$livingalone)
-table(df$woonsituatie)
-
-
-```
-
-<br>
-
-----
-  
-# Household size
-  
-Respondent household size.
-  
-```{r hhs, eval=FALSE}
-#--------------------------------------------------------------------------------
-# householdsize
-
-df$hhsize <- as.character(df$huishoudomvang)
-table(df$hhsize)
-df$hhsize[df$hhsize == "1 (alleen ikzelf)"] <- 1
-df$hhsize <- as.numeric(df$hhsize)
-table(df$hhsize)
-df$hhsize[df$livingalone == 1] <- 1 # this overrides with prior answer
-table(df$hhsize)
-table(df$huishoudomvang)
-
-```
-
-<br>
-
-----
-  
-# Income
-  
-Respondent income.
-  
-```{r inc, eval=FALSE}
-#--------------------------------------------------------------------------------
-# income
-
-table(df$inkomen)
-df$inkomen <- as.character(df$inkomen)
-nrow(df[is.na(df$inkomen),]) # --> 37 missings
-
-df$income[df$inkomen=="minimum (Minder dan € 14.100)"] <- 1
-df$income[df$inkomen=="beneden modaal (€ 14.100 tot € 29.500)"] <- 1
-df$income[df$inkomen=="bijna modaal (€ 29.500 tot € 36.500)"] <- 1
-df$income[df$inkomen=="modaal (€ 36.500 tot € 43.500)"] <- 1
-df$income[df$inkomen=="tussen 1 en 2 keer modaal (€ 43.500 tot € 73.000)"] <- 2
-df$income[df$inkomen=="twee keer modaal (€ 73.000 tot € 87.100)"] <- 2
-df$income[df$inkomen=="meer dan 2 keer modaal (€ 87.100 of meer)"] <- 2
-df$income[df$inkomen=="weet ik niet / wil ik niet zeggen"] <- 3
-df$income[is.na(df$inkomen)] <- 3
-
-table(df$income)
-# 1 up to modal
-# 2 modal and up
-# 3 NA/doesn't know/doesn't want to say
-```
-
-<br>
-
-----
-  
 # Unused variables
   
 There are a number of remaining variables to the data that we do not use in this particular paper.
@@ -612,16 +626,18 @@ Finally, we apply some sample selection based on the missigness in the data. Not
 ```{r sam, eval=FALSE}
 #--------------------------------------------------------------------------------
 # missingness and sample selection
-nrow(df[is.na(df$leeftijd10),]) # no missing
+#nrow(df[is.na(df$leeftijd10),]) # no missing
+nrow(df[is.na(df$agecat),]) # no missing
 nrow(df[is.na(df$geslacht),]) # no missing
 nrow(df[is.na(df$opl),]) # no missing
 nrow(df[is.na(df$V5a),]) # six missing
 nrow(df[is.na(df$V5b),]) # four missing
 nrow(df[df$migr == 3,]) # four missing on effective variable
 table(df$migr)
+nrow(df[is.na(df$migr3),]) # four missing
 
 #nrow(df[is.na(df$pbenrec), ])
-nrow(df[is.na(df$neighdens), ]) # four missing
+#nrow(df[is.na(df$neighdens), ]) # four missing
 #nrow(df[is.na(df$pbuyhouse), ])
 nrow(df[is.na(df$worthhouse), ]) # eight missing
 #nrow(df[is.na(df$pdutch), ])
@@ -632,13 +648,13 @@ nrow(df[is.na(df$hhsize),]) # 1 missing
 
 nrow(df[is.na(df$income),]) # no missing
 
-nrow(df[df$income == 3,]) # though 183 won't say/know
+nrow(df[df$income == 3,]) # though 184 won't say/know
 nrow(df[is.na(df$inkomen),]) # oif which 37 system missing
-
-nrow(df[is.na(df$politics),]) # no missing
-nrow(df[df$politics == 3,]) # though 223 won't say/know
-nrow(df[is.na(df$politiek),]) # oif which 135 system missing
-
+# 
+# nrow(df[is.na(df$politics),]) # no missing
+# nrow(df[df$politics == 3,]) # though 223 won't say/know
+# nrow(df[is.na(df$politiek),]) # oif which 135 system missing
+# 
 
 # df <- df[!is.na(df$pbenrec), ]
 # df <- df[!is.na(df$neighdens), ]
@@ -652,6 +668,7 @@ df <- df[!is.na(df$hhsize), ]
 #df <- df[!df$elecauto == 3,]
 #df <- df[!df$vegan == 3,]
 #df <- df[!df$scooter == 3,]
+#summary(df$hhsize)
 
 #--------------------------------------------------------------------------------
 
