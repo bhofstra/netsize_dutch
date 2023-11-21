@@ -543,11 +543,13 @@ summary(df$neighdens)
 summary(df$pbuyhouse)
 summary(df$worthhouse)
 summary(df$pdutch)
+
 ```
 
 <br>
 
 ----
+
 # Unused variables
   
 There are a number of remaining variables to the data that we do not use in this particular paper.
