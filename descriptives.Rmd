@@ -316,7 +316,7 @@ ccdfplot <- ggplot() +
               scale_color_manual(name = "Fit", values = c("Log-normal fit, w/ x_min" = "green", 
                                                           "Log-normal fit, no x_min" = "purple")) +
               theme_bw() +
-              theme(legend.position = c(0.2, 0.2)) +
+              theme(legend.position = c(0.22, 0.2)) +
               scale_x_log10(breaks = c(50,100,200,500,1000,2000), limits = c(min(pd1$x), max(pd1$x))) + scale_y_log10() +
               ggtitle("C) CCDF plot of average degree over all scenarios")
 
