@@ -321,7 +321,7 @@ ccdfplot <- ggplot() +
 
 # save
 ggsave("output/ccdfplot.pdf", plot = ccdfplot, device = "pdf",
-       scale = 1, width = 6, height = 6, units = c("in"),
+       scale = 1, width = 6, height = 4, units = c("in"),
        dpi = "retina")
 
 ### original plot in Base r
