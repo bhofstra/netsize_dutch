@@ -55,7 +55,8 @@ fpackage.check <- function(packages) {
   })
 }
 packages = c("haven", "coda", "matrixStats", "parallel", "MASS", "doParallel", "dplyr", "cowplot", 
-             "tidyverse", "naniar", "dotwhisker" ,"gt", "reshape2", "VGAM", "expss", "Hmisc")
+             "tidyverse", "naniar", "dotwhisker" ,"gt", "reshape2", "VGAM", "expss", "Hmisc",
+             "poweRlaw", "fitdistrplus", "grid", "ggplotify")
 fpackage.check(packages)
 rm(packages)
 load("data/dutch_netsize_analyses.rda")
@@ -266,4 +267,83 @@ ggsave("output/densities.pdf", plot = denses, device = "pdf",
 
 denses
 ```
+
+<br>
+
+----
+
+# Distributional fit
+
+We now fit a "complementary cumulative degree distribution" and check how it fits.
+
+
+```{r ccdf, eval = TRUE}
+
+
+df$netsize <- round(rowSums(df[,c(14:185)]) / length(14:185), 0)
+df <- df[!df$netsize > 5000, ]
+degrees <- df$netsize
+
+degr_pl <- displ$new(degrees) # create a discrete powerlaw distribution object 
+
+# with estimating lower threshold:
+degr_ln_xmin <- dislnorm$new(degrees)
+est = estimate_xmin(degr_ln_xmin)
+degr_ln_xmin$setXmin(est)
+
+# without lower threshold:
+degr_ln_noxmin <-fitdist(degrees, "lnorm")
+
+# Goodness of fit for lognorm, no xmin:
+gof_degr_ln_noxmin <- gofstat(degr_ln_noxmin, fitnames = "Log-normal", discrete = TRUE)
+
+x_seq <- seq(0, max(degrees), length = 500)
+
+# For plotting the no x_min version of LN
+ln_fit_ccdf <- 1 - plnorm(x_seq, meanlog = degr_ln_noxmin$estimate[1], sdlog =  degr_ln_noxmin$estimate[2])
+
+# capture data that make the plot
+pd1 <- plot(degr_pl, draw = F) # plot data 1, empirical distr
+pd2 <- lines(degr_ln_xmin, draw = F) # plot data 2 no xmin
+pd3 <- data.frame(cbind(x_seq, ln_fit_ccdf)) # plot data 3 with xmin
+
+# now render it a ggplot
+ccdfplot <- ggplot() + 
+              geom_point(data=pd1, aes(x = x, y = y), shape=1) + 
+              geom_line(data=pd2, aes(x = x, y = y, color = "Log-normal fit, w/ x_min")) +
+              geom_line(data=pd3, aes(x = x_seq, y = ln_fit_ccdf, color = "Log-normal fit, no x_min")) +
+              labs(x="Extended network size", y="CCDF") + 
+              scale_color_manual(name = "Fit", values = c("Log-normal fit, w/ x_min" = "green", 
+                                                          "Log-normal fit, no x_min" = "purple")) +
+              theme_bw() +
+              theme(legend.position = c(0.2, 0.2)) +
+              scale_x_log10(breaks = c(50,100,200,500,1000,2000), limits = c(min(pd1$x), max(pd1$x))) + scale_y_log10() 
+
+# save
+ggsave("output/ccdfplot.pdf", plot = ccdfplot, device = "pdf",
+       scale = 1, width = 6, height = 6, units = c("in"),
+       dpi = "retina")
+
+### original plot in Base r
+# # Plotting two versions of LN
+# plot(degr_pl, xlab="Number of contacts", ylab="CCDF")
+# lines(degr_ln_xmin, col = "green", lwd = 2)
+# lines(x_seq, ln_fit_ccdf, col = "purple", lwd = 2)
+# legend(x = "bottomleft",
+#        legend = c("Log-normal fit, w/ x_min",
+#                   "Log-normal fit, no x_min" 
+#                   ),
+#        col = c("green","purple"),
+#        lwd = 2)
+ccdfplot
+```
+
+
+
+
+
+
+
+
+
 
