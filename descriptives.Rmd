@@ -317,11 +317,18 @@ ccdfplot <- ggplot() +
                                                           "Log-normal fit, no x_min" = "purple")) +
               theme_bw() +
               theme(legend.position = c(0.2, 0.2)) +
-              scale_x_log10(breaks = c(50,100,200,500,1000,2000), limits = c(min(pd1$x), max(pd1$x))) + scale_y_log10() 
+              scale_x_log10(breaks = c(50,100,200,500,1000,2000), limits = c(min(pd1$x), max(pd1$x))) + scale_y_log10() +
+              ggtitle("C) CCDF plot of average degree over all scenarios")
 
 # save
 ggsave("output/ccdfplot.pdf", plot = ccdfplot, device = "pdf",
        scale = 1, width = 6, height = 4, units = c("in"),
+       dpi = "retina")
+
+tryout <- plot_grid(dens2, dens1, ccdfplot, nrow = 1)
+
+ggsave("output/comps_combined.pdf", plot = tryout, device = "pdf",
+       scale = 1, width = 16, height = 5, units = c("in"),
        dpi = "retina")
 
 ### original plot in Base r
