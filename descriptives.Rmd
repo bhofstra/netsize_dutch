@@ -296,6 +296,7 @@ degr_ln_noxmin <-fitdist(degrees, "lnorm")
 
 # Goodness of fit for lognorm, no xmin:
 gof_degr_ln_noxmin <- gofstat(degr_ln_noxmin, fitnames = "Log-normal", discrete = TRUE)
+gof_degr_ln_noxmin
 
 x_seq <- seq(0, max(degrees), length = 500)
 
@@ -310,10 +311,10 @@ pd3 <- data.frame(cbind(x_seq, ln_fit_ccdf)) # plot data 3 with xmin
 # now render it a ggplot
 ccdfplot <- ggplot() + 
               geom_point(data=pd1, aes(x = x, y = y), shape=1) + 
-              geom_line(data=pd2, aes(x = x, y = y, color = "Log-normal fit, w/ x_min")) +
+              #geom_line(data=pd2, aes(x = x, y = y, color = "Log-normal fit, w/ x_min")) +
               geom_line(data=pd3, aes(x = x_seq, y = ln_fit_ccdf, color = "Log-normal fit, no x_min")) +
               labs(x="Extended network size", y="CCDF") + 
-              scale_color_manual(name = "Fit", values = c("Log-normal fit, w/ x_min" = "green", 
+              scale_color_manual(name = "Fit", values = c(#"Log-normal fit, w/ x_min" = "green", 
                                                           "Log-normal fit, no x_min" = "purple")) +
               theme_bw() +
               theme(legend.position = c(0.22, 0.2)) +
