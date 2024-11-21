@@ -127,76 +127,76 @@ The code below generates Figure 1 from the paper and runs a number of correlatio
   
 
 ```{r naicomps, eval = TRUE}
-
-comps <- gather(df[, c("nsize_naive", "nsize_b1b2", "nsize_b3", "nsize_n1", "nsize_n2", "nsize_n3", "nsize_n123")])
-
-comparisons <- ggplot(comps[comps$value < 2000, ], aes(x=value, color = key)) + 
-  geom_density(size = 0.5) + 
-  theme_minimal() +
-  labs(x = "Network size estimate", y = "Density") +
-  scale_color_manual(name = "Estimation scenario", 
-                      breaks = c("nsize_naive", "nsize_b1b2", "nsize_b3", "nsize_n1", "nsize_n2", "nsize_n3", "nsize_n123"), 
-                       labels = c("Naive estimator: all X's", 
-                                  "Battery 1: Tert. educ., elec vehicle, etc.", 
-                                  "Battery 2: all names", 
-                                  "Names 1: Sophie, Anna, Thomas, Willem", 
-                                  "Names 2: Julia, Elisabeth, Max, Ali",
-                                  "Names 3: Sanne, Cornelia, Kevin, Mohammed",
-                                  "Names1+2+3"),
-                     values = c("#000000", "#E69F00", "#56B4E9", "#009E73", 
-                          "#0072B2", "#D55E00", "#CC79A7", "darkgrey"))
-
-# save
-ggsave("output/comparisons.pdf", plot = comparisons, device = "pdf",
-       scale = 1, width = 10, height = 5.5, units = c("in"),
-       dpi = "retina")
-
-
-
-# # correlation battery 1 and 2
-# cor(df$nsize_b1, df$nsize_b2)
 # 
-# # correlation battery 1 and all
-# cor(df$nsize_b1, df$nsize_naive)
-
-# correlation battery 1+2 and all
-cor(df$nsize_b1b2, df$nsize_naive)
-
-# correlation battery 3 (names) and all
-cor(df$nsize_b3, df$nsize_naive)
-
-# correlation names 1 and all
-cor(df$nsize_n1, df$nsize_naive)
-
-# correlation names 2 and all
-cor(df$nsize_n2, df$nsize_naive)
-
-# correlation names 3 and all
-cor(df$nsize_n3, df$nsize_naive)
-
-# correlation names 123 and all
-cor(df$nsize_n123, df$nsize_naive)
-
-# sample 5 columns of scenarios and correlate with naive estimand
-set.seed(1987)
-sample(13:183, 5)
-
-# correlation scenario 85 and naive
-cor(df$nsize_naive, df[, 85])
-
-# correlation scenario 36 and naive
-cor(df$nsize_naive, df[, 36])
-
-# correlation scenario 150 and naive
-cor(df$nsize_naive, df[, 150])
-
-# correlation scenario 14 and naive
-cor(df$nsize_naive, df[, 14])
-
-# correlation scenario 125 and naive
-cor(df$nsize_naive, df[, 125])
-
-comparisons
+# comps <- gather(df[, c("nsize_naive", "nsize_b1b2", "nsize_b3", "nsize_n1", "nsize_n2", "nsize_n3", "nsize_n123")])
+# 
+# comparisons <- ggplot(comps[comps$value < 2000, ], aes(x=value, color = key)) + 
+#   geom_density(size = 0.5) + 
+#   theme_minimal() +
+#   labs(x = "Network size estimate", y = "Density") +
+#   scale_color_manual(name = "Estimation scenario", 
+#                       breaks = c("nsize_naive", "nsize_b1b2", "nsize_b3", "nsize_n1", "nsize_n2", "nsize_n3", "nsize_n123"), 
+#                        labels = c("Naive estimator: all X's", 
+#                                   "Battery 1: Tert. educ., elec vehicle, etc.", 
+#                                   "Battery 2: all names", 
+#                                   "Names 1: Sophie, Anna, Thomas, Willem", 
+#                                   "Names 2: Julia, Elisabeth, Max, Ali",
+#                                   "Names 3: Sanne, Cornelia, Kevin, Mohammed",
+#                                   "Names1+2+3"),
+#                      values = c("#000000", "#E69F00", "#56B4E9", "#009E73", 
+#                           "#0072B2", "#D55E00", "#CC79A7", "darkgrey"))
+# 
+# # save
+# ggsave("output/comparisons.pdf", plot = comparisons, device = "pdf",
+#        scale = 1, width = 10, height = 5.5, units = c("in"),
+#        dpi = "retina")
+# 
+# 
+# 
+# # # correlation battery 1 and 2
+# # cor(df$nsize_b1, df$nsize_b2)
+# # 
+# # # correlation battery 1 and all
+# # cor(df$nsize_b1, df$nsize_naive)
+# 
+# # correlation battery 1+2 and all
+# cor(df$nsize_b1b2, df$nsize_naive)
+# 
+# # correlation battery 3 (names) and all
+# cor(df$nsize_b3, df$nsize_naive)
+# 
+# # correlation names 1 and all
+# cor(df$nsize_n1, df$nsize_naive)
+# 
+# # correlation names 2 and all
+# cor(df$nsize_n2, df$nsize_naive)
+# 
+# # correlation names 3 and all
+# cor(df$nsize_n3, df$nsize_naive)
+# 
+# # correlation names 123 and all
+# cor(df$nsize_n123, df$nsize_naive)
+# 
+# # sample 5 columns of scenarios and correlate with naive estimand
+# set.seed(1987)
+# sample(13:183, 5)
+# 
+# # correlation scenario 85 and naive
+# cor(df$nsize_naive, df[, 85])
+# 
+# # correlation scenario 36 and naive
+# cor(df$nsize_naive, df[, 36])
+# 
+# # correlation scenario 150 and naive
+# cor(df$nsize_naive, df[, 150])
+# 
+# # correlation scenario 14 and naive
+# cor(df$nsize_naive, df[, 14])
+# 
+# # correlation scenario 125 and naive
+# cor(df$nsize_naive, df[, 125])
+# 
+# comparisons
 
 ```
 
@@ -212,65 +212,102 @@ comparisons
 The code below generates Figure 2 from the paper associated with the text on page X.
   
 ```{r bayecomps, eval = TRUE}
-
-netsizes <- read.table(file = "data/dutch_netsize_desc.txt")
-
-# VIZ of netsize
-netsize_l <- gather(netsizes)
-dens1 <- ggplot(netsize_l[netsize_l$value < 2000,], aes(x=value, color = key)) + 
-  geom_density(alpha = .2, size = 0.1) + 
-  theme_minimal() + 
-  theme(legend.position = "none") +
-  labs(x = "Network size estimate", y = "Density") +
-  geom_vline(xintercept=as.numeric(psych::describe(netsize_l[, 2])[3]), color = "darkgrey", linetype = 2) +
-  geom_vline(xintercept=as.numeric(psych::describe(netsize_l[, 2])[5]), color = "darkgrey", linetype = 2) +
-  annotate("text", x = 490, y = 0.0004, color = "darkgrey", angle = 90, 
-           label = paste0("Mean = ", round(as.numeric(psych::describe(netsize_l[, 2])[3]), digits = 0))) +
-  annotate("text", x = 340, y = 0.0004, color = "darkgrey", angle = 90, 
-           label = paste0("Median = ", round(as.numeric(psych::describe(netsize_l[, 2])[5]), digits = 0))) +
-  ggtitle("B) Distribution of network sizes, all scenarios")
-
-
-# Get lower triangle of the correlation matrix
-get_lower_tri<-function(cormat){
-  cormat[upper.tri(cormat)] <- NA
-  return(cormat)
-}
-mat <- cor(netsizes)
-lower_tri <- get_lower_tri(mat)
-melted_cormat <- reshape2::melt(lower_tri) # data.table also has melt funciton that won't work on matrices
-melted_cormat$Var2 <- as.character(melted_cormat$Var2)
-melted_cormat$Var1 <- as.character(melted_cormat$Var1)
-melted_cormat <- melted_cormat[!melted_cormat$Var2 == melted_cormat$Var1,]
-melted_cormat <- melted_cormat[!is.na(melted_cormat$value), ]
-
-# Viz of correlations between netsize estimates
-dens2 <- ggplot(melted_cormat, aes(x=value)) + 
-  geom_density(size = 0.3) + 
-  xlim(0.915, 1) + 
-  theme_minimal() + 
-  labs(x="Pearson correlation", y = "Density") +
-  geom_vline(xintercept = .95, color = "darkgrey", linetype = 2) +
-  ggtitle("A) Distributions of correlations between network size scenarios")  +
-  geom_segment(x = 0.95, y = 125, xend = .99, yend = 125, linetype = 2, color = "darkgrey",
-                arrow = arrow(length = unit(0.25, "cm")))  +
-  annotate("text", x = .97, y = 135, color = "darkgrey", angle = 0, 
-           label = paste0(round(nrow(melted_cormat[melted_cormat$value > .95, ])/nrow(melted_cormat)*100, digits = 1),"% of correlations are > .95"))
-
-# lay 'm out on the grid           
-denses <- plot_grid(dens2, dens1, nrow = 1) 
-
-# save
-ggsave("output/densities.pdf", plot = denses, device = "pdf",
-       scale = 1, width = 12, height = 4, units = c("in"),
-       dpi = "retina")
-
-denses
+# 
+# netsizes <- read.table(file = "data/dutch_netsize_desc.txt")
+# 
+# # VIZ of netsize
+# netsize_l <- gather(netsizes)
+# dens1 <- ggplot(netsize_l[netsize_l$value < 2000,], aes(x=value, color = key)) + 
+#   geom_density(alpha = .2, size = 0.1) + 
+#   theme_minimal() + 
+#   theme(legend.position = "none") +
+#   labs(x = "Network size estimate", y = "Density") +
+#   geom_vline(xintercept=as.numeric(psych::describe(netsize_l[, 2])[3]), color = "darkgrey", linetype = 2) +
+#   geom_vline(xintercept=as.numeric(psych::describe(netsize_l[, 2])[5]), color = "darkgrey", linetype = 2) +
+#   annotate("text", x = 490, y = 0.0004, color = "darkgrey", angle = 90, 
+#            label = paste0("Mean = ", round(as.numeric(psych::describe(netsize_l[, 2])[3]), digits = 0))) +
+#   annotate("text", x = 340, y = 0.0004, color = "darkgrey", angle = 90, 
+#            label = paste0("Median = ", round(as.numeric(psych::describe(netsize_l[, 2])[5]), digits = 0))) +
+#   ggtitle("B) Distribution of network sizes, all scenarios")
+# 
+# 
+# # Get lower triangle of the correlation matrix
+# get_lower_tri<-function(cormat){
+#   cormat[upper.tri(cormat)] <- NA
+#   return(cormat)
+# }
+# mat <- cor(netsizes)
+# lower_tri <- get_lower_tri(mat)
+# melted_cormat <- reshape2::melt(lower_tri) # data.table also has melt funciton that won't work on matrices
+# melted_cormat$Var2 <- as.character(melted_cormat$Var2)
+# melted_cormat$Var1 <- as.character(melted_cormat$Var1)
+# melted_cormat <- melted_cormat[!melted_cormat$Var2 == melted_cormat$Var1,]
+# melted_cormat <- melted_cormat[!is.na(melted_cormat$value), ]
+# 
+# # Viz of correlations between netsize estimates
+# dens2 <- ggplot(melted_cormat, aes(x=value)) + 
+#   geom_density(size = 0.3) + 
+#   xlim(0.915, 1) + 
+#   theme_minimal() + 
+#   labs(x="Pearson correlation", y = "Density") +
+#   geom_vline(xintercept = .95, color = "darkgrey", linetype = 2) +
+#   ggtitle("A) Distributions of correlations between network size scenarios")  +
+#   geom_segment(x = 0.95, y = 125, xend = .99, yend = 125, linetype = 2, color = "darkgrey",
+#                 arrow = arrow(length = unit(0.25, "cm")))  +
+#   annotate("text", x = .97, y = 135, color = "darkgrey", angle = 0, 
+#            label = paste0(round(nrow(melted_cormat[melted_cormat$value > .95, ])/nrow(melted_cormat)*100, digits = 1),"% of correlations are > .95"))
+# 
+# # lay 'm out on the grid           
+# denses <- plot_grid(dens2, dens1, nrow = 1) 
+# 
+# # save
+# ggsave("output/densities.pdf", plot = denses, device = "pdf",
+#        scale = 1, width = 12, height = 4, units = c("in"),
+#        dpi = "retina")
+# 
+# # denses
 ```
 
 <br>
 
 ----
+
+
+
+# Comparing four different estimation scenarios
+
+The code below generates Figure X from the paper associated with the text on page X.
+  
+```{r densityrevision, eval = TRUE}
+
+# VIZ of netsize
+netsize_l <- gather(df[, c("netsover1", "netsover2", "netsover3", "netsover4")])
+round(summary(df$netsover2)[3], digits = 0)
+round(summary(df$netsover2)[4], digits = 0)
+
+dens1 <- ggplot(netsize_l, aes(x=value, color = key)) + 
+  geom_density(alpha = .2, size = 0.5) + 
+  theme_minimal() + 
+  theme(legend.position = "none") +
+  labs(x = "Network size estimate", y = "Density") +
+  scale_color_manual(values = c("grey", "#56B4E9", "grey", "grey")) +
+    geom_vline(xintercept=246, color = "darkgrey", linetype = 2) +
+  geom_vline(xintercept=282, color = "darkgrey", linetype = 2) +
+  annotate("text", x = 350, y = 0.0008, color = "black", angle = 90, 
+           label = "Mean = 282") +
+  annotate("text", x = 175, y = 0.0008, color = "black", angle = 90, 
+           label = "Median = 246") +
+  xlim(c(0, 1500))
+# save
+ggsave("output/densities_revision.pdf", plot = dens1, device = "pdf",
+       scale = 1, width = 5, height = 4, units = c("in"),
+       dpi = "retina")
+
+
+
+
+```
+
 
 # Distributional fit
 
@@ -279,10 +316,9 @@ We now fit a "complementary cumulative degree distribution" and check how it fit
 
 ```{r ccdf, eval = TRUE}
 
-
-df$netsize <- round(rowSums(df[,c(14:185)]) / length(14:185), 0)
-df <- df[!df$netsize > 5000, ]
-degrees <- df$netsize
+#df$netsize <- round(rowSums(df[,c(14:185)]) / length(14:185), 0)
+df <- df[!df$netsover2 > 5000, ]
+degrees <- round(df$netsover2, 0)
 
 degr_pl <- displ$new(degrees) # create a discrete powerlaw distribution object 
 
@@ -319,7 +355,7 @@ ccdfplot <- ggplot() +
               theme_bw() +
               theme(legend.position = c(0.22, 0.2)) +
               scale_x_log10(breaks = c(50,100,200,500,1000,2000), limits = c(min(pd1$x), max(pd1$x))) + scale_y_log10() +
-              ggtitle("C) CCDF plot of average degree over all scenarios")
+              ggtitle("CCDF plot of average degree")
 
 # save
 ggsave("output/ccdfplot.pdf", plot = ccdfplot, device = "pdf",
@@ -348,7 +384,97 @@ ccdfplot
 
 
 
+```{r popvsave, eval = TRUE}
 
+dfans <- df[, c("uni", "hbo", "mbo", "dochterzoon", "tweeling", "corona", 
+              "elauto", "scooter", "vegan", 
+              "Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
+              "Anna","Elisabeth","Cornelia","Wilhelmina","Amira","Samira","Sara","Daan","Sem",
+              "Thomas","Max","Kevin","Johannes","Dennis","Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus",
+              "Willem","Ali","Mohammed","Noor")] # take mean of each of the cats
+means <- colMeans(dfans)
+
+
+
+
+
+ref1 <- c(84957, 75214, 145600, 168066, 2500, 1558549)
+# ORDER:  uni, hbo, mbo, dochter/zoon, tweeling, corona
+
+
+ref2 <- c(273259, 460618, 261000)
+# ORDER:   elecauto, scooter, vegan,
+
+ref3 <- c(15276,16350,27394,21200,25681,334502,29955,266522,39481, 2692,
+          136296,110231,112807,98208,1386,2186,11640,22704,13276,
+          40543,17024,23167,307032,36411,49182,186746,35973,134956,118610,86500,
+          102296,4213,5003,4517)
+# ORDER:   Sophie, Julia,Sanne,Lisa,Laura,Maria,Linda,Johanna,Monique,Ester,
+#             Anna,Elisabeth,Cornelia,Wilhelmina,Amira,Samira,Sara,Daan,Sem,
+#             Thomas,Max,Kevin,Johannes,Dennis,Jeroen,Jan,Marcel,Cornelis,Hendrik,Petrus,
+#             Willem,Ali,Mohammed,Noor
+
+pops <- c(ref1, ref2, ref3)
+
+
+
+
+fig <- data.frame(cbind(means, pops))
+cor(fig)
+
+cor(fig[!fig$pops > 500000, ])
+cor(fig[!fig$pops > 200000, ])
+cor(fig[fig$pops < 50000, ])
+install.packages("smplot2")
+require(smplot2)
+
+ex1 <- ggplot(fig, aes(x=pops, y=means)) + 
+  geom_point() + 
+  xlim(x= c(0, 50000)) + 
+  ylim(c(0,2.5)) + 
+  geom_smooth(method='lm') +
+  geom_text(label = rownames(fig),
+            nudge_y = 0.1) +
+  theme_minimal() +
+  xlab("Population size") +
+  ylab("Average number mentioned") +
+  sm_statCorr() + 
+  ggtitle("A) Population size <50k")
+ex1
+
+ex2 <- ggplot(fig, aes(x=pops, y=means)) + 
+  geom_point() + 
+  xlim(x= c(0, 500000)) + 
+  ylim(c(0,2.5)) + 
+  geom_smooth(method='lm') +
+  geom_text(label = rownames(fig),
+            nudge_y = 0.1) +
+  theme_minimal() +
+  xlab("Population size") +
+  ylab("Average number mentioned") +
+  sm_statCorr()+ 
+  ggtitle("B) Population size <500k")
+ex2
+
+
+ex3 <- ggplot(fig, aes(x=pops, y=means)) + 
+  geom_point() + 
+  geom_smooth(method='lm') +
+  geom_text(label = rownames(fig),
+            nudge_y = 0.1) +
+  theme_minimal() +
+  xlab("Population size") +
+  ylab("Average number mentioned") +
+  sm_statCorr() + 
+  ggtitle("C) All population sizes")
+ex3
+
+ex <- plot_grid(ex1,ex2,ex3, nrow = 1)
+ggsave("output/popsizes.pdf", plot = ex, device = "pdf",
+       scale = 1, width = 16, height = 5, units = c("in"),
+       dpi = "retina")
+
+```
 
 
 

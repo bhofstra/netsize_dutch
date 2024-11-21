@@ -593,8 +593,8 @@ table(df$politics)
 # unused vars
 # drop missings and create corona var
 table(df$V4)
-df$corona <- df$V4
-table(df$corona)
+df$coronaiv <- df$V4
+table(df$coronaiv)
 
 # create electric vehicle var
 table(df$V6)
@@ -603,15 +603,15 @@ table(df$elecaut)
 
 # create scooter var
 table(df$V7)
-df$scooter <- df$V7
-table(df$scooter)
+df$scooteriv <- df$V7
+table(df$scooteriv)
 
 # create vagan var
 table(df$V8)
-df$vegan <- df$V8
+df$veganiv <- df$V8
 
 # progressive construction: elec vehicle or vegan == progressive
-df$progr <- ifelse(df$vegan == 1 | df$elecaut == 1,1,0)
+df$progr <- ifelse(df$veganiv == 1 | df$elecaut == 1,1,0)
 table(df$progr)
 
 ```
@@ -666,10 +666,10 @@ df <- df[!is.na(df$migr3), ]
 df <- df[!is.na(df$hhsize), ]
 # df <- df[!is.na(df$pdutch), ]
 
-#df <- df[!df$corona == 3,]
+#df <- df[!df$coronaiv == 3,]
 #df <- df[!df$elecauto == 3,]
-#df <- df[!df$vegan == 3,]
-#df <- df[!df$scooter == 3,]
+#df <- df[!df$veganiv == 3,]
+#df <- df[!df$scooteriv == 3,]
 #summary(df$hhsize)
 
 #--------------------------------------------------------------------------------

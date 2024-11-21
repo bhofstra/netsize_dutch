@@ -1,5 +1,5 @@
 ---
-title: "Dependent variables"
+title: "Dependent variables: Revision"
 #bibliography: references.bib
 author: "Bas Hofstra"
 ---
@@ -55,7 +55,7 @@ fpackage.check <- function(packages) {
   })
 }
 packages = c("haven", "coda", "matrixStats", "parallel", "MASS", "doParallel", "dplyr", "cowplot", 
-             "tidyverse", "naniar", "dotwhisker" ,"gt", "reshape2", "VGAM", "expss")
+             "tidyverse", "naniar", "dotwhisker" ,"gt", "reshape2", "VGAM", "expss", "networkscaleup")
 fpackage.check(packages)
 rm(packages)
 
@@ -403,7 +403,6 @@ df <- cbind(df, x)
 ```
 
 
-And finally, we save the data.
 
 
 ```{r save,  eval=FALSE}
