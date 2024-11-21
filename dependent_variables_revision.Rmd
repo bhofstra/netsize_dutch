@@ -163,18 +163,11 @@ df$netsover4 <- colMeans(overdisp.est4$degrees)
 
 ```
 
-Homogeneity metrics
+Homogeneity metrics for gender.
 
-```{r revisionhomogeneity,  eval=FALSE}
+```{r revisionhomogeneity_gen,  eval=FALSE}
 
-dfans <- df[, c("uni", "hbo", "mbo", "dochterzoon", "tweeling", "corona", 
-              "elauto", "scooter", "vegan", 
-              "Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
-              "Anna","Elisabeth","Cornelia","Wilhelmina","Amira","Samira","Sara","Daan","Sem",
-              "Thomas","Max","Kevin","Johannes","Dennis","Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus",
-              "Willem","Ali","Mohammed","Noor")] # take mean of each of the cats
-
-#Gender
+#GENDER
 table(df$woman)
 df$numwoman <- rowSums(df[, c("Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
                               "Anna","Elisabeth","Cornelia","Wilhelmina","Amira","Samira","Sara", "Noor")])
@@ -187,8 +180,13 @@ summary(df$samegender)
 summary(df[df$woman == 1, c("samegender")])
 summary(df[df$woman == 0, c("samegender")])
 
-#Educ
+```
 
+Homogeneity metrics for education.
+
+```{r revisionhomogeneity_educ,  eval=FALSE}
+
+#EDUC
 df$numeduc <- rowSums(df[, c("uni", "hbo", "mbo")])
 
 
@@ -226,9 +224,15 @@ class(df$opleiding)
 # 6 
 # WO-doctoraal of WO-master of HBO-master / postdoctoraal onderwijs 
 # 7
+```
 
 
-#Ethnic
+Homogeneity metrics for ethnic background
+
+```{r revisionhomogeneity_ethnic,  eval=FALSE}
+
+
+# ETHNIC
 df$numdutch <- rowSums(df[, c("Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
                               "Anna","Elisabeth","Cornelia","Wilhelmina", "Sara", "Noor",
                               "Daan","Sem","Thomas","Max","Kevin","Johannes","Dennis",

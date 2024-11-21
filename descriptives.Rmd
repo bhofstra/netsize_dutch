@@ -49,14 +49,14 @@ rm(list = ls())
 fpackage.check <- function(packages) {
   lapply(packages, FUN = function(x) {
     if (!require(x, character.only = TRUE)) {
-      install.packages(x, dependencies = TRUE)
+      install.packages(x, dependencies = TRUE, repos = "http://cran.us.r-project.org")
       library(x, character.only = TRUE)
     }
   })
 }
 packages = c("haven", "coda", "matrixStats", "parallel", "MASS", "doParallel", "dplyr", "cowplot", 
              "tidyverse", "naniar", "dotwhisker" ,"gt", "reshape2", "VGAM", "expss", "Hmisc",
-             "poweRlaw", "fitdistrplus", "grid", "ggplotify")
+             "poweRlaw", "fitdistrplus", "grid", "ggplotify", "smplot2")
 fpackage.check(packages)
 rm(packages)
 load("data/dutch_netsize_analyses.rda")
@@ -302,7 +302,7 @@ dens1 <- ggplot(netsize_l, aes(x=value, color = key)) +
 ggsave("output/densities_revision.pdf", plot = dens1, device = "pdf",
        scale = 1, width = 5, height = 4, units = c("in"),
        dpi = "retina")
-
+dens1
 
 
 
@@ -362,11 +362,11 @@ ggsave("output/ccdfplot.pdf", plot = ccdfplot, device = "pdf",
        scale = 1, width = 6, height = 4, units = c("in"),
        dpi = "retina")
 
-tryout <- plot_grid(dens2, dens1, ccdfplot, nrow = 1)
-
-ggsave("output/comps_combined.pdf", plot = tryout, device = "pdf",
-       scale = 1, width = 16, height = 5, units = c("in"),
-       dpi = "retina")
+# tryout <- plot_grid(dens2, dens1, ccdfplot, nrow = 1)
+# 
+# ggsave("output/comps_combined.pdf", plot = tryout, device = "pdf",
+#        scale = 1, width = 16, height = 5, units = c("in"),
+#        dpi = "retina")
 
 ### original plot in Base r
 # # Plotting two versions of LN
@@ -425,8 +425,7 @@ cor(fig)
 cor(fig[!fig$pops > 500000, ])
 cor(fig[!fig$pops > 200000, ])
 cor(fig[fig$pops < 50000, ])
-install.packages("smplot2")
-require(smplot2)
+
 
 ex1 <- ggplot(fig, aes(x=pops, y=means)) + 
   geom_point() + 

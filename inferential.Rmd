@@ -295,6 +295,13 @@ We also average all 172 network size scenarios within respondents and run one si
 
 ```
 
+----
+
+# Revisions Regression table
+
+
+From here onwards, we show our new results based on the revisions of this paper.
+
 ```{r regrevision_size, eval = TRUE}
 
 
@@ -531,7 +538,7 @@ modeldutch <- lm(numdutch ~
                           as.factor(woman) + 
                           
                           as.factor(opl),
-                        data = df)
+                          data = df)
 #summary(modeldutch)
 
 
@@ -578,6 +585,8 @@ tab_model(modeldutch, modelnodutch, modelsameethnic1, show.se = TRUE)
 ```
 
 
+# Revisions Robustness Regression table
+
 ```{r regrevision_robust, eval = TRUE}
 
 modell1 <- lm(log(netsover1+1) ~ 
@@ -596,47 +605,8 @@ modell1 <- lm(log(netsover1+1) ~
                           as.factor(woman) + 
                           
                           as.factor(opl),
-                        data = df[!df[["netsover1"]]>5000,])
+                          data = df[!df[["netsover1"]]>5000,])
 summary(modell1)
-
-
-modelwoman <- lm(numwoman) ~ 
-                          as.factor(work) + 
-                          
-                          hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
-                          as.factor(agecat) + 
-                          
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                        data = df)
-modelwoman <- lm(numwoman) ~ 
-                          as.factor(work) + 
-                          
-                          hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
-                          as.factor(agecat) + 
-                          
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                        data = df)
-summary(modell1)
-
-
 
 modell3 <- lm(log(netsover3+1) ~ 
                           as.factor(work) + 

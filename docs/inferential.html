@@ -14,7 +14,7 @@
 
 <title>Inferential analyses</title>
 
-<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.27/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
@@ -30,7 +30,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -42,8 +42,8 @@
 <link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
 <link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
 <script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -159,11 +159,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -192,8 +196,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -201,16 +205,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -380,6 +377,9 @@ div.tocify {
       <a href="dependent_variables.html">Dependent Variables</a>
     </li>
     <li>
+      <a href="dependent_variables_revision.html">Dependent Variables Revision</a>
+    </li>
+    <li>
       <a href="independent_variables.html">Independent Variables</a>
     </li>
   </ul>
@@ -436,7 +436,7 @@ div.tocify {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<p>Last compiled on December, 2023</p>
+<p>Last compiled on November, 2024</p>
 <p><br></p>
 <hr />
 <p>This is the code with which we run our inferential analyses.</p>
@@ -460,7 +460,7 @@ fpackage.check &lt;- function(packages) {
     })
 }
 packages = c(&quot;haven&quot;, &quot;coda&quot;, &quot;matrixStats&quot;, &quot;parallel&quot;, &quot;MASS&quot;, &quot;doParallel&quot;, &quot;dplyr&quot;, &quot;cowplot&quot;, &quot;tidyverse&quot;,
-    &quot;naniar&quot;, &quot;dotwhisker&quot;, &quot;gt&quot;, &quot;reshape2&quot;, &quot;VGAM&quot;, &quot;expss&quot;, &quot;Hmisc&quot;)
+    &quot;naniar&quot;, &quot;dotwhisker&quot;, &quot;gt&quot;, &quot;reshape2&quot;, &quot;VGAM&quot;, &quot;expss&quot;, &quot;Hmisc&quot;, &quot;MASS&quot;, &quot;sjPlot&quot;)
 fpackage.check(packages)</code></pre>
 <pre class="test2"><code>#&gt; [[1]]
 #&gt; NULL
@@ -508,6 +508,12 @@ fpackage.check(packages)</code></pre>
 #&gt; NULL
 #&gt; 
 #&gt; [[16]]
+#&gt; NULL
+#&gt; 
+#&gt; [[17]]
+#&gt; NULL
+#&gt; 
+#&gt; [[18]]
 #&gt; NULL</code></pre>
 <pre class="r test"><code>rm(packages)
 load(&quot;data/dutch_netsize_analyses.rda&quot;)</code></pre>
@@ -521,11 +527,74 @@ models</h1>
 network size (as it is right-skewed) on our independent and control
 variables. We thus run 172 different regression models (all
 scenarios).</p>
-<pre class="r test"><code>########################
-# MODELS
-#######################
-
-# # age in categories, eval = false in &quot;independent_variables.rmd&quot; fix later
+<pre class="r test"><code># ######################## # MODELS ####################### # # age in categories, eval = false in
+# &#39;independent_variables.rmd&#39; fix later df$agecat[df$agecat == &#39;18-30&#39;] &lt;- 1 df$agecat[df$agecat ==
+# &#39;31-45&#39;] &lt;- 2 df$agecat[df$agecat == &#39;46-65&#39;] &lt;- 3 df$agecat[df$agecat == &#39;&gt;65&#39;] &lt;- 4
+# table(df$agecat) class(df$agecat) # some final data handling to assign the correct reference
+# categories df$opl &lt;-relevel(df$opl, ref = 1) df$migr3 &lt;-relevel(as.factor(df$migr3), ref = 1)
+# df$income &lt;-relevel(as.factor(df$income), ref = 2) df$agecat &lt;-relevel(as.factor(df$agecat), ref
+# = 4) # 172 regressions with different netsizes. We then look at distributions of coefficients
+# across those.  # note the log10 for network size and how we don&#39;t take into account extreme
+# network size.  modellog &lt;- list() for (i in 14:185) { df[,c(i)] &lt;- round(df[, c(i)], 0)
+# modellog[[i]] &lt;- lm(log10(df[!df[[i]]&gt;5000, c(i)]) ~ as.factor(work) + hhsize + as.factor(migr3)
+# + as.factor(agecat) + as.factor(income) + worthhouse + as.factor(woman) + as.factor(opl), data =
+# df[!df[[i]]&gt;5000,]) } modellog[sapply(modellog, is.null)] &lt;- NULL summary(modellog[[1]])</code></pre>
+<p><br></p>
+<hr />
+</div>
+<div id="visualization-of-regression-models" class="section level1"
+number="3">
+<h1><span class="header-section-number">3</span> Visualization of
+regression models</h1>
+<p>We then render all those models into one figure where we can show
+statistical signifance and that results do not vary over all those
+scenarios. This matches Figure 3 in the paper.</p>
+<pre class="r test"><code># #-------------------------------------------------------------------------------- # Viz of
+# results # main effects four_brackets &lt;- list( c(&#39;Dutch maj=ref&#39;, &#39;West backgr&#39;, &#39;non-West
+# backgr&#39;), c(&#39;&gt;65=ref&#39;, &#39;18-30&#39;, &#39;46-65&#39;), c(&#39;&gt;modal inc=ref&#39;, &#39;&lt;=modal income&#39;, &#39;Unkn income&#39;),
+# c(&#39;Educ tert high=ref&#39;, &#39;Educ prim/sec&#39;, &#39;Educ tert low&#39;)) logmodel &lt;- {dwplot(modellog, dot_args
+# = list(color = &#39;black&#39;, size = 0.75, shape = 1), # color for the dot whisker_args = list(size =
+# 0.25, color = &#39;darkgrey&#39;, alpha = 0.5), # color for the whisker vline =
+# ggplot2::geom_vline(xintercept = 0, # put vline _behind_ coefs; see
+# https://github.com/fsolt/dotwhisker/issues/84 colour = &#39;grey60&#39;, linetype = 2, linewidth = 1))
+# %&gt;% # make model variable relabel_predictors(c( &#39;as.factor(work)1&#39; = &#39;Working&#39;, &#39;hhsize&#39; =
+# &#39;Household size&#39;, &#39;as.factor(migr3)2&#39; = &#39;West backgr&#39;, &#39;as.factor(migr3)3&#39; = &#39;non-West backgr&#39;,
+# &#39;as.factor(agecat)1&#39; = &#39;18-30&#39;, &#39;as.factor(agecat)2&#39; = &#39;31-45&#39;, &#39;as.factor(agecat)3&#39; = &#39;46-65&#39;,
+# &#39;as.factor(income)1&#39; = &#39;&lt;=modal income&#39;, &#39;as.factor(income)3&#39; = &#39;Unkn income&#39;, &#39;worthhouse&#39; =
+# &#39;House value&#39;, &#39;as.factor(woman)1&#39; = &#39;Women&#39;, &#39;as.factor(opl)1&#39; = &#39;Educ prim/sec&#39;,
+# &#39;as.factor(opl)2&#39; = &#39;Educ tert low&#39; )) + theme(legend.position = &#39;none&#39;, axis.text =
+# element_text(color = &#39;grey&#39;)) + theme_minimal() + xlab(&#39;B on Log(network size count)&#39;)} %&gt;%
+# add_brackets(four_brackets, fontSize = .6) ggsave(&#39;output/models.pdf&#39;, plot = logmodel, device =
+# &#39;pdf&#39;, scale = 1, width = 6, height = 5, units = c(&#39;in&#39;), dpi = &#39;retina&#39;) # Figure 3 in the paper
+# logmodel</code></pre>
+<p><br></p>
+<hr />
+</div>
+<div id="regression-table" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Regression table</h1>
+<p>We also average all 172 network size scenarios within respondents and
+run one single regression model so as to generate a table with
+coefficients. This matches Table 3 in the paper.</p>
+<pre class="r test"><code># df$netsize &lt;- round(rowSums(df[,c(14:185)]) / length(14:185), 0) modell &lt;- lm(log10(netsize) ~
+# as.factor(work) + hhsize + as.factor(migr3) + as.factor(agecat) + as.factor(income) + worthhouse
+# + as.factor(woman) + as.factor(opl), data = df[!df[[&#39;netsize&#39;]]&gt;5000,]) modellin &lt;- lm(netsize ~
+# as.factor(work) + hhsize + as.factor(migr3) + as.factor(agecat) + as.factor(income) + worthhouse
+# + as.factor(woman) + as.factor(opl), data = df[!df[[&#39;netsize&#39;]]&gt;5000,]) fpackage.check(&#39;sjPlot&#39;)
+# #table 3 in the paper tab_model(modell, modellin, show.se = TRUE)</code></pre>
+<pre class="r test"><code># # robustness, migration two cats, and income no missings lead to similar results summary(x
+# &lt;-lm(log10(netsize) ~ as.factor(work) + hhsize + as.factor(migr) + as.factor(agecat) +
+# as.factor(income) + worthhouse + as.factor(woman) + as.factor(opl), data =
+# df[!df[[&#39;netsize&#39;]]&gt;5000,])) summary(x &lt;-lm(log10(netsize) ~ as.factor(work) + hhsize +
+# as.factor(migr3) + as.factor(agecat) + as.factor(income) + worthhouse + as.factor(woman) +
+# as.factor(opl), data = df[!df[[&#39;netsize&#39;]]&gt;5000 &amp; df$income != 3,]))</code></pre>
+<hr />
+</div>
+<div id="revisions-regression-table" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Revisions Regression
+table</h1>
+<p>From here onwards, we show our new results based on the revisions of
+this paper.</p>
+<pre class="r test"><code># # age in categories, eval = false in &quot;independent_variables.rmd&quot; fix later
 df$agecat[df$agecat == &quot;18-30&quot;] &lt;- 1
 df$agecat[df$agecat == &quot;31-45&quot;] &lt;- 2
 df$agecat[df$agecat == &quot;46-65&quot;] &lt;- 3
@@ -545,16 +614,7 @@ df$agecat &lt;-relevel(as.factor(df$agecat), ref = 4)
 
 
 
-
- # 172 regressions with different netsizes. We then look at distributions of coefficients across those.
-# note the log10 for network size and how we don&#39;t take into account extreme network size.
-modellog &lt;- list()
-for (i in 14:185) {
-    
-    df[,c(i)] &lt;- round(df[, c(i)], 0)
-    
-    modellog[[i]] &lt;- lm(log10(df[!df[[i]]&gt;5000, c(i)]) ~ 
-                          
+modell2 &lt;- lm(log(netsover2+1) ~ 
                           as.factor(work) + 
                           
                           hhsize + 
@@ -570,122 +630,42 @@ for (i in 14:185) {
                           as.factor(woman) + 
                           
                           as.factor(opl),
-                          
-                        data = df[!df[[i]]&gt;5000,])
-    
-}
-modellog[sapply(modellog, is.null)] &lt;- NULL
-summary(modellog[[1]])</code></pre>
+                        data = df[!df[[&quot;netsover2&quot;]]&gt;5000,])
+summary(modell2)</code></pre>
 <pre class="test2"><code>#&gt; 
 #&gt; Call:
-#&gt; lm(formula = log10(df[!df[[i]] &gt; 5000, c(i)]) ~ as.factor(work) + 
-#&gt;     hhsize + as.factor(migr3) + as.factor(agecat) + as.factor(income) + 
-#&gt;     worthhouse + as.factor(woman) + as.factor(opl), data = df[!df[[i]] &gt; 
+#&gt; lm(formula = log(netsover2 + 1) ~ as.factor(work) + hhsize + 
+#&gt;     as.factor(migr3) + as.factor(agecat) + as.factor(income) + 
+#&gt;     worthhouse + as.factor(woman) + as.factor(opl), data = df[!df[[&quot;netsover2&quot;]] &gt; 
 #&gt;     5000, ])
 #&gt; 
 #&gt; Residuals:
-#&gt;     Min      1Q  Median      3Q     Max 
-#&gt; -1.1290 -0.1991  0.0141  0.2040  1.2305 
+#&gt;      Min       1Q   Median       3Q      Max 
+#&gt; -1.96493 -0.38167  0.00719  0.38523  2.76881 
 #&gt; 
 #&gt; Coefficients:
 #&gt;                     Estimate Std. Error t value Pr(&gt;|t|)    
-#&gt; (Intercept)         2.389668   0.043495  54.942  &lt; 2e-16 ***
-#&gt; as.factor(work)1    0.092974   0.022808   4.076 4.87e-05 ***
-#&gt; hhsize              0.042535   0.008604   4.944 8.71e-07 ***
-#&gt; as.factor(migr3)2  -0.042007   0.041357  -1.016 0.309961    
-#&gt; as.factor(migr3)3   0.014737   0.043631   0.338 0.735593    
-#&gt; as.factor(agecat)1  0.109758   0.033371   3.289 0.001034 ** 
-#&gt; as.factor(agecat)2  0.042913   0.034235   1.253 0.210263    
-#&gt; as.factor(agecat)3  0.023638   0.027257   0.867 0.385983    
-#&gt; as.factor(income)1 -0.032715   0.022326  -1.465 0.143090    
-#&gt; as.factor(income)3 -0.038893   0.029251  -1.330 0.183886    
-#&gt; worthhouse          0.020320   0.010463   1.942 0.052352 .  
-#&gt; as.factor(woman)1   0.008782   0.018413   0.477 0.633493    
-#&gt; as.factor(opl)1    -0.115553   0.025136  -4.597 4.72e-06 ***
-#&gt; as.factor(opl)2    -0.079611   0.022691  -3.509 0.000467 ***
+#&gt; (Intercept)         5.245281   0.080297  65.324  &lt; 2e-16 ***
+#&gt; as.factor(work)1    0.139196   0.042087   3.307 0.000969 ***
+#&gt; hhsize              0.070284   0.015870   4.429 1.03e-05 ***
+#&gt; as.factor(migr3)2  -0.092464   0.076365  -1.211 0.226200    
+#&gt; as.factor(migr3)3  -0.019323   0.080566  -0.240 0.810495    
+#&gt; as.factor(agecat)1  0.107630   0.061591   1.748 0.080798 .  
+#&gt; as.factor(agecat)2 -0.001730   0.063176  -0.027 0.978164    
+#&gt; as.factor(agecat)3  0.006378   0.050252   0.127 0.899021    
+#&gt; as.factor(income)1 -0.066501   0.041178  -1.615 0.106577    
+#&gt; as.factor(income)3 -0.065125   0.053984  -1.206 0.227903    
+#&gt; worthhouse          0.035619   0.019319   1.844 0.065456 .  
+#&gt; as.factor(woman)1   0.014054   0.033956   0.414 0.679036    
+#&gt; as.factor(opl)1    -0.209842   0.046371  -4.525 6.61e-06 ***
+#&gt; as.factor(opl)2    -0.114870   0.041839  -2.746 0.006129 ** 
 #&gt; ---
 #&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 #&gt; 
-#&gt; Residual standard error: 0.3159 on 1233 degrees of freedom
-#&gt; Multiple R-squared:  0.1334, Adjusted R-squared:  0.1243 
-#&gt; F-statistic:  14.6 on 13 and 1233 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p><br></p>
-<hr />
-</div>
-<div id="visualization-of-regression-models" class="section level1"
-number="3">
-<h1><span class="header-section-number">3</span> Visualization of
-regression models</h1>
-<p>We then render all those models into one figure where we can show
-statistical signifance and that results do not vary over all those
-scenarios. This matches Figure 3 in the paper.</p>
-<pre class="r test"><code>#--------------------------------------------------------------------------------
-# Viz of results
-
-# main effects
-four_brackets &lt;- list(
-  
-  c(&quot;Dutch maj=ref&quot;, &quot;West backgr&quot;, &quot;non-West backgr&quot;),
-  
-  c(&quot;&gt;65=ref&quot;, &quot;18-30&quot;, &quot;46-65&quot;),
-  
-  c(&quot;&gt;modal inc=ref&quot;, &quot;&lt;=modal income&quot;, &quot;Unkn income&quot;),
-  
-  c(&quot;Educ tert high=ref&quot;, &quot;Educ prim/sec&quot;, &quot;Educ tert low&quot;))
-
- logmodel &lt;- {dwplot(modellog,
-         dot_args = list(color = &quot;black&quot;, size = 0.75, shape = 1), # color for the dot
-         whisker_args = list(size = 0.25, color = &quot;darkgrey&quot;, alpha = 0.5),   # color for the whisker
-         vline = ggplot2::geom_vline(xintercept = 0,  # put vline _behind_ coefs; see https://github.com/fsolt/dotwhisker/issues/84
-                                     colour = &quot;grey60&quot;,
-                                     linetype = 2,
-                                     linewidth = 1)) %&gt;%                                     # make model variable
-    relabel_predictors(c(
-      &quot;as.factor(work)1&quot; = &quot;Working&quot;,
-      
-      &quot;hhsize&quot; = &quot;Household size&quot;,
-      
-      &quot;as.factor(migr3)2&quot; = &quot;West backgr&quot;,
-      &quot;as.factor(migr3)3&quot; = &quot;non-West backgr&quot;,
-      
-      &quot;as.factor(agecat)1&quot; = &quot;18-30&quot;,
-      &quot;as.factor(agecat)2&quot; = &quot;31-45&quot;,
-      &quot;as.factor(agecat)3&quot; = &quot;46-65&quot;,
-      
-      &quot;as.factor(income)1&quot; = &quot;&lt;=modal income&quot;,
-      &quot;as.factor(income)3&quot; = &quot;Unkn income&quot;,
-      
-      &quot;worthhouse&quot; = &quot;House value&quot;,
-
-      &quot;as.factor(woman)1&quot; = &quot;Women&quot;,
-      
-      &quot;as.factor(opl)1&quot; = &quot;Educ prim/sec&quot;,
-      &quot;as.factor(opl)2&quot; = &quot;Educ tert low&quot;
-
-    )) + theme(legend.position = &quot;none&quot;,
-               axis.text = element_text(color = &quot;grey&quot;)) + 
-    theme_minimal() +
-    xlab(&quot;B on Log(network size count)&quot;)}  %&gt;%
-  add_brackets(four_brackets, fontSize = .6)
-
- ggsave(&quot;output/models.pdf&quot;, plot = logmodel, device = &quot;pdf&quot;,
-       scale = 1, width = 6, height = 5, units = c(&quot;in&quot;),
-       dpi = &quot;retina&quot;)
-
- # Figure 3 in the paper
-logmodel</code></pre>
-<p><img src="inferential_files/figure-html/regviz-1.png" width="672" /></p>
-<p><br></p>
-<hr />
-</div>
-<div id="regression-table" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Regression table</h1>
-<p>We also average all 172 network size scenarios within respondents and
-run one single regression model so as to generate a table with
-coefficients. This matches Table 3 in the paper.</p>
-<pre class="r test"><code>df$netsize &lt;- round(rowSums(df[,c(14:185)]) / length(14:185), 0)
-
-modell &lt;- lm(log10(netsize) ~ 
+#&gt; Residual standard error: 0.5834 on 1235 degrees of freedom
+#&gt; Multiple R-squared:  0.09687,    Adjusted R-squared:  0.08737 
+#&gt; F-statistic: 10.19 on 13 and 1235 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r test"><code>modellnb2 &lt;- glm.nb(netsover2 ~ 
                           as.factor(work) + 
                           
                           hhsize + 
@@ -701,42 +681,596 @@ modell &lt;- lm(log10(netsize) ~
                           as.factor(woman) + 
                           
                           as.factor(opl),
-                        data = df[!df[[&quot;netsize&quot;]]&gt;5000,])
-
-modellin &lt;- lm(netsize ~ 
-                          as.factor(work) + 
-                          
-                          hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
-                          as.factor(agecat) + 
-                          
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                        data = df[!df[[&quot;netsize&quot;]]&gt;5000,])
-  
-  
-fpackage.check(&quot;sjPlot&quot;)</code></pre>
+                        data = df[!df[[&quot;netsover2&quot;]]&gt;5000,],
+                        init.theta = 1.032713156, link = log)
+summary(modellnb2)</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; Call:
+#&gt; glm.nb(formula = netsover2 ~ as.factor(work) + hhsize + as.factor(migr3) + 
+#&gt;     as.factor(agecat) + as.factor(income) + worthhouse + as.factor(woman) + 
+#&gt;     as.factor(opl), data = df[!df[[&quot;netsover2&quot;]] &gt; 5000, ], init.theta = 3.129732217, 
+#&gt;     link = log)
+#&gt; 
+#&gt; Coefficients:
+#&gt;                     Estimate Std. Error z value Pr(&gt;|z|)    
+#&gt; (Intercept)         5.467945   0.078222  69.903  &lt; 2e-16 ***
+#&gt; as.factor(work)1    0.104821   0.041010   2.556 0.010589 *  
+#&gt; hhsize              0.053135   0.015455   3.438 0.000586 ***
+#&gt; as.factor(migr3)2  -0.087000   0.074447  -1.169 0.242555    
+#&gt; as.factor(migr3)3  -0.004899   0.078489  -0.062 0.950233    
+#&gt; as.factor(agecat)1  0.078228   0.060007   1.304 0.192352    
+#&gt; as.factor(agecat)2 -0.014879   0.061568  -0.242 0.809043    
+#&gt; as.factor(agecat)3 -0.015405   0.048988  -0.314 0.753163    
+#&gt; as.factor(income)1 -0.041584   0.040115  -1.037 0.299909    
+#&gt; as.factor(income)3 -0.040897   0.052593  -0.778 0.436804    
+#&gt; worthhouse          0.033665   0.018815   1.789 0.073576 .  
+#&gt; as.factor(woman)1  -0.008588   0.033085  -0.260 0.795199    
+#&gt; as.factor(opl)1    -0.158697   0.045198  -3.511 0.000446 ***
+#&gt; as.factor(opl)2    -0.108297   0.040764  -2.657 0.007892 ** 
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; (Dispersion parameter for Negative Binomial(3.1297) family taken to be 1)
+#&gt; 
+#&gt;     Null deviance: 1394.5  on 1248  degrees of freedom
+#&gt; Residual deviance: 1313.5  on 1235  degrees of freedom
+#&gt; AIC: 15941
+#&gt; 
+#&gt; Number of Fisher Scoring iterations: 1
+#&gt; 
+#&gt; 
+#&gt;               Theta:  3.130 
+#&gt;           Std. Err.:  0.121 
+#&gt; 
+#&gt;  2 x log-likelihood:  -15910.823</code></pre>
+<pre class="r test"><code>fpackage.check(&quot;sjPlot&quot;)</code></pre>
 <pre class="test2"><code>#&gt; [[1]]
 #&gt; NULL</code></pre>
-<pre class="r test"><code>#table 3 in the paper
-tab_model(modell, modellin, show.se = TRUE)</code></pre>
+<pre class="r test"><code>tab_model(modell2, modellnb2, show.se = TRUE)</code></pre>
 <table style="border-collapse:collapse; border:none;">
 <tr>
 <th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
  
 </th>
 <th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
-log10(netsize)
+log(netsover2 + 1)
 </th>
 <th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
-netsize
+netsover2
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Incidence Rate Ratios
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col7">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col8">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col9">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+5.25
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+5.09 – 5.40
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+236.97
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+18.54
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+202.55 – 277.34
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+work [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.14
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.06 – 0.22
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.001</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.11
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+1.02 – 1.20
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+<strong>0.011</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+hhsize
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.04 – 0.10
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+1.02 – 1.09
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+<strong>0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+migr3 [2]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.09
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.24 – 0.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.226
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.92
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+0.79 – 1.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.243
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+migr3 [3]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.18 – 0.14
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.810
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+0.86 – 1.17
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.950
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+agecat [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.11
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.01 – 0.23
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.081
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+0.96 – 1.22
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.192
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+agecat [2]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.13 – 0.12
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.978
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.99
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+0.87 – 1.11
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.809
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+agecat [3]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.01
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.09 – 0.10
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.899
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.98
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+0.89 – 1.09
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.753
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+income [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.15 – 0.01
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.107
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.96
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+0.89 – 1.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.300
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+income [3]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.17 – 0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.228
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.96
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+0.87 – 1.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.437
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+worthhouse
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.00 – 0.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.065
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.03
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+1.00 – 1.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.074
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+woman [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.01
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.03
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.05 – 0.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.679
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.99
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.03
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+0.93 – 1.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.795
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+opl [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.21
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.30 – -0.12
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.85
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+0.78 – 0.93
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+opl [2]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.11
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.20 – -0.03
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.006</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.90
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+0.83 – 0.97
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+<strong>0.008</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+1249
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+1249
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.097 / 0.087
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.093
+</td>
+</tr>
+</table>
+<pre class="r test"><code>#gender
+modelwoman &lt;- lm(numwoman ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df)
+# summary(modelwoman)
+
+
+modelman &lt;- lm(numman ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df)
+# summary(modelman)
+
+
+modelsamegen &lt;- lm(samegender ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df)
+# summary(modelsamegen)
+
+tab_model(modelwoman, modelman, modelsamegen, show.se = TRUE)</code></pre>
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+numwoman
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+numman
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+samegender
 </th>
 </tr>
 <tr>
@@ -767,33 +1301,57 @@ CI
 <td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col9">
 p
 </td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  0">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  1">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  2">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  3">
+p
+</td>
 </tr>
 <tr>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
 (Intercept)
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-2.40
+7.13
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.04
+1.51
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-2.31 – 2.48
+4.17 – 10.08
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 <strong>&lt;0.001</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-317.10
+12.54
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-52.53
+1.40
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
-214.05 – 420.15
+9.80 – 15.28
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+<strong>&lt;0.001</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+58.44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+2.32
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+53.89 – 62.98
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
 <strong>&lt;0.001</strong>
 </td>
 </tr>
@@ -802,28 +1360,40 @@ p
 work [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.09
+1.01
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+0.79
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.05 – 0.14
+-0.54 – 2.56
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-<strong>&lt;0.001</strong>
+0.203
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-65.63
+1.30
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-27.60
+0.73
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
-11.49 – 119.77
+-0.14 – 2.73
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-<strong>0.018</strong>
+0.076
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.97
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+1.21
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.42 – 3.35
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.427
 </td>
 </tr>
 <tr>
@@ -831,28 +1401,40 @@ work [1]
 hhsize
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.04
+0.71
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+0.30
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02 – 0.06
+0.13 – 1.30
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-<strong>&lt;0.001</strong>
+<strong>0.017</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-32.82
+0.67
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-10.38
+0.28
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
-12.45 – 53.19
+0.12 – 1.21
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-<strong>0.002</strong>
+<strong>0.016</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.57
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.46
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.47 – 0.32
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.211
 </td>
 </tr>
 <tr>
@@ -860,28 +1442,40 @@ hhsize
 migr3 [2]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.04
+-0.54
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.04
+1.43
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.12 – 0.04
+-3.35 – 2.27
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.280
+0.705
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--29.04
+-1.61
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-49.95
+1.33
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--127.04 – 68.96
+-4.22 – 0.99
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-0.561
+0.225
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.17
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+2.19
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-4.13 – 4.47
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.938
 </td>
 </tr>
 <tr>
@@ -889,28 +1483,40 @@ migr3 [2]
 migr3 [3]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.00
+-0.18
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.04
+1.51
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.09 – 0.08
+-3.14 – 2.79
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.936
+0.907
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-20.07
+0.08
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-52.70
+1.40
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--83.32 – 123.45
+-2.67 – 2.83
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-0.703
+0.953
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.92
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+2.33
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-5.49 – 3.66
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.695
 </td>
 </tr>
 <tr>
@@ -918,28 +1524,40 @@ migr3 [3]
 agecat [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.10
+0.63
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+1.16
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.04 – 0.17
+-1.63 – 2.90
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-<strong>0.002</strong>
+0.584
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-105.06
+-1.97
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-40.31
+1.07
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
-25.97 – 184.15
+-4.07 – 0.13
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-<strong>0.009</strong>
+0.066
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+2.43
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+1.77
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.04 – 5.91
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.170
 </td>
 </tr>
 <tr>
@@ -947,28 +1565,40 @@ agecat [1]
 agecat [2]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+-0.41
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+1.19
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.03 – 0.10
+-2.74 – 1.91
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.330
+0.728
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-41.78
+-2.49
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-41.36
+1.10
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--39.37 – 122.93
+-4.65 – -0.34
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-0.313
+<strong>0.023</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+2.55
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+1.82
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.02 – 6.12
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.161
 </td>
 </tr>
 <tr>
@@ -976,28 +1606,40 @@ agecat [2]
 agecat [3]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+-0.65
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+0.94
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.03 – 0.07
+-2.50 – 1.20
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.429
+0.493
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-24.66
+-1.62
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-32.95
+0.87
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--39.99 – 89.32
+-3.34 – 0.09
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-0.454
+0.064
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+3.35
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+1.45
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+0.50 – 6.20
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+<strong>0.021</strong>
 </td>
 </tr>
 <tr>
@@ -1005,28 +1647,40 @@ agecat [3]
 income [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.03
+0.08
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+0.77
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.08 – 0.01
+-1.44 – 1.60
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.115
+0.918
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--25.28
+-0.79
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-26.95
+0.72
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--78.15 – 27.59
+-2.20 – 0.61
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-0.348
+0.269
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-1.18
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+1.19
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-3.51 – 1.14
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.318
 </td>
 </tr>
 <tr>
@@ -1034,28 +1688,40 @@ income [1]
 income [3]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.04
+0.07
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+1.01
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.10 – 0.01
+-1.91 – 2.06
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.134
+0.941
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--20.93
+-0.93
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-35.32
+0.94
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--90.22 – 48.36
+-2.78 – 0.91
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-0.554
+0.320
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.80
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+1.56
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-3.85 – 2.26
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.608
 </td>
 </tr>
 <tr>
@@ -1063,28 +1729,40 @@ income [3]
 worthhouse
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+0.48
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+0.36
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.00 – 0.04
+-0.23 – 1.19
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.052
+0.188
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-25.85
+0.31
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-12.64
+0.34
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
-1.05 – 50.65
+-0.35 – 0.97
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-<strong>0.041</strong>
+0.360
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.23
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.56
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.32 – 0.86
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.683
 </td>
 </tr>
 <tr>
@@ -1092,28 +1770,40 @@ worthhouse
 woman [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+1.88
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+0.64
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.02 – 0.05
+0.63 – 3.13
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.444
+<strong>0.003</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-4.67
+-1.79
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-22.23
+0.59
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--38.94 – 48.28
+-2.95 – -0.63
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-0.834
+<strong>0.003</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-9.38
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.98
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-11.30 – -7.46
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+<strong>&lt;0.001</strong>
 </td>
 </tr>
 <tr>
@@ -1121,28 +1811,40 @@ woman [1]
 opl [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.12
+-1.84
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+0.87
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.17 – -0.07
+-3.55 – -0.13
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-<strong>&lt;0.001</strong>
+<strong>0.035</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--94.01
+-1.20
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-30.36
+0.81
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--153.57 – -34.45
+-2.78 – 0.38
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-<strong>0.002</strong>
+0.136
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+1.34
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-2.59 – 2.66
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.978
 </td>
 </tr>
 <tr>
@@ -1150,28 +1852,40 @@ opl [1]
 opl [2]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.07
+-1.79
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+0.79
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.12 – -0.03
+-3.33 – -0.25
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-<strong>0.001</strong>
+<strong>0.023</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--70.55
+-0.59
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-27.37
+0.73
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--124.25 – -16.86
+-2.02 – 0.84
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
-<strong>0.010</strong>
+0.417
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+1.39
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+1.21
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.98 – 3.75
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.251
 </td>
 </tr>
 <tr>
@@ -1179,10 +1893,13 @@ opl [2]
 Observations
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
-1247
+1249
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
-1247
+1249
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+1238
 </td>
 </tr>
 <tr>
@@ -1190,22 +1907,2000 @@ Observations
 R<sup>2</sup> / R<sup>2</sup> adjusted
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
-0.131 / 0.122
+0.029 / 0.019
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
-0.067 / 0.057
+0.027 / 0.016
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.090 / 0.080
 </td>
 </tr>
 </table>
-<pre class="r test"><code># # robustness, migration two cats, and income no missings lead to similar results summary(x
-# &lt;-lm(log10(netsize) ~ as.factor(work) + hhsize + as.factor(migr) + as.factor(agecat) +
-# as.factor(income) + worthhouse + as.factor(woman) + as.factor(opl), data =
-# df[!df[[&#39;netsize&#39;]]&gt;5000,])) summary(x &lt;-lm(log10(netsize) ~ as.factor(work) + hhsize +
-# as.factor(migr3) + as.factor(agecat) + as.factor(income) + worthhouse + as.factor(woman) +
-# as.factor(opl), data = df[!df[[&#39;netsize&#39;]]&gt;5000 &amp; df$income != 3,]))</code></pre>
+<pre class="r test"><code>#gender
+modelmbo &lt;- lm(mbo ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df)
+# summary(modelmbo)
+
+
+modelhbo &lt;- lm(hbo ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df)
+# summary(modelhbo)
+
+
+modeluni &lt;- lm(uni ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df)
+# summary(modeluni)
+
+
+modelsameeduc &lt;- lm(sameeduc ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df)
+# summary(modelsameeduc)
+
+tab_model(modelmbo, modelhbo, modeluni, modelsameeduc, show.se = TRUE)</code></pre>
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+mbo
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+hbo
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+uni
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+sameeduc
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col7">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col8">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col9">
+p
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  0">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  1">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  2">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  3">
+p
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  4">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  5">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  6">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  7">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.55
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.25
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-2.86 – 5.96
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.491
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.62
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+1.54
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-2.40 – 3.64
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.688
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.61
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.83
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.03 – 2.25
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.463
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+27.21
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+7.31
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+12.86 – 41.57
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+work [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.30
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.18
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-2.61 – 2.02
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.802
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.70
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.81
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-3.29 – -0.12
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+<strong>0.035</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.50
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.36 – 0.35
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.250
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+7.79
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+3.65
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+0.63 – 14.96
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+<strong>0.033</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+hhsize
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.19
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.69 – 1.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.676
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.13
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.30
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.72 – 0.47
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.674
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.36
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.17
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.69 – -0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+<strong>0.027</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+1.38
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+1.36
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+-1.28 – 4.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+0.309
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+migr3 [2]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.14
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-4.11 – 4.28
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.969
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.01
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+1.46
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-2.86 – 2.88
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.993
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.62
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.79
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-2.18 – 0.94
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.435
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+10.56
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+7.34
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+-3.85 – 24.97
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+0.151
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+migr3 [3]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.35
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.26
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-4.78 – 4.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.876
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+1.54
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-2.59 – 3.47
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.775
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+1.90
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.84
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+0.26 – 3.55
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+<strong>0.023</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+8.96
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+6.22
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+-3.25 – 21.17
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+0.150
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+agecat [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.56
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.72
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-4.95 – 1.82
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.365
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.52
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+1.18
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.80 – 3.84
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.198
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+2.29
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.64
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+1.03 – 3.55
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+<strong>&lt;0.001</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+12.72
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+5.28
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+2.36 – 23.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+<strong>0.016</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+agecat [2]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.67
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.77
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-5.14 – 1.80
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.345
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.28
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+1.21
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-1.09 – 3.66
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.289
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+1.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.66
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.21 – 2.37
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.100
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+7.44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+5.99
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+-4.32 – 19.20
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+0.215
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+agecat [3]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.42
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.41
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-3.18 – 2.34
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.764
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.28
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.96
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.61 – 3.17
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.185
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.63
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.52
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.39 – 1.66
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.226
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+2.41
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+4.98
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+-7.38 – 12.20
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+0.629
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+income [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.82 – 2.70
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.701
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.56
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.79
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-2.10 – 0.99
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.481
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.43
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.91 – 0.77
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.872
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+-5.74
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+3.57
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+-12.76 – 1.28
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+0.109
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+income [3]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+3.91
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.51
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.95 – 6.88
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.010</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.48
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+1.03
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-1.55 – 2.51
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.643
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.56
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.03 – 1.17
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.899
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+-6.65
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+4.94
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+-16.36 – 3.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+0.179
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+worthhouse
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.66
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.54
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.40 – 1.73
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.220
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.88
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.37
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+0.16 – 1.61
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+<strong>0.017</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.61
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.20
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+0.22 – 1.01
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+<strong>0.002</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+2.96
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+1.65
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+-0.27 – 6.20
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+0.073
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+woman [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-2.18
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.95
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-4.05 – -0.32
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.022</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.11
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.65
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-2.39 – 0.17
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.088
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.40
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.35
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.09 – 0.29
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.256
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+0.31
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+3.01
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+-5.59 – 6.22
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+0.917
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+opl [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.77
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.30
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-4.32 – 0.78
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.173
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.20
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.89
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-2.95 – 0.54
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.176
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-1.21
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.48
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-2.16 – -0.26
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+<strong>0.012</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+15.79
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+4.56
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+6.85 – 24.74
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+<strong>0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+opl [2]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.87
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.17
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-3.17 – 1.43
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.459
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.16
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.80
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-2.73 – 0.41
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.149
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-1.37
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.44
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-2.23 – -0.52
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+<strong>0.002</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  4">
+5.78
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  5">
+3.61
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  6">
+-1.30 – 12.87
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  7">
+0.110
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+1249
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+1249
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+1249
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+609
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.013 / 0.003
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.015 / 0.005
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.046 / 0.036
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.054 / 0.034
+</td>
+</tr>
+</table>
+<pre class="r test"><code>#gender
+modeldutch &lt;- lm(numdutch ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                          data = df)
+#summary(modeldutch)
+
+
+modelnodutch &lt;- lm(numnodutch ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df)
+#summary(modelnodutch)
+
+
+modelsameethnic1 &lt;- lm(sameethnic1 ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df)
+#summary(modelsameethnic1)
+
+tab_model(modeldutch, modelnodutch, modelsameethnic1, show.se = TRUE)</code></pre>
+<table style="border-collapse:collapse; border:none;">
+<tr>
+<th style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm;  text-align:left; ">
+ 
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+numdutch
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+numnodutch
+</th>
+<th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
+sameethnic1
+</th>
+</tr>
+<tr>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  text-align:left; ">
+Predictors
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+p
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  ">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col7">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col8">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  col9">
+p
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  0">
+Estimates
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  1">
+std. Error
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  2">
+CI
+</td>
+<td style=" text-align:center; border-bottom:1px solid; font-style:italic; font-weight:normal;  3">
+p
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+(Intercept)
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+19.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.61
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+13.97 – 24.19
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>&lt;0.001</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.59
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.31
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.01 – 1.19
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.054
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+96.80
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.87
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+95.09 – 98.51
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+work [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.37
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.53 – 4.83
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.115
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.16
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.16 – 0.47
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.342
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.85
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.46
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.74 – 0.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.064
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+hhsize
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.28
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.52
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.27 – 2.29
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.013</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.10
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.02 – 0.22
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.098
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.17
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.19 – 0.48
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.396
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+migr3 [2]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-2.49
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.48
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-7.36 – 2.37
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.315
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.34
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.29
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.23 – 0.91
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.242
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-93.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.83
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-94.77 – -91.53
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+migr3 [3]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.99
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.61
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-7.12 – 3.14
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.446
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.90
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.31
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+1.30 – 2.50
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+<strong>&lt;0.001</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-87.80
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.88
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-89.52 – -86.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+<strong>&lt;0.001</strong>
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+agecat [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.80
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-5.72 – 2.13
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.369
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.45
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.23
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.00 – 0.91
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.052
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.40
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.67
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.71 – 0.91
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.551
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+agecat [2]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-3.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+2.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-7.06 – 0.98
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.138
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.14
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.24
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.33 – 0.61
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.569
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.96
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.68
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.38 – 2.31
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.159
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+agecat [3]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-2.41
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.63
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-5.61 – 0.79
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.139
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.15
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.19
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.23 – 0.52
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.444
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.25
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.55
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.32 – 0.83
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.653
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+income [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.78
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.34
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-3.40 – 1.84
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.560
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.16
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.24 – 0.37
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.676
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.17
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.45
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.70 – 1.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.701
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+income [3]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.52
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.75
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-3.96 – 2.92
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.767
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.34
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.21
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.74 – 0.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.096
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.47
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.59
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.68 – 1.62
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.421
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+worthhouse
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.85
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.63
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.38 – 2.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.174
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.07
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.21 – 0.08
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.357
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.09
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.21
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.32 – 0.50
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.681
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+woman [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.18
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.10
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-1.98 – 2.35
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.867
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.09
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.13
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.35 – 0.16
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.471
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.25
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.37
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.47 – 0.97
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.498
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+opl [1]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-3.00
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.50
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-5.96 – -0.05
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+<strong>0.046</strong>
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.04
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.18
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.38 – 0.31
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.841
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+-0.20
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.50
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-1.19 – 0.79
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.694
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; ">
+opl [2]
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-2.30
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+1.36
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-4.96 – 0.37
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+0.091
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
+-0.09
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
+0.16
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
+-0.40 – 0.22
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
+0.583
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  0">
+0.17
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  1">
+0.45
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  2">
+-0.72 – 1.06
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  3">
+0.713
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm; border-top:1px solid;">
+Observations
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+1249
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+1249
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left; border-top:1px solid;" colspan="4">
+1238
+</td>
+</tr>
+<tr>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left; padding-top:0.1cm; padding-bottom:0.1cm;">
+R<sup>2</sup> / R<sup>2</sup> adjusted
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.020 / 0.010
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.048 / 0.038
+</td>
+<td style=" padding:0.2cm; text-align:left; vertical-align:top; padding-top:0.1cm; padding-bottom:0.1cm; text-align:left;" colspan="4">
+0.947 / 0.946
+</td>
+</tr>
+</table>
+</div>
+<div id="revisions-robustness-regression-table" class="section level1"
+number="6">
+<h1><span class="header-section-number">6</span> Revisions Robustness
+Regression table</h1>
+<pre class="r test"><code>modell1 &lt;- lm(log(netsover1+1) ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                          data = df[!df[[&quot;netsover1&quot;]]&gt;5000,])
+summary(modell1)</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = log(netsover1 + 1) ~ as.factor(work) + hhsize + 
+#&gt;     as.factor(migr3) + as.factor(agecat) + as.factor(income) + 
+#&gt;     worthhouse + as.factor(woman) + as.factor(opl), data = df[!df[[&quot;netsover1&quot;]] &gt; 
+#&gt;     5000, ])
+#&gt; 
+#&gt; Residuals:
+#&gt;      Min       1Q   Median       3Q      Max 
+#&gt; -1.95803 -0.37257  0.00867  0.38394  2.76343 
+#&gt; 
+#&gt; Coefficients:
+#&gt;                      Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)         4.7294633  0.0800565  59.077  &lt; 2e-16 ***
+#&gt; as.factor(work)1    0.1389896  0.0419610   3.312 0.000952 ***
+#&gt; hhsize              0.0698746  0.0158227   4.416 1.09e-05 ***
+#&gt; as.factor(migr3)2  -0.0915629  0.0761366  -1.203 0.229357    
+#&gt; as.factor(migr3)3  -0.0208452  0.0803243  -0.260 0.795283    
+#&gt; as.factor(agecat)1  0.1076810  0.0614062   1.754 0.079750 .  
+#&gt; as.factor(agecat)2 -0.0004454  0.0629866  -0.007 0.994359    
+#&gt; as.factor(agecat)3  0.0065903  0.0501019   0.132 0.895371    
+#&gt; as.factor(income)1 -0.0659495  0.0410548  -1.606 0.108447    
+#&gt; as.factor(income)3 -0.0646266  0.0538227  -1.201 0.230086    
+#&gt; worthhouse          0.0355089  0.0192609   1.844 0.065484 .  
+#&gt; as.factor(woman)1   0.0134028  0.0338543   0.396 0.692249    
+#&gt; as.factor(opl)1    -0.2092849  0.0462320  -4.527 6.57e-06 ***
+#&gt; as.factor(opl)2    -0.1131038  0.0417132  -2.711 0.006792 ** 
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; Residual standard error: 0.5817 on 1235 degrees of freedom
+#&gt; Multiple R-squared:  0.0968, Adjusted R-squared:  0.0873 
+#&gt; F-statistic: 10.18 on 13 and 1235 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r test"><code>modell3 &lt;- lm(log(netsover3+1) ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df[!df[[&quot;netsover3&quot;]]&gt;5000,])
+summary(modell3)</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = log(netsover3 + 1) ~ as.factor(work) + hhsize + 
+#&gt;     as.factor(migr3) + as.factor(agecat) + as.factor(income) + 
+#&gt;     worthhouse + as.factor(woman) + as.factor(opl), data = df[!df[[&quot;netsover3&quot;]] &gt; 
+#&gt;     5000, ])
+#&gt; 
+#&gt; Residuals:
+#&gt;      Min       1Q   Median       3Q      Max 
+#&gt; -1.97433 -0.38693  0.03598  0.40272  2.46504 
+#&gt; 
+#&gt; Coefficients:
+#&gt;                    Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)         4.88327    0.08550  57.117  &lt; 2e-16 ***
+#&gt; as.factor(work)1    0.16360    0.04481   3.651 0.000272 ***
+#&gt; hhsize              0.07809    0.01690   4.622 4.21e-06 ***
+#&gt; as.factor(migr3)2  -0.04274    0.08131  -0.526 0.599245    
+#&gt; as.factor(migr3)3  -0.03001    0.08578  -0.350 0.726504    
+#&gt; as.factor(agecat)1  0.23839    0.06558   3.635 0.000289 ***
+#&gt; as.factor(agecat)2  0.12918    0.06727   1.920 0.055030 .  
+#&gt; as.factor(agecat)3  0.08514    0.05351   1.591 0.111823    
+#&gt; as.factor(income)1 -0.06934    0.04384  -1.582 0.114015    
+#&gt; as.factor(income)3 -0.09686    0.05748  -1.685 0.092217 .  
+#&gt; worthhouse          0.04566    0.02057   2.220 0.026606 *  
+#&gt; as.factor(woman)1   0.03629    0.03615   1.004 0.315739    
+#&gt; as.factor(opl)1    -0.21473    0.04937  -4.349 1.48e-05 ***
+#&gt; as.factor(opl)2    -0.13663    0.04455  -3.067 0.002209 ** 
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; Residual standard error: 0.6212 on 1235 degrees of freedom
+#&gt; Multiple R-squared:  0.1294, Adjusted R-squared:  0.1203 
+#&gt; F-statistic: 14.12 on 13 and 1235 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r test"><code>modell4 &lt;- lm(log(netsover4+1) ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df[!df[[&quot;netsover4&quot;]]&gt;5000,])
+summary(modell4)</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = log(netsover4 + 1) ~ as.factor(work) + hhsize + 
+#&gt;     as.factor(migr3) + as.factor(agecat) + as.factor(income) + 
+#&gt;     worthhouse + as.factor(woman) + as.factor(opl), data = df[!df[[&quot;netsover4&quot;]] &gt; 
+#&gt;     5000, ])
+#&gt; 
+#&gt; Residuals:
+#&gt;      Min       1Q   Median       3Q      Max 
+#&gt; -2.17523 -0.38735  0.00561  0.38921  2.83507 
+#&gt; 
+#&gt; Coefficients:
+#&gt;                     Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)         4.618579   0.081691  56.537  &lt; 2e-16 ***
+#&gt; as.factor(work)1    0.137020   0.042818   3.200  0.00141 ** 
+#&gt; hhsize              0.070260   0.016146   4.352 1.46e-05 ***
+#&gt; as.factor(migr3)2  -0.095651   0.077691  -1.231  0.21850    
+#&gt; as.factor(migr3)3  -0.015372   0.081964  -0.188  0.85126    
+#&gt; as.factor(agecat)1  0.095457   0.062660   1.523  0.12791    
+#&gt; as.factor(agecat)2 -0.010205   0.064273  -0.159  0.87387    
+#&gt; as.factor(agecat)3 -0.002762   0.051125  -0.054  0.95693    
+#&gt; as.factor(income)1 -0.068267   0.041893  -1.630  0.10345    
+#&gt; as.factor(income)3 -0.067439   0.054922  -1.228  0.21972    
+#&gt; worthhouse          0.036185   0.019654   1.841  0.06585 .  
+#&gt; as.factor(woman)1   0.011179   0.034546   0.324  0.74629    
+#&gt; as.factor(opl)1    -0.209596   0.047176  -4.443 9.67e-06 ***
+#&gt; as.factor(opl)2    -0.116380   0.042565  -2.734  0.00634 ** 
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; Residual standard error: 0.5935 on 1235 degrees of freedom
+#&gt; Multiple R-squared:  0.09192,    Adjusted R-squared:  0.08236 
+#&gt; F-statistic: 9.617 on 13 and 1235 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r test"><code>modellnb1 &lt;- glm.nb(netsover1 ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df[!df[[&quot;netsover1&quot;]]&gt;5000,],
+                        init.theta = 1.032713156, link = log)
+summary(modellnb1)</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; Call:
+#&gt; glm.nb(formula = netsover1 ~ as.factor(work) + hhsize + as.factor(migr3) + 
+#&gt;     as.factor(agecat) + as.factor(income) + worthhouse + as.factor(woman) + 
+#&gt;     as.factor(opl), data = df[!df[[&quot;netsover1&quot;]] &gt; 5000, ], init.theta = 3.153323684, 
+#&gt;     link = log)
+#&gt; 
+#&gt; Coefficients:
+#&gt;                     Estimate Std. Error z value Pr(&gt;|z|)    
+#&gt; (Intercept)         4.948829   0.078220  63.268  &lt; 2e-16 ***
+#&gt; as.factor(work)1    0.105310   0.041017   2.567 0.010244 *  
+#&gt; hhsize              0.052860   0.015452   3.421 0.000624 ***
+#&gt; as.factor(migr3)2  -0.087893   0.074483  -1.180 0.237986    
+#&gt; as.factor(migr3)3  -0.005393   0.078491  -0.069 0.945224    
+#&gt; as.factor(agecat)1  0.078462   0.060011   1.307 0.191062    
+#&gt; as.factor(agecat)2 -0.014233   0.061584  -0.231 0.817221    
+#&gt; as.factor(agecat)3 -0.015787   0.049010  -0.322 0.747364    
+#&gt; as.factor(income)1 -0.041736   0.040115  -1.040 0.298155    
+#&gt; as.factor(income)3 -0.041219   0.052595  -0.784 0.433214    
+#&gt; worthhouse          0.033651   0.018812   1.789 0.073644 .  
+#&gt; as.factor(woman)1  -0.008657   0.033089  -0.262 0.793618    
+#&gt; as.factor(opl)1    -0.158837   0.045215  -3.513 0.000443 ***
+#&gt; as.factor(opl)2    -0.107394   0.040768  -2.634 0.008433 ** 
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; (Dispersion parameter for Negative Binomial(3.1533) family taken to be 1)
+#&gt; 
+#&gt;     Null deviance: 1393.1  on 1248  degrees of freedom
+#&gt; Residual deviance: 1312.1  on 1235  degrees of freedom
+#&gt; AIC: 14645
+#&gt; 
+#&gt; Number of Fisher Scoring iterations: 1
+#&gt; 
+#&gt; 
+#&gt;               Theta:  3.153 
+#&gt;           Std. Err.:  0.123 
+#&gt; 
+#&gt;  2 x log-likelihood:  -14615.031</code></pre>
+<pre class="r test"><code>modellnb3 &lt;- glm.nb(netsover3 ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df[!df[[&quot;netsover3&quot;]]&gt;5000,],
+                        init.theta = 1.032713156, link = log)
+summary(modellnb3)</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; Call:
+#&gt; glm.nb(formula = netsover3 ~ as.factor(work) + hhsize + as.factor(migr3) + 
+#&gt;     as.factor(agecat) + as.factor(income) + worthhouse + as.factor(woman) + 
+#&gt;     as.factor(opl), data = df[!df[[&quot;netsover3&quot;]] &gt; 5000, ], init.theta = 2.822905897, 
+#&gt;     link = log)
+#&gt; 
+#&gt; Coefficients:
+#&gt;                     Estimate Std. Error z value Pr(&gt;|z|)    
+#&gt; (Intercept)         5.146196   0.082420  62.439  &lt; 2e-16 ***
+#&gt; as.factor(work)1    0.124521   0.043206   2.882 0.003952 ** 
+#&gt; hhsize              0.060818   0.016280   3.736 0.000187 ***
+#&gt; as.factor(migr3)2  -0.039894   0.078428  -0.509 0.610985    
+#&gt; as.factor(migr3)3  -0.019567   0.082696  -0.237 0.812960    
+#&gt; as.factor(agecat)1  0.224541   0.063227   3.551 0.000383 ***
+#&gt; as.factor(agecat)2  0.127029   0.064874   1.958 0.050220 .  
+#&gt; as.factor(agecat)3  0.068555   0.051634   1.328 0.184268    
+#&gt; as.factor(income)1 -0.044713   0.042265  -1.058 0.290090    
+#&gt; as.factor(income)3 -0.058446   0.055414  -1.055 0.291556    
+#&gt; worthhouse          0.037148   0.019822   1.874 0.060926 .  
+#&gt; as.factor(woman)1   0.008155   0.034860   0.234 0.815038    
+#&gt; as.factor(opl)1    -0.177307   0.047631  -3.723 0.000197 ***
+#&gt; as.factor(opl)2    -0.145818   0.042952  -3.395 0.000686 ***
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; (Dispersion parameter for Negative Binomial(2.8229) family taken to be 1)
+#&gt; 
+#&gt;     Null deviance: 1455.1  on 1248  degrees of freedom
+#&gt; Residual deviance: 1320.2  on 1235  degrees of freedom
+#&gt; AIC: 15517
+#&gt; 
+#&gt; Number of Fisher Scoring iterations: 1
+#&gt; 
+#&gt; 
+#&gt;               Theta:  2.823 
+#&gt;           Std. Err.:  0.109 
+#&gt; 
+#&gt;  2 x log-likelihood:  -15486.966</code></pre>
+<pre class="r test"><code>modellnb4 &lt;- glm.nb(netsover4 ~ 
+                          as.factor(work) + 
+                          
+                          hhsize + 
+                          
+                          as.factor(migr3) + 
+                          
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse +
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl),
+                        data = df[!df[[&quot;netsover4&quot;]]&gt;5000,],
+                        init.theta = 1.032713156, link = log)
+summary(modellnb4)</code></pre>
+<pre class="test2"><code>#&gt; 
+#&gt; Call:
+#&gt; glm.nb(formula = netsover4 ~ as.factor(work) + hhsize + as.factor(migr3) + 
+#&gt;     as.factor(agecat) + as.factor(income) + worthhouse + as.factor(woman) + 
+#&gt;     as.factor(opl), data = df[!df[[&quot;netsover4&quot;]] &gt; 5000, ], init.theta = 3.029348513, 
+#&gt;     link = log)
+#&gt; 
+#&gt; Coefficients:
+#&gt;                     Estimate Std. Error z value Pr(&gt;|z|)    
+#&gt; (Intercept)         4.846790   0.079859  60.692  &lt; 2e-16 ***
+#&gt; as.factor(work)1    0.104445   0.041879   2.494 0.012632 *  
+#&gt; hhsize              0.052792   0.015776   3.346 0.000819 ***
+#&gt; as.factor(migr3)2  -0.088820   0.076051  -1.168 0.242847    
+#&gt; as.factor(migr3)3  -0.003976   0.080137  -0.050 0.960425    
+#&gt; as.factor(agecat)1  0.065658   0.061270   1.072 0.283893    
+#&gt; as.factor(agecat)2 -0.027113   0.062878  -0.431 0.666315    
+#&gt; as.factor(agecat)3 -0.026232   0.050040  -0.524 0.600124    
+#&gt; as.factor(income)1 -0.040299   0.040956  -0.984 0.325143    
+#&gt; as.factor(income)3 -0.040408   0.053699  -0.753 0.451747    
+#&gt; worthhouse          0.033184   0.019206   1.728 0.084025 .  
+#&gt; as.factor(woman)1  -0.010784   0.033784  -0.319 0.749573    
+#&gt; as.factor(opl)1    -0.159550   0.046165  -3.456 0.000548 ***
+#&gt; as.factor(opl)2    -0.111485   0.041625  -2.678 0.007399 ** 
+#&gt; ---
+#&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+#&gt; 
+#&gt; (Dispersion parameter for Negative Binomial(3.0293) family taken to be 1)
+#&gt; 
+#&gt;     Null deviance: 1389.3  on 1248  degrees of freedom
+#&gt; Residual deviance: 1314.3  on 1235  degrees of freedom
+#&gt; AIC: 14399
+#&gt; 
+#&gt; Number of Fisher Scoring iterations: 1
+#&gt; 
+#&gt; 
+#&gt;               Theta:  3.029 
+#&gt;           Std. Err.:  0.118 
+#&gt; 
+#&gt;  2 x log-likelihood:  -14368.981</code></pre>
 </div>
 
-<div id="rmd-source-code">Ci0tLQp0aXRsZTogIkluZmVyZW50aWFsIGFuYWx5c2VzIgojYmlibGlvZ3JhcGh5OiByZWZlcmVuY2VzLmJpYgphdXRob3I6ICJCYXMgSG9mc3RyYSIKLS0tCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KCmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCkxhc3QgY29tcGlsZWQgb24gYHIgZm9ybWF0KFN5cy50aW1lKCksICclQiwgJVknKWAKCjxicj4KCi0tLS0KClRoaXMgaXMgdGhlIGNvZGUgd2l0aCB3aGljaCB3ZSBydW4gb3VyIGluZmVyZW50aWFsIGFuYWx5c2VzLgoKPGJyPgoKLS0tLQoKIyBJbml0YXRpYXRpbmcgUiBlbnZpcm9ubWVudAoKU3RhcnQgb3V0IHdpdGggYSBjdXN0b20gZnVuY3Rpb24gdG8gbG9hZCBhIHNldCBvZiByZXF1aXJlZCBwYWNrYWdlcy4KICAKYGBge3IgcGFjaywgZXZhbD1UUlVFfQojIHBhY2thZ2VzIGFuZCByZWFkIGRhdGEKcm0obGlzdCA9IGxzKCkpCgojIChjKSBKb2NoZW0gVG9sc21hCmZwYWNrYWdlLmNoZWNrIDwtIGZ1bmN0aW9uKHBhY2thZ2VzKSB7CiAgbGFwcGx5KHBhY2thZ2VzLCBGVU4gPSBmdW5jdGlvbih4KSB7CiAgICBpZiAoIXJlcXVpcmUoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKSkgewogICAgICBpbnN0YWxsLnBhY2thZ2VzKHgsIGRlcGVuZGVuY2llcyA9IFRSVUUpCiAgICAgIGxpYnJhcnkoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKQogICAgfQogIH0pCn0KcGFja2FnZXMgPSBjKCJoYXZlbiIsICJjb2RhIiwgIm1hdHJpeFN0YXRzIiwgInBhcmFsbGVsIiwgIk1BU1MiLCAiZG9QYXJhbGxlbCIsICJkcGx5ciIsICJjb3dwbG90IiwgCiAgICAgICAgICAgICAidGlkeXZlcnNlIiwgIm5hbmlhciIsICJkb3R3aGlza2VyIiAsImd0IiwgInJlc2hhcGUyIiwgIlZHQU0iLCAiZXhwc3MiLCAiSG1pc2MiKQpmcGFja2FnZS5jaGVjayhwYWNrYWdlcykKcm0ocGFja2FnZXMpCmxvYWQoImRhdGEvZHV0Y2hfbmV0c2l6ZV9hbmFseXNlcy5yZGEiKQpgYGAKCjxicj4KCi0tLS0KCiMgTGluZWFyIHJlZ3Jlc3Npb24gbW9kZWxzCgpXZSBydW4gYSBzZXJpZXMgb2YgcmVncmVzc2lvbiBtb2RlbHMgb2YgbG9nZ2VkIGFjcXVhbnRhbmNlc2hpcCBuZXR3b3JrIHNpemUgKGFzIGl0IGlzIHJpZ2h0LXNrZXdlZCkgb24gb3VyIGluZGVwZW5kZW50IGFuZCBjb250cm9sIHZhcmlhYmxlcy4gV2UgdGh1cyBydW4gMTcyIGRpZmZlcmVudCByZWdyZXNzaW9uIG1vZGVscyAoYWxsIHNjZW5hcmlvcykuCgpgYGB7ciByZWdzLCBldmFsID0gVFJVRX0KCgojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIyBNT0RFTFMKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCiMgIyBhZ2UgaW4gY2F0ZWdvcmllcywgZXZhbCA9IGZhbHNlIGluICJpbmRlcGVuZGVudF92YXJpYWJsZXMucm1kIiBmaXggbGF0ZXIKZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiMTgtMzAiXSA8LSAxCmRmJGFnZWNhdFtkZiRhZ2VjYXQgPT0gIjMxLTQ1Il0gPC0gMgpkZiRhZ2VjYXRbZGYkYWdlY2F0ID09ICI0Ni02NSJdIDwtIDMKZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiPjY1Il0gPC0gNAoKdGFibGUoZGYkYWdlY2F0KQpjbGFzcyhkZiRhZ2VjYXQpCgoKIyBzb21lIGZpbmFsIGRhdGEgaGFuZGxpbmcgdG8gYXNzaWduIHRoZSBjb3JyZWN0IHJlZmVyZW5jZSBjYXRlZ29yaWVzCmRmJG9wbCA8LXJlbGV2ZWwoZGYkb3BsLCByZWYgPSAxKQpkZiRtaWdyMyA8LXJlbGV2ZWwoYXMuZmFjdG9yKGRmJG1pZ3IzKSwgcmVmID0gMSkKZGYkaW5jb21lIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkaW5jb21lKSwgcmVmID0gMikKZGYkYWdlY2F0IDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkYWdlY2F0KSwgcmVmID0gNCkKCgoKCiAjIDE3MiByZWdyZXNzaW9ucyB3aXRoIGRpZmZlcmVudCBuZXRzaXplcy4gV2UgdGhlbiBsb29rIGF0IGRpc3RyaWJ1dGlvbnMgb2YgY29lZmZpY2llbnRzIGFjcm9zcyB0aG9zZS4KIyBub3RlIHRoZSBsb2cxMCBmb3IgbmV0d29yayBzaXplIGFuZCBob3cgd2UgZG9uJ3QgdGFrZSBpbnRvIGFjY291bnQgZXh0cmVtZSBuZXR3b3JrIHNpemUuCm1vZGVsbG9nIDwtIGxpc3QoKQpmb3IgKGkgaW4gMTQ6MTg1KSB7CiAgICAKICAgIGRmWyxjKGkpXSA8LSByb3VuZChkZlssIGMoaSldLCAwKQogICAgCiAgICBtb2RlbGxvZ1tbaV1dIDwtIGxtKGxvZzEwKGRmWyFkZltbaV1dPjUwMDAsIGMoaSldKSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1tpXV0+NTAwMCxdKQogICAgCn0KbW9kZWxsb2dbc2FwcGx5KG1vZGVsbG9nLCBpcy5udWxsKV0gPC0gTlVMTApzdW1tYXJ5KG1vZGVsbG9nW1sxXV0pCmBgYAoKPGJyPgoKLS0tLQoKIyBWaXN1YWxpemF0aW9uIG9mIHJlZ3Jlc3Npb24gbW9kZWxzCgpXZSB0aGVuIHJlbmRlciBhbGwgdGhvc2UgbW9kZWxzIGludG8gb25lIGZpZ3VyZSB3aGVyZSB3ZSBjYW4gc2hvdyBzdGF0aXN0aWNhbCBzaWduaWZhbmNlIGFuZCB0aGF0IHJlc3VsdHMgZG8gbm90IHZhcnkgb3ZlciBhbGwgdGhvc2Ugc2NlbmFyaW9zLiBUaGlzIG1hdGNoZXMgRmlndXJlIDMgaW4gdGhlIHBhcGVyLgoKCmBgYHtyIHJlZ3ZpeiwgZXZhbCA9IFRSVUV9CgojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyBWaXogb2YgcmVzdWx0cwoKIyBtYWluIGVmZmVjdHMKZm91cl9icmFja2V0cyA8LSBsaXN0KAogIAogIGMoIkR1dGNoIG1haj1yZWYiLCAiV2VzdCBiYWNrZ3IiLCAibm9uLVdlc3QgYmFja2dyIiksCiAgCiAgYygiPjY1PXJlZiIsICIxOC0zMCIsICI0Ni02NSIpLAogIAogIGMoIj5tb2RhbCBpbmM9cmVmIiwgIjw9bW9kYWwgaW5jb21lIiwgIlVua24gaW5jb21lIiksCiAgCiAgYygiRWR1YyB0ZXJ0IGhpZ2g9cmVmIiwgIkVkdWMgcHJpbS9zZWMiLCAiRWR1YyB0ZXJ0IGxvdyIpKQoKIGxvZ21vZGVsIDwtIHtkd3Bsb3QobW9kZWxsb2csCiAgICAgICAgIGRvdF9hcmdzID0gbGlzdChjb2xvciA9ICJibGFjayIsIHNpemUgPSAwLjc1LCBzaGFwZSA9IDEpLCAjIGNvbG9yIGZvciB0aGUgZG90CiAgICAgICAgIHdoaXNrZXJfYXJncyA9IGxpc3Qoc2l6ZSA9IDAuMjUsIGNvbG9yID0gImRhcmtncmV5IiwgYWxwaGEgPSAwLjUpLCAgICMgY29sb3IgZm9yIHRoZSB3aGlza2VyCiAgICAgICAgIHZsaW5lID0gZ2dwbG90Mjo6Z2VvbV92bGluZSh4aW50ZXJjZXB0ID0gMCwgICMgcHV0IHZsaW5lIF9iZWhpbmRfIGNvZWZzOyBzZWUgaHR0cHM6Ly9naXRodWIuY29tL2Zzb2x0L2RvdHdoaXNrZXIvaXNzdWVzLzg0CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiZ3JleTYwIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmV0eXBlID0gMiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmV3aWR0aCA9IDEpKSAlPiUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIyBtYWtlIG1vZGVsIHZhcmlhYmxlCiAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKICAgICAgImFzLmZhY3Rvcih3b3JrKTEiID0gIldvcmtpbmciLAogICAgICAKICAgICAgImhoc2l6ZSIgPSAiSG91c2Vob2xkIHNpemUiLAogICAgICAKICAgICAgImFzLmZhY3RvcihtaWdyMykyIiA9ICJXZXN0IGJhY2tnciIsCiAgICAgICJhcy5mYWN0b3IobWlncjMpMyIgPSAibm9uLVdlc3QgYmFja2dyIiwKICAgICAgCiAgICAgICJhcy5mYWN0b3IoYWdlY2F0KTEiID0gIjE4LTMwIiwKICAgICAgImFzLmZhY3RvcihhZ2VjYXQpMiIgPSAiMzEtNDUiLAogICAgICAiYXMuZmFjdG9yKGFnZWNhdCkzIiA9ICI0Ni02NSIsCiAgICAgIAogICAgICAiYXMuZmFjdG9yKGluY29tZSkxIiA9ICI8PW1vZGFsIGluY29tZSIsCiAgICAgICJhcy5mYWN0b3IoaW5jb21lKTMiID0gIlVua24gaW5jb21lIiwKICAgICAgCiAgICAgICJ3b3J0aGhvdXNlIiA9ICJIb3VzZSB2YWx1ZSIsCgogICAgICAiYXMuZmFjdG9yKHdvbWFuKTEiID0gIldvbWVuIiwKICAgICAgCiAgICAgICJhcy5mYWN0b3Iob3BsKTEiID0gIkVkdWMgcHJpbS9zZWMiLAogICAgICAiYXMuZmFjdG9yKG9wbCkyIiA9ICJFZHVjIHRlcnQgbG93IgoKICAgICkpICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLAogICAgICAgICAgICAgICBheGlzLnRleHQgPSBlbGVtZW50X3RleHQoY29sb3IgPSAiZ3JleSIpKSArIAogICAgdGhlbWVfbWluaW1hbCgpICsKICAgIHhsYWIoIkIgb24gTG9nKG5ldHdvcmsgc2l6ZSBjb3VudCkiKX0gICU+JQogIGFkZF9icmFja2V0cyhmb3VyX2JyYWNrZXRzLCBmb250U2l6ZSA9IC42KQoKIGdnc2F2ZSgib3V0cHV0L21vZGVscy5wZGYiLCBwbG90ID0gbG9nbW9kZWwsIGRldmljZSA9ICJwZGYiLAogICAgICAgc2NhbGUgPSAxLCB3aWR0aCA9IDYsIGhlaWdodCA9IDUsIHVuaXRzID0gYygiaW4iKSwKICAgICAgIGRwaSA9ICJyZXRpbmEiKQoKICMgRmlndXJlIDMgaW4gdGhlIHBhcGVyCmxvZ21vZGVsCiAKCmBgYAoKCjxicj4KCi0tLS0KCiMgUmVncmVzc2lvbiB0YWJsZQoKV2UgYWxzbyBhdmVyYWdlIGFsbCAxNzIgbmV0d29yayBzaXplIHNjZW5hcmlvcyB3aXRoaW4gcmVzcG9uZGVudHMgYW5kIHJ1biBvbmUgc2luZ2xlIHJlZ3Jlc3Npb24gbW9kZWwgc28gYXMgdG8gZ2VuZXJhdGUgYSB0YWJsZSB3aXRoIGNvZWZmaWNpZW50cy4gVGhpcyBtYXRjaGVzIFRhYmxlIDMgaW4gdGhlIHBhcGVyLgoKCmBgYHtyIHJlZ3RhYmxlLCBldmFsID0gVFJVRX0KCmRmJG5ldHNpemUgPC0gcm91bmQocm93U3VtcyhkZlssYygxNDoxODUpXSkgLyBsZW5ndGgoMTQ6MTg1KSwgMCkKCm1vZGVsbCA8LSBsbShsb2cxMChuZXRzaXplKSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c2l6ZSJdXT41MDAwLF0pCgptb2RlbGxpbiA8LSBsbShuZXRzaXplIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzaXplIl1dPjUwMDAsXSkKICAKICAKZnBhY2thZ2UuY2hlY2soInNqUGxvdCIpCgojdGFibGUgMyBpbiB0aGUgcGFwZXIKdGFiX21vZGVsKG1vZGVsbCwgbW9kZWxsaW4sIHNob3cuc2UgPSBUUlVFKQpgYGAKCmBgYHtyIHJlZ3JvYnVzdCwgZXZhbCA9IFRSVUV9CiMgIyByb2J1c3RuZXNzLCBtaWdyYXRpb24gdHdvIGNhdHMsIGFuZCBpbmNvbWUgbm8gbWlzc2luZ3MgbGVhZCB0byBzaW1pbGFyIHJlc3VsdHMKIyBzdW1tYXJ5KHggPC1sbShsb2cxMChuZXRzaXplKSB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncikgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiMgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNpemUiXV0+NTAwMCxdKSkKIyAKIyBzdW1tYXJ5KHggPC1sbShsb2cxMChuZXRzaXplKSB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAojICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzaXplIl1dPjUwMDAgJiBkZiRpbmNvbWUgIT0gMyxdKSkKCgpgYGAKCg==</div>
+<div id="rmd-source-code">Ci0tLQp0aXRsZTogIkluZmVyZW50aWFsIGFuYWx5c2VzIgojYmlibGlvZ3JhcGh5OiByZWZlcmVuY2VzLmJpYgphdXRob3I6ICJCYXMgSG9mc3RyYSIKLS0tCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KCmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCkxhc3QgY29tcGlsZWQgb24gYHIgZm9ybWF0KFN5cy50aW1lKCksICclQiwgJVknKWAKCjxicj4KCi0tLS0KClRoaXMgaXMgdGhlIGNvZGUgd2l0aCB3aGljaCB3ZSBydW4gb3VyIGluZmVyZW50aWFsIGFuYWx5c2VzLgoKPGJyPgoKLS0tLQoKIyBJbml0YXRpYXRpbmcgUiBlbnZpcm9ubWVudAoKU3RhcnQgb3V0IHdpdGggYSBjdXN0b20gZnVuY3Rpb24gdG8gbG9hZCBhIHNldCBvZiByZXF1aXJlZCBwYWNrYWdlcy4KICAKYGBge3IgcGFjaywgZXZhbD1UUlVFfQojIHBhY2thZ2VzIGFuZCByZWFkIGRhdGEKcm0obGlzdCA9IGxzKCkpCgojIChjKSBKb2NoZW0gVG9sc21hCmZwYWNrYWdlLmNoZWNrIDwtIGZ1bmN0aW9uKHBhY2thZ2VzKSB7CiAgbGFwcGx5KHBhY2thZ2VzLCBGVU4gPSBmdW5jdGlvbih4KSB7CiAgICBpZiAoIXJlcXVpcmUoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKSkgewogICAgICBpbnN0YWxsLnBhY2thZ2VzKHgsIGRlcGVuZGVuY2llcyA9IFRSVUUpCiAgICAgIGxpYnJhcnkoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKQogICAgfQogIH0pCn0KcGFja2FnZXMgPSBjKCJoYXZlbiIsICJjb2RhIiwgIm1hdHJpeFN0YXRzIiwgInBhcmFsbGVsIiwgIk1BU1MiLCAiZG9QYXJhbGxlbCIsICJkcGx5ciIsICJjb3dwbG90IiwgCiAgICAgICAgICAgICAidGlkeXZlcnNlIiwgIm5hbmlhciIsICJkb3R3aGlza2VyIiAsImd0IiwgInJlc2hhcGUyIiwgIlZHQU0iLCAiZXhwc3MiLCAiSG1pc2MiLCAiTUFTUyIsICJzalBsb3QiKQpmcGFja2FnZS5jaGVjayhwYWNrYWdlcykKcm0ocGFja2FnZXMpCmxvYWQoImRhdGEvZHV0Y2hfbmV0c2l6ZV9hbmFseXNlcy5yZGEiKQpgYGAKCjxicj4KCi0tLS0KCiMgTGluZWFyIHJlZ3Jlc3Npb24gbW9kZWxzCgpXZSBydW4gYSBzZXJpZXMgb2YgcmVncmVzc2lvbiBtb2RlbHMgb2YgbG9nZ2VkIGFjcXVhbnRhbmNlc2hpcCBuZXR3b3JrIHNpemUgKGFzIGl0IGlzIHJpZ2h0LXNrZXdlZCkgb24gb3VyIGluZGVwZW5kZW50IGFuZCBjb250cm9sIHZhcmlhYmxlcy4gV2UgdGh1cyBydW4gMTcyIGRpZmZlcmVudCByZWdyZXNzaW9uIG1vZGVscyAoYWxsIHNjZW5hcmlvcykuCgpgYGB7ciByZWdzLCBldmFsID0gVFJVRX0KIyAKIyAKIyAjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIyAjIE1PREVMUwojICMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCiMgCiMgIyAjIGFnZSBpbiBjYXRlZ29yaWVzLCBldmFsID0gZmFsc2UgaW4gImluZGVwZW5kZW50X3ZhcmlhYmxlcy5ybWQiIGZpeCBsYXRlcgojIGRmJGFnZWNhdFtkZiRhZ2VjYXQgPT0gIjE4LTMwIl0gPC0gMQojIGRmJGFnZWNhdFtkZiRhZ2VjYXQgPT0gIjMxLTQ1Il0gPC0gMgojIGRmJGFnZWNhdFtkZiRhZ2VjYXQgPT0gIjQ2LTY1Il0gPC0gMwojIGRmJGFnZWNhdFtkZiRhZ2VjYXQgPT0gIj42NSJdIDwtIDQKIyAKIyB0YWJsZShkZiRhZ2VjYXQpCiMgY2xhc3MoZGYkYWdlY2F0KQojIAojIAojICMgc29tZSBmaW5hbCBkYXRhIGhhbmRsaW5nIHRvIGFzc2lnbiB0aGUgY29ycmVjdCByZWZlcmVuY2UgY2F0ZWdvcmllcwojIGRmJG9wbCA8LXJlbGV2ZWwoZGYkb3BsLCByZWYgPSAxKQojIGRmJG1pZ3IzIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkbWlncjMpLCByZWYgPSAxKQojIGRmJGluY29tZSA8LXJlbGV2ZWwoYXMuZmFjdG9yKGRmJGluY29tZSksIHJlZiA9IDIpCiMgZGYkYWdlY2F0IDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkYWdlY2F0KSwgcmVmID0gNCkKIyAKIyAKIyAKIyAKIyAgIyAxNzIgcmVncmVzc2lvbnMgd2l0aCBkaWZmZXJlbnQgbmV0c2l6ZXMuIFdlIHRoZW4gbG9vayBhdCBkaXN0cmlidXRpb25zIG9mIGNvZWZmaWNpZW50cyBhY3Jvc3MgdGhvc2UuCiMgIyBub3RlIHRoZSBsb2cxMCBmb3IgbmV0d29yayBzaXplIGFuZCBob3cgd2UgZG9uJ3QgdGFrZSBpbnRvIGFjY291bnQgZXh0cmVtZSBuZXR3b3JrIHNpemUuCiMgbW9kZWxsb2cgPC0gbGlzdCgpCiMgZm9yIChpIGluIDE0OjE4NSkgewojICAgICAKIyAgICAgZGZbLGMoaSldIDwtIHJvdW5kKGRmWywgYyhpKV0sIDApCiMgICAgIAojICAgICBtb2RlbGxvZ1tbaV1dIDwtIGxtKGxvZzEwKGRmWyFkZltbaV1dPjUwMDAsIGMoaSldKSB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1tpXV0+NTAwMCxdKQojICAgICAKIyB9CiMgbW9kZWxsb2dbc2FwcGx5KG1vZGVsbG9nLCBpcy5udWxsKV0gPC0gTlVMTAojIHN1bW1hcnkobW9kZWxsb2dbWzFdXSkKYGBgCgo8YnI+CgotLS0tCgojIFZpc3VhbGl6YXRpb24gb2YgcmVncmVzc2lvbiBtb2RlbHMKCldlIHRoZW4gcmVuZGVyIGFsbCB0aG9zZSBtb2RlbHMgaW50byBvbmUgZmlndXJlIHdoZXJlIHdlIGNhbiBzaG93IHN0YXRpc3RpY2FsIHNpZ25pZmFuY2UgYW5kIHRoYXQgcmVzdWx0cyBkbyBub3QgdmFyeSBvdmVyIGFsbCB0aG9zZSBzY2VuYXJpb3MuIFRoaXMgbWF0Y2hlcyBGaWd1cmUgMyBpbiB0aGUgcGFwZXIuCgoKYGBge3IgcmVndml6LCBldmFsID0gVFJVRX0KCiMgIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiMgIyBWaXogb2YgcmVzdWx0cwojIAojICMgbWFpbiBlZmZlY3RzCiMgZm91cl9icmFja2V0cyA8LSBsaXN0KAojICAgCiMgICBjKCJEdXRjaCBtYWo9cmVmIiwgIldlc3QgYmFja2dyIiwgIm5vbi1XZXN0IGJhY2tnciIpLAojICAgCiMgICBjKCI+NjU9cmVmIiwgIjE4LTMwIiwgIjQ2LTY1IiksCiMgICAKIyAgIGMoIj5tb2RhbCBpbmM9cmVmIiwgIjw9bW9kYWwgaW5jb21lIiwgIlVua24gaW5jb21lIiksCiMgICAKIyAgIGMoIkVkdWMgdGVydCBoaWdoPXJlZiIsICJFZHVjIHByaW0vc2VjIiwgIkVkdWMgdGVydCBsb3ciKSkKIyAKIyAgbG9nbW9kZWwgPC0ge2R3cGxvdChtb2RlbGxvZywKIyAgICAgICAgICBkb3RfYXJncyA9IGxpc3QoY29sb3IgPSAiYmxhY2siLCBzaXplID0gMC43NSwgc2hhcGUgPSAxKSwgIyBjb2xvciBmb3IgdGhlIGRvdAojICAgICAgICAgIHdoaXNrZXJfYXJncyA9IGxpc3Qoc2l6ZSA9IDAuMjUsIGNvbG9yID0gImRhcmtncmV5IiwgYWxwaGEgPSAwLjUpLCAgICMgY29sb3IgZm9yIHRoZSB3aGlza2VyCiMgICAgICAgICAgdmxpbmUgPSBnZ3Bsb3QyOjpnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCAgIyBwdXQgdmxpbmUgX2JlaGluZF8gY29lZnM7IHNlZSBodHRwczovL2dpdGh1Yi5jb20vZnNvbHQvZG90d2hpc2tlci9pc3N1ZXMvODQKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sb3VyID0gImdyZXk2MCIsCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxpbmV0eXBlID0gMiwKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXdpZHRoID0gMSkpICU+JSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAjIG1ha2UgbW9kZWwgdmFyaWFibGUKIyAgICAgcmVsYWJlbF9wcmVkaWN0b3JzKGMoCiMgICAgICAgImFzLmZhY3Rvcih3b3JrKTEiID0gIldvcmtpbmciLAojICAgICAgIAojICAgICAgICJoaHNpemUiID0gIkhvdXNlaG9sZCBzaXplIiwKIyAgICAgICAKIyAgICAgICAiYXMuZmFjdG9yKG1pZ3IzKTIiID0gIldlc3QgYmFja2dyIiwKIyAgICAgICAiYXMuZmFjdG9yKG1pZ3IzKTMiID0gIm5vbi1XZXN0IGJhY2tnciIsCiMgICAgICAgCiMgICAgICAgImFzLmZhY3RvcihhZ2VjYXQpMSIgPSAiMTgtMzAiLAojICAgICAgICJhcy5mYWN0b3IoYWdlY2F0KTIiID0gIjMxLTQ1IiwKIyAgICAgICAiYXMuZmFjdG9yKGFnZWNhdCkzIiA9ICI0Ni02NSIsCiMgICAgICAgCiMgICAgICAgImFzLmZhY3RvcihpbmNvbWUpMSIgPSAiPD1tb2RhbCBpbmNvbWUiLAojICAgICAgICJhcy5mYWN0b3IoaW5jb21lKTMiID0gIlVua24gaW5jb21lIiwKIyAgICAgICAKIyAgICAgICAid29ydGhob3VzZSIgPSAiSG91c2UgdmFsdWUiLAojIAojICAgICAgICJhcy5mYWN0b3Iod29tYW4pMSIgPSAiV29tZW4iLAojICAgICAgIAojICAgICAgICJhcy5mYWN0b3Iob3BsKTEiID0gIkVkdWMgcHJpbS9zZWMiLAojICAgICAgICJhcy5mYWN0b3Iob3BsKTIiID0gIkVkdWMgdGVydCBsb3ciCiMgCiMgICAgICkpICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiLAojICAgICAgICAgICAgICAgIGF4aXMudGV4dCA9IGVsZW1lbnRfdGV4dChjb2xvciA9ICJncmV5IikpICsgCiMgICAgIHRoZW1lX21pbmltYWwoKSArCiMgICAgIHhsYWIoIkIgb24gTG9nKG5ldHdvcmsgc2l6ZSBjb3VudCkiKX0gICU+JQojICAgYWRkX2JyYWNrZXRzKGZvdXJfYnJhY2tldHMsIGZvbnRTaXplID0gLjYpCiMgCiMgIGdnc2F2ZSgib3V0cHV0L21vZGVscy5wZGYiLCBwbG90ID0gbG9nbW9kZWwsIGRldmljZSA9ICJwZGYiLAojICAgICAgICBzY2FsZSA9IDEsIHdpZHRoID0gNiwgaGVpZ2h0ID0gNSwgdW5pdHMgPSBjKCJpbiIpLAojICAgICAgICBkcGkgPSAicmV0aW5hIikKIyAKIyAgIyBGaWd1cmUgMyBpbiB0aGUgcGFwZXIKIyBsb2dtb2RlbAojICAKCmBgYAoKCjxicj4KCi0tLS0KCiMgUmVncmVzc2lvbiB0YWJsZQoKV2UgYWxzbyBhdmVyYWdlIGFsbCAxNzIgbmV0d29yayBzaXplIHNjZW5hcmlvcyB3aXRoaW4gcmVzcG9uZGVudHMgYW5kIHJ1biBvbmUgc2luZ2xlIHJlZ3Jlc3Npb24gbW9kZWwgc28gYXMgdG8gZ2VuZXJhdGUgYSB0YWJsZSB3aXRoIGNvZWZmaWNpZW50cy4gVGhpcyBtYXRjaGVzIFRhYmxlIDMgaW4gdGhlIHBhcGVyLgoKCmBgYHtyIHJlZ3RhYmxlLCBldmFsID0gVFJVRX0KIyAKIyBkZiRuZXRzaXplIDwtIHJvdW5kKHJvd1N1bXMoZGZbLGMoMTQ6MTg1KV0pIC8gbGVuZ3RoKDE0OjE4NSksIDApCiMgCiMgbW9kZWxsIDwtIGxtKGxvZzEwKG5ldHNpemUpIH4gCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiMgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNpemUiXV0+NTAwMCxdKQojIAojIG1vZGVsbGluIDwtIGxtKG5ldHNpemUgfiAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKIyAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c2l6ZSJdXT41MDAwLF0pCiMgICAKIyAgIAojIGZwYWNrYWdlLmNoZWNrKCJzalBsb3QiKQojIAojICN0YWJsZSAzIGluIHRoZSBwYXBlcgojIHRhYl9tb2RlbChtb2RlbGwsIG1vZGVsbGluLCBzaG93LnNlID0gVFJVRSkKYGBgCgpgYGB7ciByZWdyb2J1c3QsIGV2YWwgPSBUUlVFfQojICMgcm9idXN0bmVzcywgbWlncmF0aW9uIHR3byBjYXRzLCBhbmQgaW5jb21lIG5vIG1pc3NpbmdzIGxlYWQgdG8gc2ltaWxhciByZXN1bHRzCiMgc3VtbWFyeSh4IDwtbG0obG9nMTAobmV0c2l6ZSkgfiAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAojICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzaXplIl1dPjUwMDAsXSkpCiMgCiMgc3VtbWFyeSh4IDwtbG0obG9nMTAobmV0c2l6ZSkgfiAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKIyAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c2l6ZSJdXT41MDAwICYgZGYkaW5jb21lICE9IDMsXSkpCgoKYGBgCgotLS0tCgojIFJldmlzaW9ucyBSZWdyZXNzaW9uIHRhYmxlCgoKRnJvbSBoZXJlIG9ud2FyZHMsIHdlIHNob3cgb3VyIG5ldyByZXN1bHRzIGJhc2VkIG9uIHRoZSByZXZpc2lvbnMgb2YgdGhpcyBwYXBlci4KCmBgYHtyIHJlZ3JldmlzaW9uX3NpemUsIGV2YWwgPSBUUlVFfQoKCiMgIyBhZ2UgaW4gY2F0ZWdvcmllcywgZXZhbCA9IGZhbHNlIGluICJpbmRlcGVuZGVudF92YXJpYWJsZXMucm1kIiBmaXggbGF0ZXIKZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiMTgtMzAiXSA8LSAxCmRmJGFnZWNhdFtkZiRhZ2VjYXQgPT0gIjMxLTQ1Il0gPC0gMgpkZiRhZ2VjYXRbZGYkYWdlY2F0ID09ICI0Ni02NSJdIDwtIDMKZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiPjY1Il0gPC0gNAoKdGFibGUoZGYkYWdlY2F0KQpjbGFzcyhkZiRhZ2VjYXQpCgoKIyBzb21lIGZpbmFsIGRhdGEgaGFuZGxpbmcgdG8gYXNzaWduIHRoZSBjb3JyZWN0IHJlZmVyZW5jZSBjYXRlZ29yaWVzCmRmJG9wbCA8LXJlbGV2ZWwoZGYkb3BsLCByZWYgPSAxKQpkZiRtaWdyMyA8LXJlbGV2ZWwoYXMuZmFjdG9yKGRmJG1pZ3IzKSwgcmVmID0gMSkKZGYkaW5jb21lIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkaW5jb21lKSwgcmVmID0gMikKZGYkYWdlY2F0IDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkYWdlY2F0KSwgcmVmID0gNCkKCgoKbW9kZWxsMiA8LSBsbShsb2cobmV0c292ZXIyKzEpIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzb3ZlcjIiXV0+NTAwMCxdKQpzdW1tYXJ5KG1vZGVsbDIpCgoKbW9kZWxsbmIyIDwtIGdsbS5uYihuZXRzb3ZlcjIgfiAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNvdmVyMiJdXT41MDAwLF0sCiAgICAgICAgICAgICAgICAgICAgICAgIGluaXQudGhldGEgPSAxLjAzMjcxMzE1NiwgbGluayA9IGxvZykKc3VtbWFyeShtb2RlbGxuYjIpCgpmcGFja2FnZS5jaGVjaygic2pQbG90IikKCnRhYl9tb2RlbChtb2RlbGwyLCBtb2RlbGxuYjIsIHNob3cuc2UgPSBUUlVFKQpgYGAKCmBgYHtyIHJlZ3JldmlzaW9uX2dlbiwgZXZhbCA9IFRSVUV9CiNnZW5kZXIKbW9kZWx3b21hbiA8LSBsbShudW13b21hbiB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCiMgc3VtbWFyeShtb2RlbHdvbWFuKQoKCm1vZGVsbWFuIDwtIGxtKG51bW1hbiB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCiMgc3VtbWFyeShtb2RlbG1hbikKCgptb2RlbHNhbWVnZW4gPC0gbG0oc2FtZWdlbmRlciB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCiMgc3VtbWFyeShtb2RlbHNhbWVnZW4pCgp0YWJfbW9kZWwobW9kZWx3b21hbiwgbW9kZWxtYW4sIG1vZGVsc2FtZWdlbiwgc2hvdy5zZSA9IFRSVUUpCmBgYAoKCmBgYHtyIHJlZ3JldmlzaW9uX2VkdWMsIGV2YWwgPSBUUlVFfQoKI2dlbmRlcgptb2RlbG1ibyA8LSBsbShtYm8gfiAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmKQojIHN1bW1hcnkobW9kZWxtYm8pCgoKbW9kZWxoYm8gPC0gbG0oaGJvIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZikKIyBzdW1tYXJ5KG1vZGVsaGJvKQoKCm1vZGVsdW5pIDwtIGxtKHVuaSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCiMgc3VtbWFyeShtb2RlbHVuaSkKCgptb2RlbHNhbWVlZHVjIDwtIGxtKHNhbWVlZHVjIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZikKIyBzdW1tYXJ5KG1vZGVsc2FtZWVkdWMpCgp0YWJfbW9kZWwobW9kZWxtYm8sIG1vZGVsaGJvLCBtb2RlbHVuaSwgbW9kZWxzYW1lZWR1Yywgc2hvdy5zZSA9IFRSVUUpCgpgYGAKCmBgYHtyIHJlZ3JldmlzaW9uX2V0aCwgZXZhbCA9IFRSVUV9CgojZ2VuZGVyCm1vZGVsZHV0Y2ggPC0gbG0obnVtZHV0Y2ggfiAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCiNzdW1tYXJ5KG1vZGVsZHV0Y2gpCgoKbW9kZWxub2R1dGNoIDwtIGxtKG51bW5vZHV0Y2ggfiAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmKQojc3VtbWFyeShtb2RlbG5vZHV0Y2gpCgoKbW9kZWxzYW1lZXRobmljMSA8LSBsbShzYW1lZXRobmljMSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCiNzdW1tYXJ5KG1vZGVsc2FtZWV0aG5pYzEpCgp0YWJfbW9kZWwobW9kZWxkdXRjaCwgbW9kZWxub2R1dGNoLCBtb2RlbHNhbWVldGhuaWMxLCBzaG93LnNlID0gVFJVRSkKYGBgCgoKIyBSZXZpc2lvbnMgUm9idXN0bmVzcyBSZWdyZXNzaW9uIHRhYmxlCgpgYGB7ciByZWdyZXZpc2lvbl9yb2J1c3QsIGV2YWwgPSBUUlVFfQoKbW9kZWxsMSA8LSBsbShsb2cobmV0c292ZXIxKzEpIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNvdmVyMSJdXT41MDAwLF0pCnN1bW1hcnkobW9kZWxsMSkKCm1vZGVsbDMgPC0gbG0obG9nKG5ldHNvdmVyMysxKSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c292ZXIzIl1dPjUwMDAsXSkKc3VtbWFyeShtb2RlbGwzKQoKbW9kZWxsNCA8LSBsbShsb2cobmV0c292ZXI0KzEpIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzb3ZlcjQiXV0+NTAwMCxdKQpzdW1tYXJ5KG1vZGVsbDQpCgptb2RlbGxuYjEgPC0gZ2xtLm5iKG5ldHNvdmVyMSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c292ZXIxIl1dPjUwMDAsXSwKICAgICAgICAgICAgICAgICAgICAgICAgaW5pdC50aGV0YSA9IDEuMDMyNzEzMTU2LCBsaW5rID0gbG9nKQpzdW1tYXJ5KG1vZGVsbG5iMSkKCgptb2RlbGxuYjMgPC0gZ2xtLm5iKG5ldHNvdmVyMyB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c292ZXIzIl1dPjUwMDAsXSwKICAgICAgICAgICAgICAgICAgICAgICAgaW5pdC50aGV0YSA9IDEuMDMyNzEzMTU2LCBsaW5rID0gbG9nKQpzdW1tYXJ5KG1vZGVsbG5iMykKCgptb2RlbGxuYjQgPC0gZ2xtLm5iKG5ldHNvdmVyNCB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c292ZXI0Il1dPjUwMDAsXSwKICAgICAgICAgICAgICAgICAgICAgICAgaW5pdC50aGV0YSA9IDEuMDMyNzEzMTU2LCBsaW5rID0gbG9nKQpzdW1tYXJ5KG1vZGVsbG5iNCkKCgoKYGBg</div>
 
 
 </div>
