@@ -304,7 +304,6 @@ From here onwards, we show our new results based on the revisions of this paper.
 
 ```{r regrevision_size, eval = TRUE}
 
-
 # # age in categories, eval = false in "independent_variables.rmd" fix later
 df$agecat[df$agecat == "18-30"] <- 1
 df$agecat[df$agecat == "31-45"] <- 2
@@ -316,39 +315,34 @@ class(df$agecat)
 
 
 # some final data handling to assign the correct reference categories
-df$opl <-relevel(df$opl, ref = 1)
-df$migr3 <-relevel(as.factor(df$migr3), ref = 1)
+#df$opl2 <-relevel(as.factor(df$opl2), ref = 0)
 df$income <-relevel(as.factor(df$income), ref = 2)
 df$agecat <-relevel(as.factor(df$agecat), ref = 4)
 
+table(df$opl2)
 
+modell2 <- lm(log(netsover4+1) ~ 
+                          as.factor(work) + #h1
+                           
+                          hhsize + #H2
 
-modell2 <- lm(log(netsover2+1) ~ 
-                          as.factor(work) + 
+                          as.factor(agecat) + #h3
                           
-                          hhsize + 
+                          as.factor(income) + #h4
                           
-                          as.factor(migr3) + 
+                          worthhouse + #H4
                           
-                          as.factor(agecat) + 
+                          as.factor(woman) + #h5
                           
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                        data = df[!df[["netsover2"]]>5000,])
+                          as.factor(opl2), #h6
+                        data = df[!df[["netsover4"]]>5000,])
 summary(modell2)
 
 
-modellnb2 <- glm.nb(netsover2 ~ 
+modellnb2 <- glm.nb(netsover4 ~ 
                           as.factor(work) + 
                           
                           hhsize + 
-                          
-                          as.factor(migr3) + 
                           
                           as.factor(agecat) + 
                           
@@ -358,76 +352,72 @@ modellnb2 <- glm.nb(netsover2 ~
                           
                           as.factor(woman) + 
                           
-                          as.factor(opl),
-                        data = df[!df[["netsover2"]]>5000,],
+                          as.factor(opl2),
+                        data = df[!df[["netsover4"]]>5000,],
                         init.theta = 1.032713156, link = log)
 summary(modellnb2)
 
 fpackage.check("sjPlot")
 
+# table 3 paper:
 tab_model(modell2, modellnb2, show.se = TRUE)
 ```
 
 ```{r regrevision_gen, eval = TRUE}
 #gender
 modelwoman <- lm(numwoman ~ 
-                          as.factor(work) + 
-                          
+                          as.factor(work) +
+                           
                           hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
+                   
                           as.factor(agecat) + 
                           
                           as.factor(income) + 
                           
-                          worthhouse +
+                          worthhouse + 
                           
-                          as.factor(woman) + 
+                          as.factor(woman) + #h7
                           
-                          as.factor(opl),
+                          as.factor(opl2), 
                         data = df)
-# summary(modelwoman)
+summary(modelwoman)
 
 
 modelman <- lm(numman ~ 
-                          as.factor(work) + 
-                          
+                         as.factor(work) +
+                           
                           hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
+                   
                           as.factor(agecat) + 
                           
                           as.factor(income) + 
                           
-                          worthhouse +
+                          worthhouse + 
                           
-                          as.factor(woman) + 
+                          as.factor(woman) + #h7
                           
-                          as.factor(opl),
+                          as.factor(opl2), 
                         data = df)
-# summary(modelman)
+summary(modelman)
 
 
 modelsamegen <- lm(samegender ~ 
-                          as.factor(work) + 
-                          
+                     
+                         as.factor(work) +
+                           
                           hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
+                   
                           as.factor(agecat) + 
                           
                           as.factor(income) + 
                           
-                          worthhouse +
+                          worthhouse + 
                           
-                          as.factor(woman) + 
+                          as.factor(woman) + #h7
                           
-                          as.factor(opl),
+                          as.factor(opl2), 
                         data = df)
-# summary(modelsamegen)
+summary(modelsamegen)
 
 tab_model(modelwoman, modelman, modelsamegen, show.se = TRUE)
 ```
@@ -435,153 +425,176 @@ tab_model(modelwoman, modelman, modelsamegen, show.se = TRUE)
 
 ```{r regrevision_educ, eval = TRUE}
 
-#gender
-modelmbo <- lm(mbo ~ 
-                          as.factor(work) + 
-                          
+# line educ independent variable up to educ homogeneity dependent
+
+#educ
+modeleduch <- lm(numeduchigh ~ 
+                          as.factor(work) +
+                           
                           hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
+                   
                           as.factor(agecat) + 
                           
                           as.factor(income) + 
                           
-                          worthhouse +
+                          worthhouse + 
                           
                           as.factor(woman) + 
                           
-                          as.factor(opl),
+                          as.factor(opl2), # h8
                         data = df)
-# summary(modelmbo)
+summary(modeleduch)
 
-
-modelhbo <- lm(hbo ~ 
-                          as.factor(work) + 
-                          
+modeleducl <- lm(numeduclow ~ 
+                          as.factor(work) +
+                           
                           hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
+                   
                           as.factor(agecat) + 
                           
                           as.factor(income) + 
                           
-                          worthhouse +
+                          worthhouse + 
                           
                           as.factor(woman) + 
                           
-                          as.factor(opl),
+                          as.factor(opl2), # h8
                         data = df)
-# summary(modelhbo)
-
-
-modeluni <- lm(uni ~ 
-                          as.factor(work) + 
-                          
-                          hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
-                          as.factor(agecat) + 
-                          
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                        data = df)
-# summary(modeluni)
-
+summary(modeleducl)
 
 modelsameeduc <- lm(sameeduc ~ 
-                          as.factor(work) + 
-                          
+                          as.factor(work) +
+                           
                           hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
+                   
                           as.factor(agecat) + 
                           
                           as.factor(income) + 
                           
-                          worthhouse +
+                          worthhouse + 
                           
                           as.factor(woman) + 
                           
-                          as.factor(opl),
+                          as.factor(opl2), # h8
                         data = df)
-# summary(modelsameeduc)
+summary(modelsameeduc)
 
-tab_model(modelmbo, modelhbo, modeluni, modelsameeduc, show.se = TRUE)
+tab_model(modeleduch, modeleducl, modelsameeduc, show.se = TRUE)
 
 ```
 
+Hypothesis 9: network size by homogeneity.
+
+```{r regrevision_h9, eval = TRUE}
+
+genh9 <- lm(samegender ~ 
+                          as.factor(work) +
+                           
+                          hhsize + 
+                   
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse + 
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl2) +
+                          
+                          log(netsover4+1), #H9
+                        data = df)
+
+
+educh9 <- lm(sameeduc ~ 
+                          as.factor(work) +
+                           
+                          hhsize + 
+                   
+                          as.factor(agecat) + 
+                          
+                          as.factor(income) + 
+                          
+                          worthhouse + 
+                          
+                          as.factor(woman) + 
+                          
+                          as.factor(opl2) +
+                          
+                          log(netsover4+1), #H9
+                        data = df)
+
+summary(genh9)
+summary(educh9)
+tab_model(genh9, educh9, show.se = TRUE)
+
+```
+
+Ethnic background is dropped from the paper.
+
 ```{r regrevision_eth, eval = TRUE}
-
-#gender
-modeldutch <- lm(numdutch ~ 
-                          as.factor(work) + 
-                          
-                          hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
-                          as.factor(agecat) + 
-                          
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                          data = df)
-#summary(modeldutch)
-
-
-modelnodutch <- lm(numnodutch ~ 
-                          as.factor(work) + 
-                          
-                          hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
-                          as.factor(agecat) + 
-                          
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                        data = df)
-#summary(modelnodutch)
-
-
-modelsameethnic1 <- lm(sameethnic1 ~ 
-                          as.factor(work) + 
-                          
-                          hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
-                          as.factor(agecat) + 
-                          
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                        data = df)
-#summary(modelsameethnic1)
-
-tab_model(modeldutch, modelnodutch, modelsameethnic1, show.se = TRUE)
+# 
+# #gender
+# modeldutch <- lm(numdutch ~ 
+#                           as.factor(work) + 
+#                           
+#                           hhsize + 
+#                           
+#                           as.factor(migr3) + 
+#                           
+#                           as.factor(agecat) + 
+#                           
+#                           as.factor(income) + 
+#                           
+#                           worthhouse +
+#                           
+#                           as.factor(woman) + 
+#                           
+#                           as.factor(opl),
+#                           data = df)
+# #summary(modeldutch)
+# 
+# 
+# modelnodutch <- lm(numnodutch ~ 
+#                           as.factor(work) + 
+#                           
+#                           hhsize + 
+#                           
+#                           as.factor(migr3) + 
+#                           
+#                           as.factor(agecat) + 
+#                           
+#                           as.factor(income) + 
+#                           
+#                           worthhouse +
+#                           
+#                           as.factor(woman) + 
+#                           
+#                           as.factor(opl),
+#                         data = df)
+# #summary(modelnodutch)
+# 
+# 
+# modelsameethnic1 <- lm(sameethnic1 ~ 
+#                           as.factor(work) + 
+#                           
+#                           hhsize + 
+#                           
+#                           as.factor(migr3) + 
+#                           
+#                           as.factor(agecat) + 
+#                           
+#                           as.factor(income) + 
+#                           
+#                           worthhouse +
+#                           
+#                           as.factor(woman) + 
+#                           
+#                           as.factor(opl),
+#                         data = df)
+# #summary(modelsameethnic1)
+# 
+# tab_model(modeldutch, modelnodutch, modelsameethnic1, show.se = TRUE)
 ```
 
 
@@ -589,124 +602,78 @@ tab_model(modeldutch, modelnodutch, modelsameethnic1, show.se = TRUE)
 
 ```{r regrevision_robust, eval = TRUE}
 
-modell1 <- lm(log(netsover1+1) ~ 
-                          as.factor(work) + 
-                          
-                          hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
-                          as.factor(agecat) + 
-                          
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                          data = df[!df[["netsover1"]]>5000,])
-summary(modell1)
 
-modell3 <- lm(log(netsover3+1) ~ 
-                          as.factor(work) + 
+# robustness four other estimation scenarios: mostly qualitatively similar
+r1 <- lm(log(netsover1+1) ~ 
+                          as.factor(work) + #h1
+                           
+                          hhsize + #H2
+
+                          as.factor(agecat) + #h3
                           
-                          hhsize + 
+                          as.factor(income) + #h4
                           
-                          as.factor(migr3) + 
+                          worthhouse + #H4
                           
-                          as.factor(agecat) + 
+                          as.factor(woman) + #h5
                           
-                          as.factor(income) + 
+                          as.factor(opl2), #h6
+                        data = df[!df[["netsover1"]]>5000,])
+
+
+r2 <- lm(log(netsover2+1) ~ 
+                          as.factor(work) + #h1
+                           
+                          hhsize + #H2
+
+                          as.factor(agecat) + #h3
                           
-                          worthhouse +
+                          as.factor(income) + #h4
                           
-                          as.factor(woman) + 
+                          worthhouse + #H4
                           
-                          as.factor(opl),
+                          as.factor(woman) + #h5
+                          
+                          as.factor(opl2), #h6
+                        data = df[!df[["netsover2"]]>5000,])
+
+r3 <- lm(log(netsover3+1) ~ 
+                          as.factor(work) + #h1
+                           
+                          hhsize + #H2
+
+                          as.factor(agecat) + #h3
+                          
+                          as.factor(income) + #h4
+                          
+                          worthhouse + #H4
+                          
+                          as.factor(woman) + #h5
+                          
+                          as.factor(opl2), #h6
                         data = df[!df[["netsover3"]]>5000,])
-summary(modell3)
 
-modell4 <- lm(log(netsover4+1) ~ 
-                          as.factor(work) + 
-                          
-                          hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
-                          as.factor(agecat) + 
-                          
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                        data = df[!df[["netsover4"]]>5000,])
-summary(modell4)
+r5 <- lm(log(netsover5+1) ~ 
+                          as.factor(work) + #h1
+                           
+                          hhsize + #H2
 
-modellnb1 <- glm.nb(netsover1 ~ 
-                          as.factor(work) + 
+                          as.factor(agecat) + #h3
                           
-                          hhsize + 
+                          as.factor(income) + #h4
                           
-                          as.factor(migr3) + 
+                          worthhouse + #H4
                           
-                          as.factor(agecat) + 
+                          as.factor(woman) + #h5
                           
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                        data = df[!df[["netsover1"]]>5000,],
-                        init.theta = 1.032713156, link = log)
-summary(modellnb1)
+                          as.factor(opl2), #h6
+                        data = df[!df[["netsover5"]]>5000,])
 
-
-modellnb3 <- glm.nb(netsover3 ~ 
-                          as.factor(work) + 
-                          
-                          hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
-                          as.factor(agecat) + 
-                          
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                        data = df[!df[["netsover3"]]>5000,],
-                        init.theta = 1.032713156, link = log)
-summary(modellnb3)
-
-
-modellnb4 <- glm.nb(netsover4 ~ 
-                          as.factor(work) + 
-                          
-                          hhsize + 
-                          
-                          as.factor(migr3) + 
-                          
-                          as.factor(agecat) + 
-                          
-                          as.factor(income) + 
-                          
-                          worthhouse +
-                          
-                          as.factor(woman) + 
-                          
-                          as.factor(opl),
-                        data = df[!df[["netsover4"]]>5000,],
-                        init.theta = 1.032713156, link = log)
-summary(modellnb4)
+# robustness for scenarios
+summary(r1)
+summary(r2)
+summary(r3)
+summary(r5)
 
 
 

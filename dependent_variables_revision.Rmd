@@ -30,7 +30,7 @@ Last compiled on `r format(Sys.time(), '%B, %Y')`
 
 ----
 
-This is the code with which we make our dependent variables.
+This is the code with which we make our dependent variables according to the revision of our manuscript.
 
 <br>
 
@@ -60,13 +60,15 @@ fpackage.check(packages)
 rm(packages)
 load("data/dutch_netsize_analyses.rda")
 
+
+
 ```
 
 
 
 Revision dependent variable for network size
 
-```{r revisiondispersed,  eval=FALSE}
+```{r revisiondispersed, eval=FALSE}
 
 dfans <- df[, c("uni", "hbo", "mbo", "dochterzoon", "tweeling", "corona", 
               "elauto", "scooter", "vegan", 
@@ -106,7 +108,6 @@ overdisp.est1 <- overdispersed(ard,
                             warmup = 500,
                             iter = 5000)
 
-
 # primary scaling groups all, except some
 overdisp.est2 <- overdispersed(ard,
                             known_sizes = subpop_sizes[known_ind],
@@ -116,13 +117,24 @@ overdisp.est2 <- overdispersed(ard,
                             N = N,
                             warmup = 500,
                             iter = 5000)
+ 
+# regularize subpopulations to < 10k
+z <- which(subpop_sizes < 10000)
+overdisp.est3 <- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            G1_ind = z,
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
 
-# subpopulations < 50k
+
+# only subpopulations < 50k
 z <- which(subpop_sizes < 50000)
 ard <- ard[, z]
 subpop_sizes <- pops[z]
 known_ind <- c(1:length(subpop_sizes))
-overdisp.est3 <- overdispersed(ard,
+overdisp.est4 <- overdispersed(ard,
                             known_sizes = subpop_sizes[known_ind],
                             known_ind = known_ind,
                             N = N,
@@ -134,7 +146,7 @@ overdisp.est3 <- overdispersed(ard,
 ard <- as.matrix(dfans[,-c(6)]) 
 subpop_sizes <- pops[-6]
 known_ind <- c(1:42)
-overdisp.est4 <- overdispersed(ard,
+overdisp.est5 <- overdispersed(ard,
                             known_sizes = subpop_sizes[known_ind],
                             known_ind = known_ind,
                             G1_ind = known_ind,
@@ -147,11 +159,13 @@ x1 <- data.frame(colMeans(overdisp.est1$degrees))
 x2 <- data.frame(colMeans(overdisp.est2$degrees))
 x3 <- data.frame(colMeans(overdisp.est3$degrees))
 x4 <- data.frame(colMeans(overdisp.est4$degrees))
+x5 <- data.frame(colMeans(overdisp.est5$degrees))
 summary(x1[,1])
 summary(x2[,1])
 summary(x3[,1])
 summary(x4[,1])
-x <- cbind(x1[,1],x2[,1], x3[,1], x4[,1])
+summary(x5[,1])
+x <- cbind(x1[,1],x2[,1], x3[,1], x4[,1], x5[,1])
 cor(x)
 
 #safe to data
@@ -159,6 +173,7 @@ df$netsover1 <- colMeans(overdisp.est1$degrees)
 df$netsover2 <- colMeans(overdisp.est2$degrees)
 df$netsover3 <- colMeans(overdisp.est3$degrees)
 df$netsover4 <- colMeans(overdisp.est4$degrees)
+df$netsover5 <- colMeans(overdisp.est5$degrees)
 
 
 ```
@@ -185,19 +200,31 @@ summary(df[df$woman == 0, c("samegender")])
 Homogeneity metrics for education.
 
 ```{r revisionhomogeneity_educ,  eval=FALSE}
-
 #EDUC
+#independent
+df$opl2[df$opleiding == 1] <- 0 # prim/sec
+df$opl2[df$opleiding == 2] <- 0 # prim/sec
+df$opl2[df$opleiding == 3] <- 0 # prim/sec
+df$opl2[df$opleiding == 4] <- 0 # prim/sec
+
+df$opl2[df$opleiding == 5] <- 0 # prim/sec
+
+df$opl2[df$opleiding == 6] <- 1 # prim/sec
+df$opl2[df$opleiding == 7] <- 1 # prim/sec
+table(df$opleiding)
+table(df$opl2)
+
+df$numeduchigh <- df$hbo + df$uni
+df$numeduclow <- df$mbo
+
 df$numeduc <- rowSums(df[, c("uni", "hbo", "mbo")])
 
+df$sameeduc <- ifelse(df$opl2 == 0, (df$numeduclow / df$numeduc) * 100, NA)
+df$sameeduc <- ifelse(df$opl2 == 1, (df$numeduchigh / df$numeduc) * 100, df$sameeduc)
 
-df$oplei <- as.numeric(df$opleiding)
-class(df$oplei)
-table(df$oplei)
-
-df$sameeduc <- ifelse(df$oplei < 5, (df$mbo / df$numeduc) * 100, NA)
-df$sameeduc <- ifelse(df$oplei == 5, (df$hbo / df$numeduc) * 100, df$sameeduc)
-df$sameeduc <- ifelse(df$oplei == 6, (df$hbo / df$numeduc) * 100, df$sameeduc)
-df$sameeduc <- ifelse(df$oplei == 7, (df$uni / df$numeduc) * 100, df$sameeduc)
+summary(df$sameeduc)
+summary(df[df$opl2 == 1, c("sameeduc")])
+summary(df[df$opl2 == 0, c("sameeduc")])
 
 # df$sameeduc[df$oplei == 5] <- (df$hbo / df$numeduc) * 100
 # df$sameeduc[df$oplei == 6] <- (df$hbo / df$numeduc) * 100
@@ -205,10 +232,6 @@ df$sameeduc <- ifelse(df$oplei == 7, (df$uni / df$numeduc) * 100, df$sameeduc)
 # df$sameeduc[df$oplei == 7] <- (df$uni / df$numeduc) * 100
 
 #df[138, c("opleiding", "oplei", "numeduc", "mbo", "hbo", "uni", "sameeduc")]
-
-table(df$opleiding)
-summary(df$sameeduc)
-class(df$opleiding)   
 
 # geen onderwijs / basisonderwijs / cursus inburgering / cursus Nederlandse taal 
 # 1 
@@ -230,20 +253,19 @@ class(df$opleiding)
 Homogeneity metrics for ethnic background
 
 ```{r revisionhomogeneity_ethnic,  eval=FALSE}
-
-
-# ETHNIC
-df$numdutch <- rowSums(df[, c("Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
-                              "Anna","Elisabeth","Cornelia","Wilhelmina", "Sara", "Noor",
-                              "Daan","Sem","Thomas","Max","Kevin","Johannes","Dennis",
-                              "Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus", "Willem")])
-df$numnodutch <- rowSums(df[, c("Ali","Mohammed","Amira","Samira")])
-table(df$migr3)
-df$sameethnic1 <- ifelse(df$migr3 == 1, (df$numdutch/df$numnames)*100, (df$numnodutch/df$numnames)*100)
-df$sameethnic2 <- ifelse(df$migr3 == 1, (df$numdutch/df$numnames)*100, (df$numnodutch/df$numnames)*100)
-df$sameethnic2 <- ifelse(df$migr3 == 2, NA, df$sameethnic1)
-
-df[37, c("migr3", "sameethnic1", "numdutch", "numnodutch", "numnames")]
+# 
+# # ETHNIC
+# df$numdutch <- rowSums(df[, c("Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
+#                               "Anna","Elisabeth","Cornelia","Wilhelmina", "Sara", "Noor",
+#                               "Daan","Sem","Thomas","Max","Kevin","Johannes","Dennis",
+#                               "Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus", "Willem")])
+# df$numnodutch <- rowSums(df[, c("Ali","Mohammed","Amira","Samira")])
+# table(df$migr3)
+# df$sameethnic1 <- ifelse(df$migr3 == 1, (df$numdutch/df$numnames)*100, (df$numnodutch/df$numnames)*100)
+# df$sameethnic2 <- ifelse(df$migr3 == 1, (df$numdutch/df$numnames)*100, (df$numnodutch/df$numnames)*100)
+# df$sameethnic2 <- ifelse(df$migr3 == 2, NA, df$sameethnic1)
+# 
+# df[37, c("migr3", "sameethnic1", "numdutch", "numnodutch", "numnames")]
 
 
 ```
@@ -255,6 +277,6 @@ Finally, we save the data that we use for the analyses.
 ```{r datasave, eval=FALSE}
 
 # save data
-save(df, file = "data/dutch_netsize_analyses.rda")
+save(df, file = "data/dutch_netsize_analyses_revision.rda")
 
 ```

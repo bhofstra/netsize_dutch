@@ -59,7 +59,7 @@ packages = c("haven", "coda", "matrixStats", "parallel", "MASS", "doParallel", "
              "poweRlaw", "fitdistrplus", "grid", "ggplotify", "smplot2")
 fpackage.check(packages)
 rm(packages)
-load("data/dutch_netsize_analyses.rda")
+load("data/dutch_netsize_analyses_revision.rda")
 ```
 <br>
 
@@ -72,21 +72,18 @@ The code below generates the descriptive values which are used for Tables 1 and 
 
 ```{r descind, eval = TRUE}
 
-
-
-
 # descriptive table not automated: TABLE 1
 table(df$work)
 psych::describe(df$work)
 psych::describe(df$hhsize)
 
+table(df$agecat)
 
-table(df$migr3)
+
 # 1 Maj
 # 2 west
 # 3 nonwest
 
-table(df$agecat)
 
 table(df$income)
 # 1 < modal
@@ -99,7 +96,8 @@ psych::describe(df$worthhouse)
 table(df$woman)
 psych::describe(df$woman)
 
-table(df$opl)
+table(df$opl2)
+summary(df$opl2)
 # 1 prim/sec
 # 2 lower tert
 # 3 higher tert
@@ -111,13 +109,43 @@ table(df$opl)
 #df$educ3 <- df$opl
 #df$educ3 <- as.numeric(as.character(df$educ3))
 
-cor(as.matrix(df[df$income!=3,c("income","worthhouse")]))
+table(df$migr3)
+
+#cor(as.matrix(df[df$income!=3,c("income","worthhouse")]))
 
 #rcorr(as.matrix(df[,c("work", "hhsize", "leeftijd10", "woman", "educ3", "neighdens", "worthhouse" )]), type = "pearson")
 
 ```
 
 <br>
+
+```{r tablehomogeneity, eval = TRUE}
+
+summary(df$numwoman)
+summary(df[df$woman == 1, c("numwoman")])
+summary(df[df$woman == 0, c("numwoman")])
+
+summary(df$numman)
+summary(df[df$woman == 1, c("numman")])
+summary(df[df$woman == 0, c("numman")])
+
+summary(df$samegender)
+summary(df[df$woman == 1, c("samegender")])
+summary(df[df$woman == 0, c("samegender")])
+
+summary(df$numeduchigh)
+summary(df[df$opl2 == 1, c("numeduchigh")])
+summary(df[df$opl2 == 0, c("numeduchigh")])
+
+summary(df$numeduclow)
+summary(df[df$opl2 == 1, c("numeduclow")])
+summary(df[df$opl2 == 0, c("numeduclow")])
+
+summary(df$sameeduc)
+summary(df[df$opl2 == 1, c("sameeduc")])
+summary(df[df$opl2 == 0, c("sameeduc")])
+
+```
 
 ----
 
@@ -281,22 +309,22 @@ The code below generates Figure X from the paper associated with the text on pag
 ```{r densityrevision, eval = TRUE}
 
 # VIZ of netsize
-netsize_l <- gather(df[, c("netsover1", "netsover2", "netsover3", "netsover4")])
-round(summary(df$netsover2)[3], digits = 0)
-round(summary(df$netsover2)[4], digits = 0)
+netsize_l <- gather(df[, c("netsover1", "netsover2", "netsover3", "netsover4", "netsover5")])
+round(summary(df$netsover4)[3], digits = 0)
+round(summary(df$netsover4)[4], digits = 0)
 
 dens1 <- ggplot(netsize_l, aes(x=value, color = key)) + 
   geom_density(alpha = .2, size = 0.5) + 
   theme_minimal() + 
   theme(legend.position = "none") +
   labs(x = "Network size estimate", y = "Density") +
-  scale_color_manual(values = c("grey", "#56B4E9", "grey", "grey")) +
-    geom_vline(xintercept=246, color = "darkgrey", linetype = 2) +
-  geom_vline(xintercept=282, color = "darkgrey", linetype = 2) +
-  annotate("text", x = 350, y = 0.0008, color = "black", angle = 90, 
-           label = "Mean = 282") +
-  annotate("text", x = 175, y = 0.0008, color = "black", angle = 90, 
-           label = "Median = 246") +
+  scale_color_manual(values = c("grey", "grey", "grey", "#56B4E9", "grey")) +
+    geom_vline(xintercept=446, color = "darkgrey", linetype = 2) +
+  geom_vline(xintercept=518, color = "darkgrey", linetype = 2) +
+  annotate("text", x = 560, y = 0.0008, color = "black", angle = 90, 
+           label = "Mean = 518") +
+  annotate("text", x = 400, y = 0.0008, color = "black", angle = 90, 
+           label = "Median = 446") +
   xlim(c(0, 1500))
 # save
 ggsave("output/densities_revision.pdf", plot = dens1, device = "pdf",
@@ -317,8 +345,8 @@ We now fit a "complementary cumulative degree distribution" and check how it fit
 ```{r ccdf, eval = TRUE}
 
 #df$netsize <- round(rowSums(df[,c(14:185)]) / length(14:185), 0)
-df <- df[!df$netsover2 > 5000, ]
-degrees <- round(df$netsover2, 0)
+df <- df[!df$netsover4 > 5000, ]
+degrees <- round(df$netsover4, 0)
 
 degr_pl <- displ$new(degrees) # create a discrete powerlaw distribution object 
 
