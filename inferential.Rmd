@@ -58,7 +58,7 @@ packages = c("haven", "coda", "matrixStats", "parallel", "MASS", "doParallel", "
              "tidyverse", "naniar", "dotwhisker" ,"gt", "reshape2", "VGAM", "expss", "Hmisc", "MASS", "sjPlot")
 fpackage.check(packages)
 rm(packages)
-load("data/dutch_netsize_analyses.rda")
+load("data/dutch_netsize_analyses_revision.rda")
 ```
 
 <br>
@@ -316,6 +316,9 @@ class(df$agecat)
 
 # some final data handling to assign the correct reference categories
 #df$opl2 <-relevel(as.factor(df$opl2), ref = 0)
+
+df$agecat<- as.character(df$agecat)
+df$income<- as.character(df$income)
 df$income <-relevel(as.factor(df$income), ref = 2)
 df$agecat <-relevel(as.factor(df$agecat), ref = 4)
 
