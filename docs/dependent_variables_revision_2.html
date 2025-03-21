@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Bas Hofstra" />
+
+
+<title>Dependent variables: Revision 2</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="tweaks.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Names
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="names_search.html">Names search</a>
+    </li>
+    <li>
+      <a href="names_selection.html">Names selection</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="questionnaire.html">Questionnaire</a>
+</li>
+<li>
+  <a href="nsum.html">NSUM</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Variables
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="identifier.html">I&amp;O Identifier</a>
+    </li>
+    <li>
+      <a href="dependent_variables.html">Dependent Variables</a>
+    </li>
+    <li>
+      <a href="dependent_variables_revision.html">Dependent Variables Revision</a>
+    </li>
+    <li>
+      <a href="dependent_variables_revision_2.html">Dependent Variables Revision 2</a>
+    </li>
+    <li>
+      <a href="independent_variables.html">Independent Variables</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="descriptives.html">Descriptive analyses</a>
+    </li>
+    <li>
+      <a href="inferential.html">Regression analyses</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/bhofstra/netsize_dutch">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Dependent variables: Revision 2</h1>
+<h4 class="author">Bas Hofstra</h4>
+
+</div>
+
+
+<script>
+  addClassKlippyTo("pre.r, pre.markdown");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<p>Last compiled on March, 2025</p>
+<p><br></p>
+<hr />
+<p>This is the code with which we make our dependent variables according
+to the revision of our manuscript.</p>
+<p><br></p>
+<hr />
+<div id="initatiating-r-environment" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Initatiating R
+environment</h1>
+<p>Start out with a custom function to load a set of required
+packages.</p>
+<pre class="r test"><code># packages and read data
+rm(list = ls())
+
+# (c) Jochem Tolsma
+fpackage.check &lt;- function(packages) {
+    lapply(packages, FUN = function(x) {
+        if (!require(x, character.only = TRUE)) {
+            install.packages(x, dependencies = TRUE)
+            library(x, character.only = TRUE)
+        }
+    })
+}
+packages = c(&quot;haven&quot;, &quot;coda&quot;, &quot;matrixStats&quot;, &quot;parallel&quot;, &quot;MASS&quot;, &quot;doParallel&quot;, &quot;dplyr&quot;, &quot;cowplot&quot;, &quot;tidyverse&quot;,
+    &quot;naniar&quot;, &quot;dotwhisker&quot;, &quot;gt&quot;, &quot;reshape2&quot;, &quot;VGAM&quot;, &quot;expss&quot;, &quot;networkscaleup&quot;)
+fpackage.check(packages)
+rm(packages)
+load(&quot;data/dutch_netsize_analyses.rda&quot;)</code></pre>
+<p>Revision 2 dependent variable for network size</p>
+<pre class="r test"><code>dfans &lt;- df[, c(&quot;uni&quot;, &quot;hbo&quot;, &quot;mbo&quot;, &quot;dochterzoon&quot;, &quot;tweeling&quot;, &quot;corona&quot;, 
+              &quot;elauto&quot;, &quot;scooter&quot;, &quot;vegan&quot;, 
+              &quot;Sophie&quot;, &quot;Julia&quot;,&quot;Sanne&quot;,&quot;Lisa&quot;,&quot;Laura&quot;,&quot;Maria&quot;,&quot;Linda&quot;,&quot;Johanna&quot;,&quot;Monique&quot;,&quot;Ester&quot;,
+              &quot;Anna&quot;,&quot;Elisabeth&quot;,&quot;Cornelia&quot;,&quot;Wilhelmina&quot;,&quot;Amira&quot;,&quot;Samira&quot;,&quot;Sara&quot;,&quot;Daan&quot;,&quot;Sem&quot;,
+              &quot;Thomas&quot;,&quot;Max&quot;,&quot;Kevin&quot;,&quot;Johannes&quot;,&quot;Dennis&quot;,&quot;Jeroen&quot;,&quot;Jan&quot;,&quot;Marcel&quot;,&quot;Cornelis&quot;,&quot;Hendrik&quot;,&quot;Petrus&quot;,
+              &quot;Willem&quot;,&quot;Ali&quot;,&quot;Mohammed&quot;,&quot;Noor&quot;)] # take mean of each of the cats
+
+ref1 &lt;- c(84957, 75214, 145600, 168066, 2500, 1558549)
+# ORDER:  uni, hbo, mbo, dochter/zoon, tweeling, corona
+
+ref2 &lt;- c(273259, 460618, 261000)
+# ORDER:   elecauto, scooter, vegan,
+
+ref3 &lt;- c(15276,16350,27394,21200,25681,334502,29955,266522,39481, 2692,
+          136296,110231,112807,98208,1386,2186,11640,22704,13276,
+          40543,17024,23167,307032,36411,49182,186746,35973,134956,118610,86500,
+          102296,4213,5003,4517)
+# ORDER:   Sophie, Julia,Sanne,Lisa,Laura,Maria,Linda,Johanna,Monique,Ester,
+#             Anna,Elisabeth,Cornelia,Wilhelmina,Amira,Samira,Sara,Daan,Sem,
+#             Thomas,Max,Kevin,Johannes,Dennis,Jeroen,Jan,Marcel,Cornelis,Hendrik,Petrus,
+#             Willem,Ali,Mohammed,Noor
+
+
+
+pops &lt;- c(ref1, ref2, ref3)
+
+# Analyze an example ard data set using Zheng et al. (2006) models
+ard &lt;- as.matrix(dfans)
+subpop_sizes &lt;- pops
+known_ind &lt;- c(1:43)
+
+N &lt;- 17407585
+
+
+# renormalization
+# first with primary scaling groups ALL
+overdisp.est1 &lt;- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            G1_ind = known_ind,
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+
+# two scaling groups, ALL groups selected
+overdisp.est2 &lt;- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            G1_ind = c(2, 3, 4, 7, 9, 35), #hbo, mbo,dochterzoon, elauto,vegan, jan
+                            G2_ind = c(15, 17, 32), # maria, johanna, johannes
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+ 
+
+# subgroup selection
+# regularize subpopulations to &lt; 10k and selection &lt; 10k
+ard &lt;- as.matrix(dfans)
+subpop_sizes &lt;- pops
+z &lt;- which(subpop_sizes &lt; 10000)
+ard &lt;- ard[, z]
+subpop_sizes &lt;- pops[z]
+known_ind &lt;- c(1:length(subpop_sizes))
+overdisp.est3 &lt;- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            G1_ind = known_ind,
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+
+# only subpopulations &lt; 50k
+ard &lt;- as.matrix(dfans)
+subpop_sizes &lt;- pops
+z &lt;- which(subpop_sizes &lt; 50000)
+ard &lt;- ard[, z]
+subpop_sizes &lt;- pops[z]
+known_ind &lt;- c(1:length(subpop_sizes))
+overdisp.est4 &lt;- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+
+
+
+#without corona, the very top level one
+ard &lt;- as.matrix(dfans[,-c(6)]) 
+subpop_sizes &lt;- pops[-6]
+known_ind &lt;- c(1:42)
+overdisp.est5 &lt;- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            G1_ind = known_ind,
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+
+
+#with mccormick selection criteria .1-.2
+ref &lt;- as.data.frame(pops)
+ref$prop &lt;- (ref$pops/N)*100
+
+ref &lt;- ref[ref$prop &lt; .22,]
+ref &lt;- ref[ref$prop &gt; .08,]
+z &lt;- as.integer(rownames(ref))
+
+ard &lt;- as.matrix(dfans)
+ard &lt;- ard[, z]
+subpop_sizes &lt;- pops[z]
+known_ind &lt;- c(1:length(subpop_sizes))
+
+overdisp.mccormick1 &lt;- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            G1_ind = known_ind,
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+
+
+
+# 
+# #with mccormick selection criteria .05-.25
+# ref &lt;- as.data.frame(pops)
+# ref$prop &lt;- (ref$pops/N)*100
+# 
+# ref &lt;- ref[ref$prop &lt; .25,]
+# ref &lt;- ref[ref$prop &gt; .05,]
+# z &lt;- as.integer(rownames(ref))
+# 
+# ard &lt;- ard[, z]
+# subpop_sizes &lt;- pops[z]
+# known_ind &lt;- c(1:length(subpop_sizes))
+# 
+# overdisp.mccormick2 &lt;- overdispersed(ard,
+#                             known_sizes = subpop_sizes[known_ind],
+#                             known_ind = known_ind,
+#                             G1_ind = known_ind,
+#                             N = N,
+#                             warmup = 500,
+#                             iter = 5000)
+
+
+
+# same iterations in one mean, correlate
+x1 &lt;- data.frame(colMeans(overdisp.est1$degrees))
+x2 &lt;- data.frame(colMeans(overdisp.est2$degrees))
+x3 &lt;- data.frame(colMeans(overdisp.est3$degrees))
+x4 &lt;- data.frame(colMeans(overdisp.est4$degrees))
+x5 &lt;- data.frame(colMeans(overdisp.est5$degrees))
+x6 &lt;- data.frame(colMeans(overdisp.mccormick1$degrees))
+#x7 &lt;- data.frame(colMeans(overdisp.mccormick2$degrees))
+summary(x1[,1])
+summary(x2[,1])
+summary(x3[,1])
+summary(x4[,1])
+summary(x5[,1])
+summary(x6[,1])
+#summary(x7[,1])
+
+#safe to data
+df$netsover1 &lt;- colMeans(overdisp.est1$degrees)
+df$netsover2 &lt;- colMeans(overdisp.est2$degrees)
+df$netsover3 &lt;- colMeans(overdisp.est3$degrees)
+df$netsover4 &lt;- colMeans(overdisp.est4$degrees)
+df$netsover5 &lt;- colMeans(overdisp.est5$degrees)
+df$netsover6 &lt;- colMeans(overdisp.mccormick1$degrees)
+
+df$netsover7 &lt;- colMeans(overdisp.mccormick1$degrees)
+#df$netsover7 &lt;- colMeans(overdisp.mccormick2$degrees)
+cor(df[,c(&quot;netsover1&quot;, &quot;netsover2&quot;, &quot;netsover3&quot;, &quot;netsover4&quot;, &quot;netsover5&quot;, &quot;netsover6&quot;)])
+
+
+summary(df$netsover1)
+summary(df$netsover2)
+summary(df$netsover3)
+summary(df$netsover4)
+summary(df$netsover5)
+summary(df$netsover6)
+summary(df$netsover7)</code></pre>
+<p>Homogeneity metrics for gender.</p>
+<pre class="r test"><code># jeroense et al.: The numerical response to each name question was divided by the name frequency
+# in the population.  We then calculated a total sum for each set of distinct ethnic-group names
+# and for all names.  By dividing the total sum of co-ethnic names by the total sum of all names
+# multiplied by 100, we derive our relative ethnic homogeneity measurement, running from 0 to 100.
+
+# volker et al.: For our gender and educational homogeneity metrics we follow Jeroense and
+# colleagues&#39; (2023) approach to measuring homogeneity in extended networks.  We first divide the
+# numerical response to each name by that name&#39;s population size.  We then sum these numbers for
+# all names and for women en men names seperately.  we subsequently divide the sum of women (or
+# men) names by the sum of all names multiplied by 100 for the relative number of women (or men) in
+# the alter category answers (from 0 to 100). This is defined as follows: We also divide the sum of
+# same-gender names by the sum of all names multipled by 100 for our relative gender homogeneity
+# measurement (from 0 to 100). We define both measurements as follows:
+
+# GENDER table(df$woman) df$numwoman &lt;- rowSums(df[, c(&#39;Sophie&#39;,
+# &#39;Julia&#39;,&#39;Sanne&#39;,&#39;Lisa&#39;,&#39;Laura&#39;,&#39;Maria&#39;,&#39;Linda&#39;,&#39;Johanna&#39;,&#39;Monique&#39;,&#39;Ester&#39;,
+# &#39;Anna&#39;,&#39;Elisabeth&#39;,&#39;Cornelia&#39;,&#39;Wilhelmina&#39;,&#39;Amira&#39;,&#39;Samira&#39;,&#39;Sara&#39;, &#39;Noor&#39;)]) df$numman &lt;-
+# rowSums(df[, c(&#39;Daan&#39;,&#39;Sem&#39;,&#39;Thomas&#39;,&#39;Max&#39;,&#39;Kevin&#39;,&#39;Johannes&#39;,&#39;Dennis&#39;,
+# &#39;Jeroen&#39;,&#39;Jan&#39;,&#39;Marcel&#39;,&#39;Cornelis&#39;,&#39;Hendrik&#39;,&#39;Petrus&#39;, &#39;Willem&#39;,&#39;Ali&#39;,&#39;Mohammed&#39;)]) dfans &lt;- df[,
+# c(&#39;Sophie&#39;, &#39;Julia&#39;,&#39;Sanne&#39;,&#39;Lisa&#39;,&#39;Laura&#39;,&#39;Maria&#39;,&#39;Linda&#39;,&#39;Johanna&#39;,&#39;Monique&#39;,&#39;Ester&#39;,
+# &#39;Anna&#39;,&#39;Elisabeth&#39;,&#39;Cornelia&#39;,&#39;Wilhelmina&#39;,&#39;Amira&#39;,&#39;Samira&#39;,&#39;Sara&#39;,&#39;Daan&#39;,&#39;Sem&#39;,
+# &#39;Thomas&#39;,&#39;Max&#39;,&#39;Kevin&#39;,&#39;Johannes&#39;,&#39;Dennis&#39;,&#39;Jeroen&#39;,&#39;Jan&#39;,&#39;Marcel&#39;,&#39;Cornelis&#39;,&#39;Hendrik&#39;,&#39;Petrus&#39;,
+# &#39;Willem&#39;,&#39;Ali&#39;,&#39;Mohammed&#39;,&#39;Noor&#39;)] # take mean of each of the cats df$numnames &lt;-
+# df$numwoman+df$numman df$samegender &lt;- ifelse(df$woman == 1, (df$numwoman/df$numnames)*100,
+# (df$numman/df$numnames)*100) summary(df$samegender) summary(df[df$woman == 1, c(&#39;samegender&#39;)])
+# summary(df[df$woman == 0, c(&#39;samegender&#39;)])
+
+# women homogeneity extract answers to women names
+women &lt;- df[, c(&quot;Sophie&quot;, &quot;Julia&quot;, &quot;Sanne&quot;, &quot;Lisa&quot;, &quot;Laura&quot;, &quot;Maria&quot;, &quot;Linda&quot;, &quot;Johanna&quot;, &quot;Monique&quot;,
+    &quot;Ester&quot;, &quot;Anna&quot;, &quot;Elisabeth&quot;, &quot;Cornelia&quot;, &quot;Wilhelmina&quot;, &quot;Amira&quot;, &quot;Samira&quot;, &quot;Sara&quot;, &quot;Noor&quot;)]
+
+wompop &lt;- c(15276, 16350, 27394, 21200, 25681, 334502, 29955, 266522, 39481, 2692, 136296, 110231, 112807,
+    98208, 1386, 2186, 11640, 4517)
+
+#
+sort(c(15276, 16350, 27394, 21200, 25681, 334502, 29955, 266522, 39481, 2692, 136296, 110231, 112807,
+    98208, 1386, 2186, 11640, 4517)) &gt; sort(c(22704, 13276, 40543, 17024, 23167, 307032, 36411, 49182,
+    186746, 35973, 134956, 118610, 86500, 102296, 4213, 5003))
+
+# ORDER: Sophie, Julia,Sanne,Lisa,Laura,Maria,Linda,Johanna,Monique,Ester,
+# Anna,Elisabeth,Cornelia,Wilhelmina,Amira,Samira,Sara, Noor
+
+for (i in 1:length(women)) {
+
+    women[[i]] &lt;- women[[i]]/wompop[i]
+
+}
+women$womsum &lt;- rowSums(women[, c(&quot;Sophie&quot;, &quot;Julia&quot;, &quot;Sanne&quot;, &quot;Lisa&quot;, &quot;Laura&quot;, &quot;Maria&quot;, &quot;Linda&quot;, &quot;Johanna&quot;,
+    &quot;Monique&quot;, &quot;Ester&quot;, &quot;Anna&quot;, &quot;Elisabeth&quot;, &quot;Cornelia&quot;, &quot;Wilhelmina&quot;, &quot;Amira&quot;, &quot;Samira&quot;, &quot;Sara&quot;, &quot;Noor&quot;)])
+
+
+# men homogeneity extract answers to men names
+men &lt;- df[, c(&quot;Daan&quot;, &quot;Sem&quot;, &quot;Thomas&quot;, &quot;Max&quot;, &quot;Kevin&quot;, &quot;Johannes&quot;, &quot;Dennis&quot;, &quot;Jeroen&quot;, &quot;Jan&quot;, &quot;Marcel&quot;,
+    &quot;Cornelis&quot;, &quot;Hendrik&quot;, &quot;Petrus&quot;, &quot;Willem&quot;, &quot;Ali&quot;, &quot;Mohammed&quot;)]
+
+# popu
+menpop &lt;- c(22704, 13276, 40543, 17024, 23167, 307032, 36411, 49182, 186746, 35973, 134956, 118610, 86500,
+    102296, 4213, 5003)
+# ORDER: Daan,Sem, Thomas,Max,Kevin,Johannes,Dennis,Jeroen,Jan,Marcel,Cornelis,Hendrik,Petrus,
+# Willem,Ali,Mohammed,
+
+for (i in 1:length(men)) {
+
+    men[[i]] &lt;- men[[i]]/menpop[i]
+
+}
+men$mensum &lt;- rowSums(men[, c(&quot;Daan&quot;, &quot;Sem&quot;, &quot;Thomas&quot;, &quot;Max&quot;, &quot;Kevin&quot;, &quot;Johannes&quot;, &quot;Dennis&quot;, &quot;Jeroen&quot;,
+    &quot;Jan&quot;, &quot;Marcel&quot;, &quot;Cornelis&quot;, &quot;Hendrik&quot;, &quot;Petrus&quot;, &quot;Willem&quot;, &quot;Ali&quot;, &quot;Mohammed&quot;)])
+
+# and the totals
+df2 &lt;- cbind(women, men)
+df2$perwomen &lt;- df2$womsum/(df2$womsum + df2$mensum)
+df2$permen &lt;- df2$mensum/(df2$womsum + df2$mensum)
+
+df &lt;- cbind(df, df2[, c(&quot;perwomen&quot;, &quot;permen&quot;)])
+df$samegender &lt;- ifelse(df$woman == 1, df$perwomen, df$permen)</code></pre>
+<p>Homogeneity metrics for education.</p>
+<pre class="r test"><code># EDUC independent
+df$opl2[df$opleiding == 1] &lt;- 0  # prim/sec
+df$opl2[df$opleiding == 2] &lt;- 0  # prim/sec
+df$opl2[df$opleiding == 3] &lt;- 0  # prim/sec
+df$opl2[df$opleiding == 4] &lt;- 0  # prim/sec
+
+df$opl2[df$opleiding == 5] &lt;- 0  # prim/sec
+
+df$opl2[df$opleiding == 6] &lt;- 1  # prim/sec
+df$opl2[df$opleiding == 7] &lt;- 1  # prim/sec
+table(df$opleiding)
+table(df$opl2)
+
+df$numeduchigh &lt;- df$hbo + df$uni
+df$numeduclow &lt;- df$mbo
+
+df$numeduc &lt;- rowSums(df[, c(&quot;uni&quot;, &quot;hbo&quot;, &quot;mbo&quot;)])
+
+df$pereduchigh &lt;- df$numeduchigh/df$numeduc
+df$pereduclow &lt;- df$numeduclow/df$numeduc
+
+df$sameeduc &lt;- ifelse(df$opl2 == 1, df$pereduchigh, df$pereduclow)
+# df$sameeduc &lt;- ifelse(df$opl2 == 1, (df$numeduchigh / df$numeduc) * 100, df$sameeduc)
+
+summary(df$sameeduc)
+summary(df[df$opl2 == 1, c(&quot;sameeduc&quot;)])
+summary(df[df$opl2 == 0, c(&quot;sameeduc&quot;)])
+
+# df$sameeduc[df$oplei == 5] &lt;- (df$hbo / df$numeduc) * 100 df$sameeduc[df$oplei == 6] &lt;- (df$hbo /
+# df$numeduc) * 100 df$sameeduc[df$oplei == 7] &lt;- (df$uni / df$numeduc) * 100
+
+# df[138, c(&#39;opleiding&#39;, &#39;oplei&#39;, &#39;numeduc&#39;, &#39;mbo&#39;, &#39;hbo&#39;, &#39;uni&#39;, &#39;sameeduc&#39;)]
+
+# geen onderwijs / basisonderwijs / cursus inburgering / cursus Nederlandse taal 1 LBO / VBO / VMBO
+# (kader- of beroepsgerichte leerweg) / MBO 1 (assistentenopleidi 2 MAVO / HAVO of VWO (eerste drie
+# jaar) / ULO / MULO / VMBO (TL of GL) / VSO 3 MBO 2, 3, 4 (basisberoeps-, vak-, middenkader- of
+# specialistenopleiding) of MBO 4 HAVO of VWO (overgegaan naar de 4e klas) / HBS / MMS / HBO
+# propedeuse of WO Prop 5 HBO (behalve HBO-master) / WO-kandidaats -of WO-bachelor 6 WO-doctoraal
+# of WO-master of HBO-master / postdoctoraal onderwijs 7</code></pre>
+<p>Homogeneity metrics for ethnic background</p>
+<pre class="r test"><code># # ETHNIC df$numdutch &lt;- rowSums(df[, c(&#39;Sophie&#39;,
+# &#39;Julia&#39;,&#39;Sanne&#39;,&#39;Lisa&#39;,&#39;Laura&#39;,&#39;Maria&#39;,&#39;Linda&#39;,&#39;Johanna&#39;,&#39;Monique&#39;,&#39;Ester&#39;,
+# &#39;Anna&#39;,&#39;Elisabeth&#39;,&#39;Cornelia&#39;,&#39;Wilhelmina&#39;, &#39;Sara&#39;, &#39;Noor&#39;,
+# &#39;Daan&#39;,&#39;Sem&#39;,&#39;Thomas&#39;,&#39;Max&#39;,&#39;Kevin&#39;,&#39;Johannes&#39;,&#39;Dennis&#39;,
+# &#39;Jeroen&#39;,&#39;Jan&#39;,&#39;Marcel&#39;,&#39;Cornelis&#39;,&#39;Hendrik&#39;,&#39;Petrus&#39;, &#39;Willem&#39;)]) df$numnodutch &lt;- rowSums(df[,
+# c(&#39;Ali&#39;,&#39;Mohammed&#39;,&#39;Amira&#39;,&#39;Samira&#39;)]) table(df$migr3) df$sameethnic1 &lt;- ifelse(df$migr3 == 1,
+# (df$numdutch/df$numnames)*100, (df$numnodutch/df$numnames)*100) df$sameethnic2 &lt;- ifelse(df$migr3
+# == 1, (df$numdutch/df$numnames)*100, (df$numnodutch/df$numnames)*100) df$sameethnic2 &lt;-
+# ifelse(df$migr3 == 2, NA, df$sameethnic1) df[37, c(&#39;migr3&#39;, &#39;sameethnic1&#39;, &#39;numdutch&#39;,
+# &#39;numnodutch&#39;, &#39;numnames&#39;)]</code></pre>
+<pre class="r test"><code># women homogeneity extract answers to women names NO AMIRA AND SAMIRA
+women &lt;- df[, c(&quot;Sophie&quot;, &quot;Julia&quot;, &quot;Sanne&quot;, &quot;Lisa&quot;, &quot;Laura&quot;, &quot;Maria&quot;, &quot;Linda&quot;, &quot;Johanna&quot;, &quot;Monique&quot;,
+    &quot;Ester&quot;, &quot;Anna&quot;, &quot;Elisabeth&quot;, &quot;Cornelia&quot;, &quot;Wilhelmina&quot;, &quot;Sara&quot;, &quot;Noor&quot;)]
+wompop &lt;- c(15276, 16350, 27394, 21200, 25681, 334502, 29955, 266522, 39481, 2692, 136296, 110231, 112807,
+    98208, 11640, 4517)
+# ORDER: Sophie, Julia,Sanne,Lisa,Laura,Maria,Linda,Johanna,Monique,Ester,
+# Anna,Elisabeth,Cornelia,Wilhelmina,Sara, Noor
+
+for (i in 1:length(women)) {
+
+    women[[i]] &lt;- women[[i]]/wompop[i]
+
+}
+women$womsum &lt;- rowSums(women[, c(&quot;Sophie&quot;, &quot;Julia&quot;, &quot;Sanne&quot;, &quot;Lisa&quot;, &quot;Laura&quot;, &quot;Maria&quot;, &quot;Linda&quot;, &quot;Johanna&quot;,
+    &quot;Monique&quot;, &quot;Ester&quot;, &quot;Anna&quot;, &quot;Elisabeth&quot;, &quot;Cornelia&quot;, &quot;Wilhelmina&quot;, &quot;Sara&quot;, &quot;Noor&quot;)])
+
+
+# men homogeneity extract answers to men names
+men &lt;- df[, c(&quot;Daan&quot;, &quot;Sem&quot;, &quot;Thomas&quot;, &quot;Max&quot;, &quot;Kevin&quot;, &quot;Johannes&quot;, &quot;Dennis&quot;, &quot;Jeroen&quot;, &quot;Jan&quot;, &quot;Marcel&quot;,
+    &quot;Cornelis&quot;, &quot;Hendrik&quot;, &quot;Petrus&quot;, &quot;Willem&quot;, &quot;Ali&quot;, &quot;Mohammed&quot;)]
+# popu
+menpop &lt;- c(22704, 13276, 40543, 17024, 23167, 307032, 36411, 49182, 186746, 35973, 134956, 118610, 86500,
+    102296, 4213, 5003)
+# ORDER: Daan,Sem, Thomas,Max,Kevin,Johannes,Dennis,Jeroen,Jan,Marcel,Cornelis,Hendrik,Petrus,
+# Willem,Ali,Mohammed,
+for (i in 1:length(men)) {
+
+    men[[i]] &lt;- men[[i]]/menpop[i]
+
+}
+men$mensum &lt;- rowSums(men[, c(&quot;Daan&quot;, &quot;Sem&quot;, &quot;Thomas&quot;, &quot;Max&quot;, &quot;Kevin&quot;, &quot;Johannes&quot;, &quot;Dennis&quot;, &quot;Jeroen&quot;,
+    &quot;Jan&quot;, &quot;Marcel&quot;, &quot;Cornelis&quot;, &quot;Hendrik&quot;, &quot;Petrus&quot;, &quot;Willem&quot;, &quot;Ali&quot;, &quot;Mohammed&quot;)])
+
+# and the totals
+df2 &lt;- cbind(women, men)
+df2$perwomen_red &lt;- df2$womsum/(df2$womsum + df2$mensum)
+df2$permen_red &lt;- df2$mensum/(df2$womsum + df2$mensum)
+
+df &lt;- cbind(df, df2[, c(&quot;perwomen_red&quot;, &quot;permen_red&quot;)])
+df$samegender_red &lt;- ifelse(df$woman == 1, df$perwomen, df$permen)</code></pre>
+<pre class="r test"><code># women homogeneity extract answers to women names NO Maria,Johanna
+women &lt;- df[, c(&quot;Sophie&quot;, &quot;Julia&quot;, &quot;Sanne&quot;, &quot;Lisa&quot;, &quot;Laura&quot;, &quot;Linda&quot;, &quot;Monique&quot;, &quot;Ester&quot;, &quot;Anna&quot;, &quot;Elisabeth&quot;,
+    &quot;Cornelia&quot;, &quot;Wilhelmina&quot;, &quot;Sara&quot;, &quot;Noor&quot;)]
+wompop &lt;- c(15276, 16350, 27394, 21200, 25681, 29955, 39481, 2692, 136296, 110231, 112807, 98208, 11640,
+    4517)
+# ORDER: Sophie, Julia,Sanne,Lisa,Laura,Maria,Linda,Johanna,Monique,Ester,
+# Anna,Elisabeth,Cornelia,Wilhelmina,Sara, Noor
+
+for (i in 1:length(women)) {
+
+    women[[i]] &lt;- women[[i]]/wompop[i]
+
+}
+women$womsum &lt;- rowSums(women[, c(&quot;Sophie&quot;, &quot;Julia&quot;, &quot;Sanne&quot;, &quot;Lisa&quot;, &quot;Laura&quot;, &quot;Linda&quot;, &quot;Monique&quot;, &quot;Ester&quot;,
+    &quot;Anna&quot;, &quot;Elisabeth&quot;, &quot;Cornelia&quot;, &quot;Wilhelmina&quot;, &quot;Sara&quot;, &quot;Noor&quot;)])
+
+
+# men homogeneity extract answers to men names
+men &lt;- df[, c(&quot;Daan&quot;, &quot;Sem&quot;, &quot;Thomas&quot;, &quot;Max&quot;, &quot;Kevin&quot;, &quot;Johannes&quot;, &quot;Dennis&quot;, &quot;Jeroen&quot;, &quot;Jan&quot;, &quot;Marcel&quot;,
+    &quot;Cornelis&quot;, &quot;Hendrik&quot;, &quot;Petrus&quot;, &quot;Willem&quot;, &quot;Ali&quot;, &quot;Mohammed&quot;)]
+# popu
+menpop &lt;- c(22704, 13276, 40543, 17024, 23167, 307032, 36411, 49182, 186746, 35973, 134956, 118610, 86500,
+    102296, 4213, 5003)
+# ORDER: Daan,Sem, Thomas,Max,Kevin,Johannes,Dennis,Jeroen,Jan,Marcel,Cornelis,Hendrik,Petrus,
+# Willem,Ali,Mohammed,
+for (i in 1:length(men)) {
+
+    men[[i]] &lt;- men[[i]]/menpop[i]
+
+}
+men$mensum &lt;- rowSums(men[, c(&quot;Daan&quot;, &quot;Sem&quot;, &quot;Thomas&quot;, &quot;Max&quot;, &quot;Kevin&quot;, &quot;Johannes&quot;, &quot;Dennis&quot;, &quot;Jeroen&quot;,
+    &quot;Jan&quot;, &quot;Marcel&quot;, &quot;Cornelis&quot;, &quot;Hendrik&quot;, &quot;Petrus&quot;, &quot;Willem&quot;, &quot;Ali&quot;, &quot;Mohammed&quot;)])
+
+# and the totals
+df2 &lt;- cbind(women, men)
+df2$perwomen_up &lt;- df2$womsum/(df2$womsum + df2$mensum)
+df2$permen_up &lt;- df2$mensum/(df2$womsum + df2$mensum)
+
+df &lt;- cbind(df, df2[, c(&quot;perwomen_up&quot;, &quot;permen_up&quot;)])
+df$samegender_up &lt;- ifelse(df$woman == 1, df$perwomen_up, df$permen_up)</code></pre>
+</div>
+<div id="data-storage" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Data storage</h1>
+<p>Finally, we save the data that we use for the analyses.</p>
+<pre class="r test"><code># save data
+save(df, file = &quot;data/dutch_netsize_analyses_revision_2.rda&quot;)</code></pre>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGVwZW5kZW50IHZhcmlhYmxlczogUmV2aXNpb24gMiIKI2JpYmxpb2dyYXBoeTogcmVmZXJlbmNlcy5iaWIKYXV0aG9yOiAiQmFzIEhvZnN0cmEiCi0tLQoKYGBge3IsIGdsb2JhbHNldHRpbmdzLCBlY2hvPUZBTFNFLCB3YXJuaW5nPUZBTFNFLCByZXN1bHRzPSdoaWRlJ30KbGlicmFyeShrbml0cikKCmtuaXRyOjpvcHRzX2NodW5rJHNldChlY2hvID0gVFJVRSkKb3B0c19jaHVuayRzZXQodGlkeS5vcHRzPWxpc3Qod2lkdGguY3V0b2ZmPTEwMCksdGlkeT1UUlVFLCB3YXJuaW5nID0gRkFMU0UsIG1lc3NhZ2UgPSBGQUxTRSxjb21tZW50ID0gIiM+IiwgY2FjaGU9VFJVRSwgY2xhc3Muc291cmNlPWMoInRlc3QiKSwgY2xhc3Mub3V0cHV0PWMoInRlc3QyIikpCm9wdGlvbnMod2lkdGggPSAxMDApCnJnbDo6c2V0dXBLbml0cigpCgoKCmNvbG9yaXplIDwtIGZ1bmN0aW9uKHgsIGNvbG9yKSB7c3ByaW50ZigiPHNwYW4gc3R5bGU9J2NvbG9yOiAlczsnPiVzPC9zcGFuPiIsIGNvbG9yLCB4KSB9CgpgYGAKCmBgYHtyIGtsaXBweSwgZWNobz1GQUxTRSwgaW5jbHVkZT1UUlVFfQprbGlwcHk6OmtsaXBweShwb3NpdGlvbiA9IGMoJ3RvcCcsICdyaWdodCcpKQoja2xpcHB5OjprbGlwcHkoY29sb3IgPSAnZGFya3JlZCcpCiNrbGlwcHk6OmtsaXBweSh0b29sdGlwX21lc3NhZ2UgPSAnQ2xpY2sgdG8gY29weScsIHRvb2x0aXBfc3VjY2VzcyA9ICdEb25lJykKYGBgCgpMYXN0IGNvbXBpbGVkIG9uIGByIGZvcm1hdChTeXMudGltZSgpLCAnJUIsICVZJylgCgo8YnI+CgotLS0tCgpUaGlzIGlzIHRoZSBjb2RlIHdpdGggd2hpY2ggd2UgbWFrZSBvdXIgZGVwZW5kZW50IHZhcmlhYmxlcyBhY2NvcmRpbmcgdG8gdGhlIHJldmlzaW9uIG9mIG91ciBtYW51c2NyaXB0LgoKPGJyPgoKLS0tLQoKIyBJbml0YXRpYXRpbmcgUiBlbnZpcm9ubWVudAoKU3RhcnQgb3V0IHdpdGggYSBjdXN0b20gZnVuY3Rpb24gdG8gbG9hZCBhIHNldCBvZiByZXF1aXJlZCBwYWNrYWdlcy4KICAKYGBge3IgcGFjaywgZXZhbD1GQUxTRX0KCiMgcGFja2FnZXMgYW5kIHJlYWQgZGF0YQpybShsaXN0ID0gbHMoKSkKCiMgKGMpIEpvY2hlbSBUb2xzbWEKZnBhY2thZ2UuY2hlY2sgPC0gZnVuY3Rpb24ocGFja2FnZXMpIHsKICBsYXBwbHkocGFja2FnZXMsIEZVTiA9IGZ1bmN0aW9uKHgpIHsKICAgIGlmICghcmVxdWlyZSh4LCBjaGFyYWN0ZXIub25seSA9IFRSVUUpKSB7CiAgICAgIGluc3RhbGwucGFja2FnZXMoeCwgZGVwZW5kZW5jaWVzID0gVFJVRSkKICAgICAgbGlicmFyeSh4LCBjaGFyYWN0ZXIub25seSA9IFRSVUUpCiAgICB9CiAgfSkKfQpwYWNrYWdlcyA9IGMoImhhdmVuIiwgImNvZGEiLCAibWF0cml4U3RhdHMiLCAicGFyYWxsZWwiLCAiTUFTUyIsICJkb1BhcmFsbGVsIiwgImRwbHlyIiwgImNvd3Bsb3QiLCAKICAgICAgICAgICAgICJ0aWR5dmVyc2UiLCAibmFuaWFyIiwgImRvdHdoaXNrZXIiICwiZ3QiLCAicmVzaGFwZTIiLCAiVkdBTSIsICJleHBzcyIsICJuZXR3b3Jrc2NhbGV1cCIpCmZwYWNrYWdlLmNoZWNrKHBhY2thZ2VzKQpybShwYWNrYWdlcykKbG9hZCgiZGF0YS9kdXRjaF9uZXRzaXplX2FuYWx5c2VzLnJkYSIpCgoKCmBgYAoKCgpSZXZpc2lvbiAyIGRlcGVuZGVudCB2YXJpYWJsZSBmb3IgbmV0d29yayBzaXplCgpgYGB7ciByZXZpc2lvbmRpc3BlcnNlZCwgZXZhbD1GQUxTRX0KCmRmYW5zIDwtIGRmWywgYygidW5pIiwgImhibyIsICJtYm8iLCAiZG9jaHRlcnpvb24iLCAidHdlZWxpbmciLCAiY29yb25hIiwgCiAgICAgICAgICAgICAgImVsYXV0byIsICJzY29vdGVyIiwgInZlZ2FuIiwgCiAgICAgICAgICAgICAgIlNvcGhpZSIsICJKdWxpYSIsIlNhbm5lIiwiTGlzYSIsIkxhdXJhIiwiTWFyaWEiLCJMaW5kYSIsIkpvaGFubmEiLCJNb25pcXVlIiwiRXN0ZXIiLAogICAgICAgICAgICAgICJBbm5hIiwiRWxpc2FiZXRoIiwiQ29ybmVsaWEiLCJXaWxoZWxtaW5hIiwiQW1pcmEiLCJTYW1pcmEiLCJTYXJhIiwiRGFhbiIsIlNlbSIsCiAgICAgICAgICAgICAgIlRob21hcyIsIk1heCIsIktldmluIiwiSm9oYW5uZXMiLCJEZW5uaXMiLCJKZXJvZW4iLCJKYW4iLCJNYXJjZWwiLCJDb3JuZWxpcyIsIkhlbmRyaWsiLCJQZXRydXMiLAogICAgICAgICAgICAgICJXaWxsZW0iLCJBbGkiLCJNb2hhbW1lZCIsIk5vb3IiKV0gIyB0YWtlIG1lYW4gb2YgZWFjaCBvZiB0aGUgY2F0cwoKcmVmMSA8LSBjKDg0OTU3LCA3NTIxNCwgMTQ1NjAwLCAxNjgwNjYsIDI1MDAsIDE1NTg1NDkpCiMgT1JERVI6ICB1bmksIGhibywgbWJvLCBkb2NodGVyL3pvb24sIHR3ZWVsaW5nLCBjb3JvbmEKCnJlZjIgPC0gYygyNzMyNTksIDQ2MDYxOCwgMjYxMDAwKQojIE9SREVSOiAgIGVsZWNhdXRvLCBzY29vdGVyLCB2ZWdhbiwKCnJlZjMgPC0gYygxNTI3NiwxNjM1MCwyNzM5NCwyMTIwMCwyNTY4MSwzMzQ1MDIsMjk5NTUsMjY2NTIyLDM5NDgxLCAyNjkyLAogICAgICAgICAgMTM2Mjk2LDExMDIzMSwxMTI4MDcsOTgyMDgsMTM4NiwyMTg2LDExNjQwLDIyNzA0LDEzMjc2LAogICAgICAgICAgNDA1NDMsMTcwMjQsMjMxNjcsMzA3MDMyLDM2NDExLDQ5MTgyLDE4Njc0NiwzNTk3MywxMzQ5NTYsMTE4NjEwLDg2NTAwLAogICAgICAgICAgMTAyMjk2LDQyMTMsNTAwMyw0NTE3KQojIE9SREVSOiAgIFNvcGhpZSwgSnVsaWEsU2FubmUsTGlzYSxMYXVyYSxNYXJpYSxMaW5kYSxKb2hhbm5hLE1vbmlxdWUsRXN0ZXIsCiMgICAgICAgICAgICAgQW5uYSxFbGlzYWJldGgsQ29ybmVsaWEsV2lsaGVsbWluYSxBbWlyYSxTYW1pcmEsU2FyYSxEYWFuLFNlbSwKIyAgICAgICAgICAgICBUaG9tYXMsTWF4LEtldmluLEpvaGFubmVzLERlbm5pcyxKZXJvZW4sSmFuLE1hcmNlbCxDb3JuZWxpcyxIZW5kcmlrLFBldHJ1cywKIyAgICAgICAgICAgICBXaWxsZW0sQWxpLE1vaGFtbWVkLE5vb3IKCgoKcG9wcyA8LSBjKHJlZjEsIHJlZjIsIHJlZjMpCgojIEFuYWx5emUgYW4gZXhhbXBsZSBhcmQgZGF0YSBzZXQgdXNpbmcgWmhlbmcgZXQgYWwuICgyMDA2KSBtb2RlbHMKYXJkIDwtIGFzLm1hdHJpeChkZmFucykKc3VicG9wX3NpemVzIDwtIHBvcHMKa25vd25faW5kIDwtIGMoMTo0MykKCk4gPC0gMTc0MDc1ODUKCgojIHJlbm9ybWFsaXphdGlvbgojIGZpcnN0IHdpdGggcHJpbWFyeSBzY2FsaW5nIGdyb3VwcyBBTEwKb3ZlcmRpc3AuZXN0MSA8LSBvdmVyZGlzcGVyc2VkKGFyZCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGtub3duX3NpemVzID0gc3VicG9wX3NpemVzW2tub3duX2luZF0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBrbm93bl9pbmQgPSBrbm93bl9pbmQsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBHMV9pbmQgPSBrbm93bl9pbmQsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBOID0gTiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHdhcm11cCA9IDUwMCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGl0ZXIgPSA1MDAwKQoKIyB0d28gc2NhbGluZyBncm91cHMsIEFMTCBncm91cHMgc2VsZWN0ZWQKb3ZlcmRpc3AuZXN0MiA8LSBvdmVyZGlzcGVyc2VkKGFyZCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGtub3duX3NpemVzID0gc3VicG9wX3NpemVzW2tub3duX2luZF0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBrbm93bl9pbmQgPSBrbm93bl9pbmQsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBHMV9pbmQgPSBjKDIsIDMsIDQsIDcsIDksIDM1KSwgI2hibywgbWJvLGRvY2h0ZXJ6b29uLCBlbGF1dG8sdmVnYW4sIGphbgogICAgICAgICAgICAgICAgICAgICAgICAgICAgRzJfaW5kID0gYygxNSwgMTcsIDMyKSwgIyBtYXJpYSwgam9oYW5uYSwgam9oYW5uZXMKICAgICAgICAgICAgICAgICAgICAgICAgICAgIE4gPSBOLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgd2FybXVwID0gNTAwLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgaXRlciA9IDUwMDApCiAKCiMgc3ViZ3JvdXAgc2VsZWN0aW9uCiMgcmVndWxhcml6ZSBzdWJwb3B1bGF0aW9ucyB0byA8IDEwayBhbmQgc2VsZWN0aW9uIDwgMTBrCmFyZCA8LSBhcy5tYXRyaXgoZGZhbnMpCnN1YnBvcF9zaXplcyA8LSBwb3BzCnogPC0gd2hpY2goc3VicG9wX3NpemVzIDwgMTAwMDApCmFyZCA8LSBhcmRbLCB6XQpzdWJwb3Bfc2l6ZXMgPC0gcG9wc1t6XQprbm93bl9pbmQgPC0gYygxOmxlbmd0aChzdWJwb3Bfc2l6ZXMpKQpvdmVyZGlzcC5lc3QzIDwtIG92ZXJkaXNwZXJzZWQoYXJkLAogICAgICAgICAgICAgICAgICAgICAgICAgICAga25vd25fc2l6ZXMgPSBzdWJwb3Bfc2l6ZXNba25vd25faW5kXSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGtub3duX2luZCA9IGtub3duX2luZCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIEcxX2luZCA9IGtub3duX2luZCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIE4gPSBOLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgd2FybXVwID0gNTAwLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgaXRlciA9IDUwMDApCgojIG9ubHkgc3VicG9wdWxhdGlvbnMgPCA1MGsKYXJkIDwtIGFzLm1hdHJpeChkZmFucykKc3VicG9wX3NpemVzIDwtIHBvcHMKeiA8LSB3aGljaChzdWJwb3Bfc2l6ZXMgPCA1MDAwMCkKYXJkIDwtIGFyZFssIHpdCnN1YnBvcF9zaXplcyA8LSBwb3BzW3pdCmtub3duX2luZCA8LSBjKDE6bGVuZ3RoKHN1YnBvcF9zaXplcykpCm92ZXJkaXNwLmVzdDQgPC0gb3ZlcmRpc3BlcnNlZChhcmQsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBrbm93bl9zaXplcyA9IHN1YnBvcF9zaXplc1trbm93bl9pbmRdLAogICAgICAgICAgICAgICAgICAgICAgICAgICAga25vd25faW5kID0ga25vd25faW5kLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgTiA9IE4sCiAgICAgICAgICAgICAgICAgICAgICAgICAgICB3YXJtdXAgPSA1MDAsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBpdGVyID0gNTAwMCkKCgoKI3dpdGhvdXQgY29yb25hLCB0aGUgdmVyeSB0b3AgbGV2ZWwgb25lCmFyZCA8LSBhcy5tYXRyaXgoZGZhbnNbLC1jKDYpXSkgCnN1YnBvcF9zaXplcyA8LSBwb3BzWy02XQprbm93bl9pbmQgPC0gYygxOjQyKQpvdmVyZGlzcC5lc3Q1IDwtIG92ZXJkaXNwZXJzZWQoYXJkLAogICAgICAgICAgICAgICAgICAgICAgICAgICAga25vd25fc2l6ZXMgPSBzdWJwb3Bfc2l6ZXNba25vd25faW5kXSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGtub3duX2luZCA9IGtub3duX2luZCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIEcxX2luZCA9IGtub3duX2luZCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIE4gPSBOLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgd2FybXVwID0gNTAwLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgaXRlciA9IDUwMDApCgoKI3dpdGggbWNjb3JtaWNrIHNlbGVjdGlvbiBjcml0ZXJpYSAuMS0uMgpyZWYgPC0gYXMuZGF0YS5mcmFtZShwb3BzKQpyZWYkcHJvcCA8LSAocmVmJHBvcHMvTikqMTAwCgpyZWYgPC0gcmVmW3JlZiRwcm9wIDwgLjIyLF0KcmVmIDwtIHJlZltyZWYkcHJvcCA+IC4wOCxdCnogPC0gYXMuaW50ZWdlcihyb3duYW1lcyhyZWYpKQoKYXJkIDwtIGFzLm1hdHJpeChkZmFucykKYXJkIDwtIGFyZFssIHpdCnN1YnBvcF9zaXplcyA8LSBwb3BzW3pdCmtub3duX2luZCA8LSBjKDE6bGVuZ3RoKHN1YnBvcF9zaXplcykpCgpvdmVyZGlzcC5tY2Nvcm1pY2sxIDwtIG92ZXJkaXNwZXJzZWQoYXJkLAogICAgICAgICAgICAgICAgICAgICAgICAgICAga25vd25fc2l6ZXMgPSBzdWJwb3Bfc2l6ZXNba25vd25faW5kXSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGtub3duX2luZCA9IGtub3duX2luZCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIEcxX2luZCA9IGtub3duX2luZCwKICAgICAgICAgICAgICAgICAgICAgICAgICAgIE4gPSBOLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgd2FybXVwID0gNTAwLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgaXRlciA9IDUwMDApCgoKCiMgCiMgI3dpdGggbWNjb3JtaWNrIHNlbGVjdGlvbiBjcml0ZXJpYSAuMDUtLjI1CiMgcmVmIDwtIGFzLmRhdGEuZnJhbWUocG9wcykKIyByZWYkcHJvcCA8LSAocmVmJHBvcHMvTikqMTAwCiMgCiMgcmVmIDwtIHJlZltyZWYkcHJvcCA8IC4yNSxdCiMgcmVmIDwtIHJlZltyZWYkcHJvcCA+IC4wNSxdCiMgeiA8LSBhcy5pbnRlZ2VyKHJvd25hbWVzKHJlZikpCiMgCiMgYXJkIDwtIGFyZFssIHpdCiMgc3VicG9wX3NpemVzIDwtIHBvcHNbel0KIyBrbm93bl9pbmQgPC0gYygxOmxlbmd0aChzdWJwb3Bfc2l6ZXMpKQojIAojIG92ZXJkaXNwLm1jY29ybWljazIgPC0gb3ZlcmRpc3BlcnNlZChhcmQsCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGtub3duX3NpemVzID0gc3VicG9wX3NpemVzW2tub3duX2luZF0sCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGtub3duX2luZCA9IGtub3duX2luZCwKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRzFfaW5kID0ga25vd25faW5kLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICBOID0gTiwKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd2FybXVwID0gNTAwLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpdGVyID0gNTAwMCkKCgoKIyBzYW1lIGl0ZXJhdGlvbnMgaW4gb25lIG1lYW4sIGNvcnJlbGF0ZQp4MSA8LSBkYXRhLmZyYW1lKGNvbE1lYW5zKG92ZXJkaXNwLmVzdDEkZGVncmVlcykpCngyIDwtIGRhdGEuZnJhbWUoY29sTWVhbnMob3ZlcmRpc3AuZXN0MiRkZWdyZWVzKSkKeDMgPC0gZGF0YS5mcmFtZShjb2xNZWFucyhvdmVyZGlzcC5lc3QzJGRlZ3JlZXMpKQp4NCA8LSBkYXRhLmZyYW1lKGNvbE1lYW5zKG92ZXJkaXNwLmVzdDQkZGVncmVlcykpCng1IDwtIGRhdGEuZnJhbWUoY29sTWVhbnMob3ZlcmRpc3AuZXN0NSRkZWdyZWVzKSkKeDYgPC0gZGF0YS5mcmFtZShjb2xNZWFucyhvdmVyZGlzcC5tY2Nvcm1pY2sxJGRlZ3JlZXMpKQojeDcgPC0gZGF0YS5mcmFtZShjb2xNZWFucyhvdmVyZGlzcC5tY2Nvcm1pY2syJGRlZ3JlZXMpKQpzdW1tYXJ5KHgxWywxXSkKc3VtbWFyeSh4MlssMV0pCnN1bW1hcnkoeDNbLDFdKQpzdW1tYXJ5KHg0WywxXSkKc3VtbWFyeSh4NVssMV0pCnN1bW1hcnkoeDZbLDFdKQojc3VtbWFyeSh4N1ssMV0pCgojc2FmZSB0byBkYXRhCmRmJG5ldHNvdmVyMSA8LSBjb2xNZWFucyhvdmVyZGlzcC5lc3QxJGRlZ3JlZXMpCmRmJG5ldHNvdmVyMiA8LSBjb2xNZWFucyhvdmVyZGlzcC5lc3QyJGRlZ3JlZXMpCmRmJG5ldHNvdmVyMyA8LSBjb2xNZWFucyhvdmVyZGlzcC5lc3QzJGRlZ3JlZXMpCmRmJG5ldHNvdmVyNCA8LSBjb2xNZWFucyhvdmVyZGlzcC5lc3Q0JGRlZ3JlZXMpCmRmJG5ldHNvdmVyNSA8LSBjb2xNZWFucyhvdmVyZGlzcC5lc3Q1JGRlZ3JlZXMpCmRmJG5ldHNvdmVyNiA8LSBjb2xNZWFucyhvdmVyZGlzcC5tY2Nvcm1pY2sxJGRlZ3JlZXMpCgpkZiRuZXRzb3ZlcjcgPC0gY29sTWVhbnMob3ZlcmRpc3AubWNjb3JtaWNrMSRkZWdyZWVzKQojZGYkbmV0c292ZXI3IDwtIGNvbE1lYW5zKG92ZXJkaXNwLm1jY29ybWljazIkZGVncmVlcykKY29yKGRmWyxjKCJuZXRzb3ZlcjEiLCAibmV0c292ZXIyIiwgIm5ldHNvdmVyMyIsICJuZXRzb3ZlcjQiLCAibmV0c292ZXI1IiwgIm5ldHNvdmVyNiIpXSkKCgpzdW1tYXJ5KGRmJG5ldHNvdmVyMSkKc3VtbWFyeShkZiRuZXRzb3ZlcjIpCnN1bW1hcnkoZGYkbmV0c292ZXIzKQpzdW1tYXJ5KGRmJG5ldHNvdmVyNCkKc3VtbWFyeShkZiRuZXRzb3ZlcjUpCnN1bW1hcnkoZGYkbmV0c292ZXI2KQpzdW1tYXJ5KGRmJG5ldHNvdmVyNykKCgpgYGAKCkhvbW9nZW5laXR5IG1ldHJpY3MgZm9yIGdlbmRlci4KCmBgYHtyIHJldmlzaW9uaG9tb2dlbmVpdHlfZ2VuLCAgZXZhbD1GQUxTRX0KIyBqZXJvZW5zZSBldCBhbC46CiMgVGhlIG51bWVyaWNhbCByZXNwb25zZSB0byBlYWNoIG5hbWUgcXVlc3Rpb24gd2FzIGRpdmlkZWQgYnkgdGhlIG5hbWUgZnJlcXVlbmN5IGluIHRoZSBwb3B1bGF0aW9uLiAKI1dlIHRoZW4gY2FsY3VsYXRlZCBhIHRvdGFsIHN1bSBmb3IgZWFjaCBzZXQgb2YgZGlzdGluY3QgZXRobmljLWdyb3VwIG5hbWVzIGFuZCBmb3IgYWxsIG5hbWVzLiAKIyBCeSBkaXZpZGluZyB0aGUgdG90YWwgc3VtIG9mIGNvLWV0aG5pYyBuYW1lcyBieSB0aGUgdG90YWwgc3VtIG9mIGFsbCBuYW1lcyBtdWx0aXBsaWVkIGJ5IDEwMCwgCiMgd2UgZGVyaXZlIG91ciByZWxhdGl2ZSBldGhuaWMgaG9tb2dlbmVpdHkgbWVhc3VyZW1lbnQsIHJ1bm5pbmcgZnJvbSAwIHRvIDEwMC4KCiMgdm9sa2VyIGV0IGFsLjoKIyBGb3Igb3VyIGdlbmRlciBhbmQgZWR1Y2F0aW9uYWwgaG9tb2dlbmVpdHkgbWV0cmljcyB3ZSBmb2xsb3cgSmVyb2Vuc2UgYW5kIGNvbGxlYWd1ZXMnICgyMDIzKSBhcHByb2FjaCB0byBtZWFzdXJpbmcgaG9tb2dlbmVpdHkgaW4gZXh0ZW5kZWQgbmV0d29ya3MuCiMgV2UgZmlyc3QgZGl2aWRlIHRoZSBudW1lcmljYWwgcmVzcG9uc2UgdG8gZWFjaCBuYW1lIGJ5IHRoYXQgbmFtZSdzIHBvcHVsYXRpb24gc2l6ZS4KIyBXZSB0aGVuIHN1bSB0aGVzZSBudW1iZXJzIGZvciBhbGwgbmFtZXMgYW5kIGZvciB3b21lbiBlbiBtZW4gbmFtZXMgc2VwZXJhdGVseS4gCiMgd2Ugc3Vic2VxdWVudGx5IGRpdmlkZSB0aGUgc3VtIG9mIHdvbWVuIChvciBtZW4pIG5hbWVzIGJ5IHRoZSBzdW0gb2YgYWxsIG5hbWVzIG11bHRpcGxpZWQgYnkgMTAwIGZvciB0aGUgcmVsYXRpdmUgbnVtYmVyIG9mIHdvbWVuIChvciBtZW4pIGluIHRoZSBhbHRlciBjYXRlZ29yeSBhbnN3ZXJzIChmcm9tIDAgdG8gMTAwKS4gVGhpcyBpcyBkZWZpbmVkIGFzIGZvbGxvd3M6CiMgV2UgYWxzbyBkaXZpZGUgdGhlIHN1bSBvZiBzYW1lLWdlbmRlciBuYW1lcyBieSB0aGUgc3VtIG9mIGFsbCBuYW1lcyBtdWx0aXBsZWQgYnkgMTAwIGZvciBvdXIgcmVsYXRpdmUgZ2VuZGVyIGhvbW9nZW5laXR5IG1lYXN1cmVtZW50IChmcm9tIDAgdG8gMTAwKS4gV2UgZGVmaW5lIGJvdGggbWVhc3VyZW1lbnRzIGFzIGZvbGxvd3M6CgojR0VOREVSCiMgdGFibGUoZGYkd29tYW4pCiMgZGYkbnVtd29tYW4gPC0gcm93U3VtcyhkZlssIGMoIlNvcGhpZSIsICJKdWxpYSIsIlNhbm5lIiwiTGlzYSIsIkxhdXJhIiwiTWFyaWEiLCJMaW5kYSIsIkpvaGFubmEiLCJNb25pcXVlIiwiRXN0ZXIiLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJBbm5hIiwiRWxpc2FiZXRoIiwiQ29ybmVsaWEiLCJXaWxoZWxtaW5hIiwiQW1pcmEiLCJTYW1pcmEiLCJTYXJhIiwgIk5vb3IiKV0pCiMgCiMgCiMgCiMgZGYkbnVtbWFuIDwtIHJvd1N1bXMoZGZbLCBjKCJEYWFuIiwiU2VtIiwiVGhvbWFzIiwiTWF4IiwiS2V2aW4iLCJKb2hhbm5lcyIsIkRlbm5pcyIsCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJKZXJvZW4iLCJKYW4iLCJNYXJjZWwiLCJDb3JuZWxpcyIsIkhlbmRyaWsiLCJQZXRydXMiLCAiV2lsbGVtIiwiQWxpIiwiTW9oYW1tZWQiKV0pCiMgCiMgZGZhbnMgPC0gZGZbLCBjKCJTb3BoaWUiLCAiSnVsaWEiLCJTYW5uZSIsIkxpc2EiLCJMYXVyYSIsIk1hcmlhIiwiTGluZGEiLCJKb2hhbm5hIiwiTW9uaXF1ZSIsIkVzdGVyIiwKIyAgICAgICAgICAgICAgICJBbm5hIiwiRWxpc2FiZXRoIiwiQ29ybmVsaWEiLCJXaWxoZWxtaW5hIiwiQW1pcmEiLCJTYW1pcmEiLCJTYXJhIiwiRGFhbiIsIlNlbSIsCiMgICAgICAgICAgICAgICAiVGhvbWFzIiwiTWF4IiwiS2V2aW4iLCJKb2hhbm5lcyIsIkRlbm5pcyIsIkplcm9lbiIsIkphbiIsIk1hcmNlbCIsIkNvcm5lbGlzIiwiSGVuZHJpayIsIlBldHJ1cyIsCiMgICAgICAgICAgICAgICAiV2lsbGVtIiwiQWxpIiwiTW9oYW1tZWQiLCJOb29yIildICMgdGFrZSBtZWFuIG9mIGVhY2ggb2YgdGhlIGNhdHMKIyAKIyAKIyBkZiRudW1uYW1lcyA8LSBkZiRudW13b21hbitkZiRudW1tYW4KIyBkZiRzYW1lZ2VuZGVyIDwtIGlmZWxzZShkZiR3b21hbiA9PSAxLCAoZGYkbnVtd29tYW4vZGYkbnVtbmFtZXMpKjEwMCwgKGRmJG51bW1hbi9kZiRudW1uYW1lcykqMTAwKQojIHN1bW1hcnkoZGYkc2FtZWdlbmRlcikKIyAKIyBzdW1tYXJ5KGRmW2RmJHdvbWFuID09IDEsIGMoInNhbWVnZW5kZXIiKV0pCiMgc3VtbWFyeShkZltkZiR3b21hbiA9PSAwLCBjKCJzYW1lZ2VuZGVyIildKQoKI3dvbWVuIGhvbW9nZW5laXR5CiMgZXh0cmFjdCBhbnN3ZXJzIHRvIHdvbWVuIG5hbWVzCndvbWVuIDwtIGRmWywgYygiU29waGllIiwgIkp1bGlhIiwiU2FubmUiLCJMaXNhIiwiTGF1cmEiLCJNYXJpYSIsIkxpbmRhIiwiSm9oYW5uYSIsIk1vbmlxdWUiLCJFc3RlciIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJBbm5hIiwiRWxpc2FiZXRoIiwiQ29ybmVsaWEiLCJXaWxoZWxtaW5hIiwiQW1pcmEiLCJTYW1pcmEiLCJTYXJhIiwgIk5vb3IiKV0KCndvbXBvcCA8LSBjKDE1Mjc2LDE2MzUwLDI3Mzk0LDIxMjAwLDI1NjgxLDMzNDUwMiwyOTk1NSwyNjY1MjIsMzk0ODEsIDI2OTIsCiAgICAgICAgICAxMzYyOTYsMTEwMjMxLDExMjgwNyw5ODIwOCwxMzg2LDIxODYsMTE2NDAsNDUxNykKCiMKc29ydChjKDE1Mjc2LDE2MzUwLDI3Mzk0LDIxMjAwLDI1NjgxLDMzNDUwMiwyOTk1NSwyNjY1MjIsMzk0ODEsIDI2OTIsCiAgICAgICAgICAxMzYyOTYsMTEwMjMxLDExMjgwNyw5ODIwOCwxMzg2LDIxODYsMTE2NDAsNDUxNykpID4gc29ydChjKDIyNzA0LDEzMjc2LDQwNTQzLDE3MDI0LDIzMTY3LDMwNzAzMiwzNjQxMSw0OTE4MiwxODY3NDYsMzU5NzMsMTM0OTU2LDExODYxMCw4NjUwMCwKICAgICAgICAgIDEwMjI5Niw0MjEzLDUwMDMpKQoKIyBPUkRFUjogICBTb3BoaWUsIEp1bGlhLFNhbm5lLExpc2EsTGF1cmEsTWFyaWEsTGluZGEsSm9oYW5uYSxNb25pcXVlLEVzdGVyLAojICAgICAgICAgICAgIEFubmEsRWxpc2FiZXRoLENvcm5lbGlhLFdpbGhlbG1pbmEsQW1pcmEsU2FtaXJhLFNhcmEsIE5vb3IgICAgICAKCmZvciAoaSBpbiAxOmxlbmd0aCh3b21lbikpIHsKICAKICB3b21lbltbaV1dIDwtIHdvbWVuW1tpXV0vd29tcG9wW2ldCiAgCn0Kd29tZW4kd29tc3VtIDwtIHJvd1N1bXMod29tZW5bLCBjKCJTb3BoaWUiLCAiSnVsaWEiLCJTYW5uZSIsIkxpc2EiLCJMYXVyYSIsIk1hcmlhIiwiTGluZGEiLCJKb2hhbm5hIiwiTW9uaXF1ZSIsIkVzdGVyIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIkFubmEiLCJFbGlzYWJldGgiLCJDb3JuZWxpYSIsIldpbGhlbG1pbmEiLCJBbWlyYSIsIlNhbWlyYSIsIlNhcmEiLCAiTm9vciIpXSkKCgojIG1lbiBob21vZ2VuZWl0eQojIGV4dHJhY3QgYW5zd2VycyB0byBtZW4gbmFtZXMKbWVuIDwtIGRmWywgYygiRGFhbiIsIlNlbSIsIlRob21hcyIsIk1heCIsIktldmluIiwiSm9oYW5uZXMiLCJEZW5uaXMiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgIkplcm9lbiIsIkphbiIsIk1hcmNlbCIsIkNvcm5lbGlzIiwiSGVuZHJpayIsIlBldHJ1cyIsICJXaWxsZW0iLCJBbGkiLCJNb2hhbW1lZCIpXQoKI3BvcHUKbWVucG9wIDwtIGMoMjI3MDQsMTMyNzYsNDA1NDMsMTcwMjQsMjMxNjcsMzA3MDMyLDM2NDExLDQ5MTgyLDE4Njc0NiwzNTk3MywxMzQ5NTYsMTE4NjEwLDg2NTAwLAogICAgICAgICAgMTAyMjk2LDQyMTMsNTAwMykKIyBPUkRFUjogICBEYWFuLFNlbSwgVGhvbWFzLE1heCxLZXZpbixKb2hhbm5lcyxEZW5uaXMsSmVyb2VuLEphbixNYXJjZWwsQ29ybmVsaXMsSGVuZHJpayxQZXRydXMsCiMgICAgICAgICAgICAgV2lsbGVtLEFsaSxNb2hhbW1lZCwKCmZvciAoaSBpbiAxOmxlbmd0aChtZW4pKSB7CiAgCiAgbWVuW1tpXV0gPC0gbWVuW1tpXV0vbWVucG9wW2ldCiAgCn0KbWVuJG1lbnN1bSA8LSByb3dTdW1zKG1lblssIGMoIkRhYW4iLCJTZW0iLCJUaG9tYXMiLCJNYXgiLCJLZXZpbiIsIkpvaGFubmVzIiwiRGVubmlzIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJKZXJvZW4iLCJKYW4iLCJNYXJjZWwiLCJDb3JuZWxpcyIsIkhlbmRyaWsiLCJQZXRydXMiLCAiV2lsbGVtIiwiQWxpIiwiTW9oYW1tZWQiKV0pCgojIGFuZCB0aGUgdG90YWxzCmRmMiA8LSBjYmluZCh3b21lbiwgbWVuKQpkZjIkcGVyd29tZW4gPC0gZGYyJHdvbXN1bS8oZGYyJHdvbXN1bStkZjIkbWVuc3VtKQpkZjIkcGVybWVuIDwtIGRmMiRtZW5zdW0vKGRmMiR3b21zdW0rZGYyJG1lbnN1bSkKCmRmIDwtIGNiaW5kKGRmLCBkZjJbLGMoInBlcndvbWVuIiwgInBlcm1lbiIpXSkKZGYkc2FtZWdlbmRlciA8LSBpZmVsc2UoZGYkd29tYW4gPT0gMSwgZGYkcGVyd29tZW4sIGRmJHBlcm1lbikKCmBgYAoKSG9tb2dlbmVpdHkgbWV0cmljcyBmb3IgZWR1Y2F0aW9uLgoKYGBge3IgcmV2aXNpb25ob21vZ2VuZWl0eV9lZHVjLCAgZXZhbD1GQUxTRX0KI0VEVUMKI2luZGVwZW5kZW50CmRmJG9wbDJbZGYkb3BsZWlkaW5nID09IDFdIDwtIDAgIyBwcmltL3NlYwpkZiRvcGwyW2RmJG9wbGVpZGluZyA9PSAyXSA8LSAwICMgcHJpbS9zZWMKZGYkb3BsMltkZiRvcGxlaWRpbmcgPT0gM10gPC0gMCAjIHByaW0vc2VjCmRmJG9wbDJbZGYkb3BsZWlkaW5nID09IDRdIDwtIDAgIyBwcmltL3NlYwoKZGYkb3BsMltkZiRvcGxlaWRpbmcgPT0gNV0gPC0gMCAjIHByaW0vc2VjCgpkZiRvcGwyW2RmJG9wbGVpZGluZyA9PSA2XSA8LSAxICMgcHJpbS9zZWMKZGYkb3BsMltkZiRvcGxlaWRpbmcgPT0gN10gPC0gMSAjIHByaW0vc2VjCnRhYmxlKGRmJG9wbGVpZGluZykKdGFibGUoZGYkb3BsMikKCmRmJG51bWVkdWNoaWdoIDwtIGRmJGhibyArIGRmJHVuaQpkZiRudW1lZHVjbG93IDwtIGRmJG1ibwoKZGYkbnVtZWR1YyA8LSByb3dTdW1zKGRmWywgYygidW5pIiwgImhibyIsICJtYm8iKV0pCgpkZiRwZXJlZHVjaGlnaCA8LSBkZiRudW1lZHVjaGlnaC9kZiRudW1lZHVjCmRmJHBlcmVkdWNsb3cgPC0gZGYkbnVtZWR1Y2xvdy9kZiRudW1lZHVjCgpkZiRzYW1lZWR1YyA8LSBpZmVsc2UoZGYkb3BsMiA9PSAxLCBkZiRwZXJlZHVjaGlnaCwgZGYkcGVyZWR1Y2xvdykKI2RmJHNhbWVlZHVjIDwtIGlmZWxzZShkZiRvcGwyID09IDEsIChkZiRudW1lZHVjaGlnaCAvIGRmJG51bWVkdWMpICogMTAwLCBkZiRzYW1lZWR1YykKCnN1bW1hcnkoZGYkc2FtZWVkdWMpCnN1bW1hcnkoZGZbZGYkb3BsMiA9PSAxLCBjKCJzYW1lZWR1YyIpXSkKc3VtbWFyeShkZltkZiRvcGwyID09IDAsIGMoInNhbWVlZHVjIildKQoKIyBkZiRzYW1lZWR1Y1tkZiRvcGxlaSA9PSA1XSA8LSAoZGYkaGJvIC8gZGYkbnVtZWR1YykgKiAxMDAKIyBkZiRzYW1lZWR1Y1tkZiRvcGxlaSA9PSA2XSA8LSAoZGYkaGJvIC8gZGYkbnVtZWR1YykgKiAxMDAKIyAKIyBkZiRzYW1lZWR1Y1tkZiRvcGxlaSA9PSA3XSA8LSAoZGYkdW5pIC8gZGYkbnVtZWR1YykgKiAxMDAKCiNkZlsxMzgsIGMoIm9wbGVpZGluZyIsICJvcGxlaSIsICJudW1lZHVjIiwgIm1ibyIsICJoYm8iLCAidW5pIiwgInNhbWVlZHVjIildCgojIGdlZW4gb25kZXJ3aWpzIC8gYmFzaXNvbmRlcndpanMgLyBjdXJzdXMgaW5idXJnZXJpbmcgLyBjdXJzdXMgTmVkZXJsYW5kc2UgdGFhbCAKIyAxIAojIExCTyAvIFZCTyAvIFZNQk8gKGthZGVyLSBvZiBiZXJvZXBzZ2VyaWNodGUgbGVlcndlZykgLyBNQk8gMSAoYXNzaXN0ZW50ZW5vcGxlaWRpIAojIDIgCiMgTUFWTyAvIEhBVk8gb2YgVldPIChlZXJzdGUgZHJpZSBqYWFyKSAvIFVMTyAvIE1VTE8gLyBWTUJPIChUTCBvZiBHTCkgLyBWU08gCiMgMyAKIyBNQk8gMiwgMywgNCAoYmFzaXNiZXJvZXBzLSwgdmFrLSwgbWlkZGVua2FkZXItIG9mIHNwZWNpYWxpc3Rlbm9wbGVpZGluZykgb2YgTUJPIAojIDQgCiMgSEFWTyBvZiBWV08gKG92ZXJnZWdhYW4gbmFhciBkZSA0ZSBrbGFzKSAvIEhCUyAvIE1NUyAvIEhCTyBwcm9wZWRldXNlIG9mIFdPIFByb3AgCiMgNSAKIyBIQk8gKGJlaGFsdmUgSEJPLW1hc3RlcikgLyBXTy1rYW5kaWRhYXRzIC1vZiBXTy1iYWNoZWxvciAKIyA2IAojIFdPLWRvY3RvcmFhbCBvZiBXTy1tYXN0ZXIgb2YgSEJPLW1hc3RlciAvIHBvc3Rkb2N0b3JhYWwgb25kZXJ3aWpzIAojIDcKYGBgCgoKSG9tb2dlbmVpdHkgbWV0cmljcyBmb3IgZXRobmljIGJhY2tncm91bmQKCmBgYHtyIHJldmlzaW9uaG9tb2dlbmVpdHlfZXRobmljLCAgZXZhbD1GQUxTRX0KIyAKIyAjIEVUSE5JQwojIGRmJG51bWR1dGNoIDwtIHJvd1N1bXMoZGZbLCBjKCJTb3BoaWUiLCAiSnVsaWEiLCJTYW5uZSIsIkxpc2EiLCJMYXVyYSIsIk1hcmlhIiwiTGluZGEiLCJKb2hhbm5hIiwiTW9uaXF1ZSIsIkVzdGVyIiwKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiQW5uYSIsIkVsaXNhYmV0aCIsIkNvcm5lbGlhIiwiV2lsaGVsbWluYSIsICJTYXJhIiwgIk5vb3IiLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJEYWFuIiwiU2VtIiwiVGhvbWFzIiwiTWF4IiwiS2V2aW4iLCJKb2hhbm5lcyIsIkRlbm5pcyIsCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIkplcm9lbiIsIkphbiIsIk1hcmNlbCIsIkNvcm5lbGlzIiwiSGVuZHJpayIsIlBldHJ1cyIsICJXaWxsZW0iKV0pCiMgZGYkbnVtbm9kdXRjaCA8LSByb3dTdW1zKGRmWywgYygiQWxpIiwiTW9oYW1tZWQiLCJBbWlyYSIsIlNhbWlyYSIpXSkKIyB0YWJsZShkZiRtaWdyMykKIyBkZiRzYW1lZXRobmljMSA8LSBpZmVsc2UoZGYkbWlncjMgPT0gMSwgKGRmJG51bWR1dGNoL2RmJG51bW5hbWVzKSoxMDAsIChkZiRudW1ub2R1dGNoL2RmJG51bW5hbWVzKSoxMDApCiMgZGYkc2FtZWV0aG5pYzIgPC0gaWZlbHNlKGRmJG1pZ3IzID09IDEsIChkZiRudW1kdXRjaC9kZiRudW1uYW1lcykqMTAwLCAoZGYkbnVtbm9kdXRjaC9kZiRudW1uYW1lcykqMTAwKQojIGRmJHNhbWVldGhuaWMyIDwtIGlmZWxzZShkZiRtaWdyMyA9PSAyLCBOQSwgZGYkc2FtZWV0aG5pYzEpCiMgCiMgZGZbMzcsIGMoIm1pZ3IzIiwgInNhbWVldGhuaWMxIiwgIm51bWR1dGNoIiwgIm51bW5vZHV0Y2giLCAibnVtbmFtZXMiKV0KCgpgYGAKCmBgYHtyIHJldmlzaW9uaG9tb2dlbmVpdHlfZ2Vuc3VicG9wcmVkdWNlZCwgIGV2YWw9RkFMU0V9CiN3b21lbiBob21vZ2VuZWl0eQojIGV4dHJhY3QgYW5zd2VycyB0byB3b21lbiBuYW1lcyAKIyBOTyBBTUlSQSBBTkQgU0FNSVJBCndvbWVuIDwtIGRmWywgYygiU29waGllIiwgIkp1bGlhIiwiU2FubmUiLCJMaXNhIiwiTGF1cmEiLCJNYXJpYSIsIkxpbmRhIiwiSm9oYW5uYSIsIk1vbmlxdWUiLCJFc3RlciIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJBbm5hIiwiRWxpc2FiZXRoIiwiQ29ybmVsaWEiLCJXaWxoZWxtaW5hIiwiU2FyYSIsICJOb29yIildCndvbXBvcCA8LSBjKDE1Mjc2LDE2MzUwLDI3Mzk0LDIxMjAwLDI1NjgxLDMzNDUwMiwyOTk1NSwyNjY1MjIsMzk0ODEsIDI2OTIsCiAgICAgICAgICAxMzYyOTYsMTEwMjMxLDExMjgwNyw5ODIwOCwgMTE2NDAsNDUxNykKIyBPUkRFUjogICBTb3BoaWUsIEp1bGlhLFNhbm5lLExpc2EsTGF1cmEsTWFyaWEsTGluZGEsSm9oYW5uYSxNb25pcXVlLEVzdGVyLAojICAgICAgICAgICAgIEFubmEsRWxpc2FiZXRoLENvcm5lbGlhLFdpbGhlbG1pbmEsU2FyYSwgTm9vciAgICAgIAoKZm9yIChpIGluIDE6bGVuZ3RoKHdvbWVuKSkgewogIAogIHdvbWVuW1tpXV0gPC0gd29tZW5bW2ldXS93b21wb3BbaV0KICAKfQp3b21lbiR3b21zdW0gPC0gcm93U3Vtcyh3b21lblssIGMoIlNvcGhpZSIsICJKdWxpYSIsIlNhbm5lIiwiTGlzYSIsIkxhdXJhIiwiTWFyaWEiLCJMaW5kYSIsIkpvaGFubmEiLCJNb25pcXVlIiwiRXN0ZXIiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiQW5uYSIsIkVsaXNhYmV0aCIsIkNvcm5lbGlhIiwiV2lsaGVsbWluYSIsIlNhcmEiLCAiTm9vciIpXSkKCgojIG1lbiBob21vZ2VuZWl0eQojIGV4dHJhY3QgYW5zd2VycyB0byBtZW4gbmFtZXMKbWVuIDwtIGRmWywgYygiRGFhbiIsIlNlbSIsIlRob21hcyIsIk1heCIsIktldmluIiwiSm9oYW5uZXMiLCJEZW5uaXMiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgIkplcm9lbiIsIkphbiIsIk1hcmNlbCIsIkNvcm5lbGlzIiwiSGVuZHJpayIsIlBldHJ1cyIsICJXaWxsZW0iLCJBbGkiLCJNb2hhbW1lZCIpXQojcG9wdQptZW5wb3AgPC0gYygyMjcwNCwxMzI3Niw0MDU0MywxNzAyNCwyMzE2NywzMDcwMzIsMzY0MTEsNDkxODIsMTg2NzQ2LDM1OTczLDEzNDk1NiwxMTg2MTAsODY1MDAsCiAgICAgICAgICAxMDIyOTYsNDIxMyw1MDAzKQojIE9SREVSOiAgIERhYW4sU2VtLCBUaG9tYXMsTWF4LEtldmluLEpvaGFubmVzLERlbm5pcyxKZXJvZW4sSmFuLE1hcmNlbCxDb3JuZWxpcyxIZW5kcmlrLFBldHJ1cywKIyAgICAgICAgICAgICBXaWxsZW0sQWxpLE1vaGFtbWVkLApmb3IgKGkgaW4gMTpsZW5ndGgobWVuKSkgewogIAogIG1lbltbaV1dIDwtIG1lbltbaV1dL21lbnBvcFtpXQogIAp9Cm1lbiRtZW5zdW0gPC0gcm93U3VtcyhtZW5bLCBjKCJEYWFuIiwiU2VtIiwiVGhvbWFzIiwiTWF4IiwiS2V2aW4iLCJKb2hhbm5lcyIsIkRlbm5pcyIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiSmVyb2VuIiwiSmFuIiwiTWFyY2VsIiwiQ29ybmVsaXMiLCJIZW5kcmlrIiwiUGV0cnVzIiwgIldpbGxlbSIsIkFsaSIsIk1vaGFtbWVkIildKQoKIyBhbmQgdGhlIHRvdGFscwpkZjIgPC0gY2JpbmQod29tZW4sIG1lbikKZGYyJHBlcndvbWVuX3JlZCA8LSBkZjIkd29tc3VtLyhkZjIkd29tc3VtK2RmMiRtZW5zdW0pCmRmMiRwZXJtZW5fcmVkIDwtIGRmMiRtZW5zdW0vKGRmMiR3b21zdW0rZGYyJG1lbnN1bSkKCmRmIDwtIGNiaW5kKGRmLCBkZjJbLGMoInBlcndvbWVuX3JlZCIsICJwZXJtZW5fcmVkIildKQpkZiRzYW1lZ2VuZGVyX3JlZCA8LSBpZmVsc2UoZGYkd29tYW4gPT0gMSwgZGYkcGVyd29tZW4sIGRmJHBlcm1lbikKCmBgYAoKCmBgYHtyIHJldmlzaW9uaG9tb2dlbmVpdHlfZ2Vuc3VicG9wdXBwZWQsICBldmFsPUZBTFNFfQojd29tZW4gaG9tb2dlbmVpdHkKIyBleHRyYWN0IGFuc3dlcnMgdG8gd29tZW4gbmFtZXMgCiMgTk8gTWFyaWEsSm9oYW5uYQp3b21lbiA8LSBkZlssIGMoIlNvcGhpZSIsICJKdWxpYSIsIlNhbm5lIiwiTGlzYSIsIkxhdXJhIiwiTGluZGEiLCJNb25pcXVlIiwiRXN0ZXIiLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiQW5uYSIsIkVsaXNhYmV0aCIsIkNvcm5lbGlhIiwiV2lsaGVsbWluYSIsIlNhcmEiLCAiTm9vciIpXQp3b21wb3AgPC0gYygxNTI3NiwxNjM1MCwyNzM5NCwyMTIwMCwyNTY4MSwyOTk1NSwzOTQ4MSwgMjY5MiwKICAgICAgICAgIDEzNjI5NiwxMTAyMzEsMTEyODA3LDk4MjA4LCAxMTY0MCw0NTE3KQojIE9SREVSOiAgIFNvcGhpZSwgSnVsaWEsU2FubmUsTGlzYSxMYXVyYSxNYXJpYSxMaW5kYSxKb2hhbm5hLE1vbmlxdWUsRXN0ZXIsCiMgICAgICAgICAgICAgQW5uYSxFbGlzYWJldGgsQ29ybmVsaWEsV2lsaGVsbWluYSxTYXJhLCBOb29yICAgICAgCgpmb3IgKGkgaW4gMTpsZW5ndGgod29tZW4pKSB7CiAgCiAgd29tZW5bW2ldXSA8LSB3b21lbltbaV1dL3dvbXBvcFtpXQogIAp9CndvbWVuJHdvbXN1bSA8LSByb3dTdW1zKHdvbWVuWywgYygiU29waGllIiwgIkp1bGlhIiwiU2FubmUiLCJMaXNhIiwiTGF1cmEiLCJMaW5kYSIsIk1vbmlxdWUiLCJFc3RlciIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJBbm5hIiwiRWxpc2FiZXRoIiwiQ29ybmVsaWEiLCJXaWxoZWxtaW5hIiwiU2FyYSIsICJOb29yIildKQoKCiMgbWVuIGhvbW9nZW5laXR5CiMgZXh0cmFjdCBhbnN3ZXJzIHRvIG1lbiBuYW1lcwptZW4gPC0gZGZbLCBjKCJEYWFuIiwiU2VtIiwiVGhvbWFzIiwiTWF4IiwiS2V2aW4iLCJKb2hhbm5lcyIsIkRlbm5pcyIsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAiSmVyb2VuIiwiSmFuIiwiTWFyY2VsIiwiQ29ybmVsaXMiLCJIZW5kcmlrIiwiUGV0cnVzIiwgIldpbGxlbSIsIkFsaSIsIk1vaGFtbWVkIildCiNwb3B1Cm1lbnBvcCA8LSBjKDIyNzA0LDEzMjc2LDQwNTQzLDE3MDI0LDIzMTY3LDMwNzAzMiwzNjQxMSw0OTE4MiwxODY3NDYsMzU5NzMsMTM0OTU2LDExODYxMCw4NjUwMCwKICAgICAgICAgIDEwMjI5Niw0MjEzLDUwMDMpCiMgT1JERVI6ICAgRGFhbixTZW0sIFRob21hcyxNYXgsS2V2aW4sSm9oYW5uZXMsRGVubmlzLEplcm9lbixKYW4sTWFyY2VsLENvcm5lbGlzLEhlbmRyaWssUGV0cnVzLAojICAgICAgICAgICAgIFdpbGxlbSxBbGksTW9oYW1tZWQsCmZvciAoaSBpbiAxOmxlbmd0aChtZW4pKSB7CiAgCiAgbWVuW1tpXV0gPC0gbWVuW1tpXV0vbWVucG9wW2ldCiAgCn0KbWVuJG1lbnN1bSA8LSByb3dTdW1zKG1lblssIGMoIkRhYW4iLCJTZW0iLCJUaG9tYXMiLCJNYXgiLCJLZXZpbiIsIkpvaGFubmVzIiwiRGVubmlzIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICJKZXJvZW4iLCJKYW4iLCJNYXJjZWwiLCJDb3JuZWxpcyIsIkhlbmRyaWsiLCJQZXRydXMiLCAiV2lsbGVtIiwiQWxpIiwiTW9oYW1tZWQiKV0pCgojIGFuZCB0aGUgdG90YWxzCmRmMiA8LSBjYmluZCh3b21lbiwgbWVuKQpkZjIkcGVyd29tZW5fdXAgPC0gZGYyJHdvbXN1bS8oZGYyJHdvbXN1bStkZjIkbWVuc3VtKQpkZjIkcGVybWVuX3VwIDwtIGRmMiRtZW5zdW0vKGRmMiR3b21zdW0rZGYyJG1lbnN1bSkKCmRmIDwtIGNiaW5kKGRmLCBkZjJbLGMoInBlcndvbWVuX3VwIiwgInBlcm1lbl91cCIpXSkKZGYkc2FtZWdlbmRlcl91cCA8LSBpZmVsc2UoZGYkd29tYW4gPT0gMSwgZGYkcGVyd29tZW5fdXAsIGRmJHBlcm1lbl91cCkKCmBgYAoKCiMgRGF0YSBzdG9yYWdlCiAgCkZpbmFsbHksIHdlIHNhdmUgdGhlIGRhdGEgdGhhdCB3ZSB1c2UgZm9yIHRoZSBhbmFseXNlcy4KICAKYGBge3IgZGF0YXNhdmUsIGV2YWw9RkFMU0V9CgojIHNhdmUgZGF0YQpzYXZlKGRmLCBmaWxlID0gImRhdGEvZHV0Y2hfbmV0c2l6ZV9hbmFseXNlc19yZXZpc2lvbl8yLnJkYSIpCgpgYGA=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("dependent_variables_revision_2.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

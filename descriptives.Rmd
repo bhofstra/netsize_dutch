@@ -59,7 +59,7 @@ packages = c("haven", "coda", "matrixStats", "parallel", "MASS", "doParallel", "
              "poweRlaw", "fitdistrplus", "grid", "ggplotify", "smplot2")
 fpackage.check(packages)
 rm(packages)
-load("data/dutch_netsize_analyses_revision.rda")
+load("data/dutch_netsize_analyses_revision_2.rda")
 ```
 <br>
 
@@ -96,6 +96,8 @@ psych::describe(df$worthhouse)
 table(df$woman)
 psych::describe(df$woman)
 
+
+
 table(df$opl2)
 summary(df$opl2)
 # 1 prim/sec
@@ -120,26 +122,26 @@ table(df$migr3)
 <br>
 
 ```{r tablehomogeneity, eval = TRUE}
+# table 2
+summary(df$perwomen)
+summary(df[df$woman == 1, c("perwomen")])
+summary(df[df$woman == 0, c("perwomen")])
 
-summary(df$numwoman)
-summary(df[df$woman == 1, c("numwoman")])
-summary(df[df$woman == 0, c("numwoman")])
-
-summary(df$numman)
-summary(df[df$woman == 1, c("numman")])
-summary(df[df$woman == 0, c("numman")])
+summary(df$permen)
+summary(df[df$woman == 1, c("permen")])
+summary(df[df$woman == 0, c("permen")])
 
 summary(df$samegender)
 summary(df[df$woman == 1, c("samegender")])
 summary(df[df$woman == 0, c("samegender")])
 
-summary(df$numeduchigh)
-summary(df[df$opl2 == 1, c("numeduchigh")])
-summary(df[df$opl2 == 0, c("numeduchigh")])
+summary(df$pereduchigh)
+summary(df[df$opl2 == 1, c("pereduchigh")])
+summary(df[df$opl2 == 0, c("pereduchigh")])
 
-summary(df$numeduclow)
-summary(df[df$opl2 == 1, c("numeduclow")])
-summary(df[df$opl2 == 0, c("numeduclow")])
+summary(df$pereduclow)
+summary(df[df$opl2 == 1, c("pereduclow")])
+summary(df[df$opl2 == 0, c("pereduclow")])
 
 summary(df$sameeduc)
 summary(df[df$opl2 == 1, c("sameeduc")])
@@ -301,36 +303,67 @@ The code below generates Figure 2 from the paper associated with the text on pag
 ----
 
 
-
+ 
 # Comparing four different estimation scenarios
 
 The code below generates Figure X from the paper associated with the text on page X.
   
 ```{r densityrevision, eval = TRUE}
 
-# VIZ of netsize
-netsize_l <- gather(df[, c("netsover1", "netsover2", "netsover3", "netsover4", "netsover5")])
-round(summary(df$netsover4)[3], digits = 0)
-round(summary(df$netsover4)[4], digits = 0)
+netsize_l <- data.frame(df[, c("netsover6")])
+names(netsize_l) <- c("value")
+round(summary(df$netsover6)[3], digits = 0)
+round(summary(df$netsover6)[4], digits = 0)
 
-dens1 <- ggplot(netsize_l, aes(x=value, color = key)) + 
+dens1 <- ggplot(netsize_l, aes(x=value)) + 
   geom_density(alpha = .2, size = 0.5) + 
   theme_minimal() + 
   theme(legend.position = "none") +
   labs(x = "Network size estimate", y = "Density") +
-  scale_color_manual(values = c("grey", "grey", "grey", "#56B4E9", "grey")) +
-    geom_vline(xintercept=446, color = "darkgrey", linetype = 2) +
-  geom_vline(xintercept=518, color = "darkgrey", linetype = 2) +
-  annotate("text", x = 560, y = 0.0008, color = "black", angle = 90, 
-           label = "Mean = 518") +
-  annotate("text", x = 400, y = 0.0008, color = "black", angle = 90, 
-           label = "Median = 446") +
-  xlim(c(0, 1500))
-# save
-ggsave("output/densities_revision.pdf", plot = dens1, device = "pdf",
+  scale_color_manual(values = c("#56B4E9")) +
+    geom_vline(xintercept=488, color = "darkgrey", linetype = 2) +
+  geom_vline(xintercept=568, color = "darkgrey", linetype = 2) +
+  annotate("text", x = 630, y = 0.0004, color = "black", angle = 90, 
+           label = "Mean = 568") +
+  annotate("text", x = 360, y = 0.0004, color = "black", angle = 90, 
+           label = "Median = 488") +
+  xlim(c(0, 2500)) 
+
+ggsave("output/densities1_revision.pdf", plot = dens1, device = "pdf",
        scale = 1, width = 5, height = 4, units = c("in"),
        dpi = "retina")
-dens1
+ggsave("output/densities1_revision.jpeg", plot = dens1, device = "jpeg",
+       scale = 1, width = 5, height = 4, units = c("in"),
+       dpi = "retina")
+
+
+cor(df[, c("netsover1", "netsover2", "netsover4", "netsover5", "netsover6")])
+# 
+# # VIZ of netsize scenarios
+# netsize_l <- gather(df[, c("netsover1", "netsover2", "netsover4", "netsover5", "netsover6")])
+# round(summary(df$netsover6)[3], digits = 0)
+# round(summary(df$netsover6)[4], digits = 0)
+# 
+# dens2 <- ggplot(netsize_l, aes(x=value, color = key)) +
+#   geom_density(alpha = .2, size = 0.5) +
+#   theme_minimal() +
+#   theme(legend.position = "none") +
+#   labs(x = "Network size estimate", y = "Density") +
+#   scale_color_manual(values = c("grey", "grey", "grey", "grey", "#56B4E9")) +
+#     geom_vline(xintercept=488, color = "darkgrey", linetype = 2) +
+#   geom_vline(xintercept=568, color = "darkgrey", linetype = 2) +
+#   annotate("text", x = 560, y = 0.0008, color = "black", angle = 90,
+#            label = "Mean = 568") +
+#   annotate("text", x = 400, y = 0.0008, color = "black", angle = 90,
+#            label = "Median = 488") +
+#   xlim(c(0, 2500))
+# # save
+# ggsave("output/densities2_revision.pdf", plot = dens1, device = "pdf",
+#        scale = 1, width = 5, height = 4, units = c("in"),
+#        dpi = "retina")
+# dens2
+
+
 
 
 
@@ -345,8 +378,8 @@ We now fit a "complementary cumulative degree distribution" and check how it fit
 ```{r ccdf, eval = TRUE}
 
 #df$netsize <- round(rowSums(df[,c(14:185)]) / length(14:185), 0)
-df <- df[!df$netsover4 > 5000, ]
-degrees <- round(df$netsover4, 0)
+df <- df[!df$netsover6 > 2500, ]
+degrees <- round(df$netsover6, 0)
 
 degr_pl <- displ$new(degrees) # create a discrete powerlaw distribution object 
 
@@ -387,6 +420,9 @@ ccdfplot <- ggplot() +
 
 # save
 ggsave("output/ccdfplot.pdf", plot = ccdfplot, device = "pdf",
+       scale = 1, width = 6, height = 4, units = c("in"),
+       dpi = "retina")
+ggsave("output/ccdfplot.jpeg", plot = ccdfplot, device = "jpeg",
        scale = 1, width = 6, height = 4, units = c("in"),
        dpi = "retina")
 
@@ -444,18 +480,17 @@ ref3 <- c(15276,16350,27394,21200,25681,334502,29955,266522,39481, 2692,
 
 pops <- c(ref1, ref2, ref3)
 
-
-
-
 fig <- data.frame(cbind(means, pops))
-cor(fig)
+
+
 
 cor(fig[!fig$pops > 500000, ])
 cor(fig[!fig$pops > 200000, ])
 cor(fig[fig$pops < 50000, ])
+cor(fig[fig$pops < 100000, ])
 
 
-ex1 <- ggplot(fig, aes(x=pops, y=means)) + 
+ex3 <- ggplot(fig, aes(x=pops, y=means)) + 
   geom_point() + 
   xlim(x= c(0, 50000)) + 
   ylim(c(0,2.5)) + 
@@ -466,8 +501,8 @@ ex1 <- ggplot(fig, aes(x=pops, y=means)) +
   xlab("Population size") +
   ylab("Average number mentioned") +
   sm_statCorr() + 
-  ggtitle("A) Population size <50k")
-ex1
+  ggtitle("C) Population size <50k")
+ex3
 
 ex2 <- ggplot(fig, aes(x=pops, y=means)) + 
   geom_point() + 
@@ -483,8 +518,7 @@ ex2 <- ggplot(fig, aes(x=pops, y=means)) +
   ggtitle("B) Population size <500k")
 ex2
 
-
-ex3 <- ggplot(fig, aes(x=pops, y=means)) + 
+ex1 <- ggplot(fig, aes(x=pops, y=means)) + 
   geom_point() + 
   geom_smooth(method='lm') +
   geom_text(label = rownames(fig),
@@ -493,14 +527,18 @@ ex3 <- ggplot(fig, aes(x=pops, y=means)) +
   xlab("Population size") +
   ylab("Average number mentioned") +
   sm_statCorr() + 
-  ggtitle("C) All population sizes")
-ex3
+  ggtitle("A) All population sizes")
+ex1
 
-ex <- plot_grid(ex1,ex2,ex3, nrow = 1)
+ex <- cowplot::plot_grid(ex1, ex2, ex3, nrow = 1)
+
 ggsave("output/popsizes.pdf", plot = ex, device = "pdf",
        scale = 1, width = 16, height = 5, units = c("in"),
        dpi = "retina")
-
+ggsave("output/popsizes.jpeg", plot = ex, device = "jpeg",
+       scale = 1, width = 16, height = 5, units = c("in"),
+       dpi = "retina")
+ex
 ```
 
 

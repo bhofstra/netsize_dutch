@@ -1,0 +1,533 @@
+---
+title: "Dependent variables: Revision 2"
+#bibliography: references.bib
+author: "Bas Hofstra"
+---
+
+```{r, globalsettings, echo=FALSE, warning=FALSE, results='hide'}
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+
+
+colorize <- function(x, color) {sprintf("<span style='color: %s;'>%s</span>", color, x) }
+
+```
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+Last compiled on `r format(Sys.time(), '%B, %Y')`
+
+<br>
+
+----
+
+This is the code with which we make our dependent variables according to the revision of our manuscript.
+
+<br>
+
+----
+
+# Initatiating R environment
+
+Start out with a custom function to load a set of required packages.
+  
+```{r pack, eval=FALSE}
+
+# packages and read data
+rm(list = ls())
+
+# (c) Jochem Tolsma
+fpackage.check <- function(packages) {
+  lapply(packages, FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  })
+}
+packages = c("haven", "coda", "matrixStats", "parallel", "MASS", "doParallel", "dplyr", "cowplot", 
+             "tidyverse", "naniar", "dotwhisker" ,"gt", "reshape2", "VGAM", "expss", "networkscaleup")
+fpackage.check(packages)
+rm(packages)
+load("data/dutch_netsize_analyses.rda")
+
+
+
+```
+
+
+
+Revision 2 dependent variable for network size
+
+```{r revisiondispersed, eval=FALSE}
+
+dfans <- df[, c("uni", "hbo", "mbo", "dochterzoon", "tweeling", "corona", 
+              "elauto", "scooter", "vegan", 
+              "Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
+              "Anna","Elisabeth","Cornelia","Wilhelmina","Amira","Samira","Sara","Daan","Sem",
+              "Thomas","Max","Kevin","Johannes","Dennis","Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus",
+              "Willem","Ali","Mohammed","Noor")] # take mean of each of the cats
+
+ref1 <- c(84957, 75214, 145600, 168066, 2500, 1558549)
+# ORDER:  uni, hbo, mbo, dochter/zoon, tweeling, corona
+
+ref2 <- c(273259, 460618, 261000)
+# ORDER:   elecauto, scooter, vegan,
+
+ref3 <- c(15276,16350,27394,21200,25681,334502,29955,266522,39481, 2692,
+          136296,110231,112807,98208,1386,2186,11640,22704,13276,
+          40543,17024,23167,307032,36411,49182,186746,35973,134956,118610,86500,
+          102296,4213,5003,4517)
+# ORDER:   Sophie, Julia,Sanne,Lisa,Laura,Maria,Linda,Johanna,Monique,Ester,
+#             Anna,Elisabeth,Cornelia,Wilhelmina,Amira,Samira,Sara,Daan,Sem,
+#             Thomas,Max,Kevin,Johannes,Dennis,Jeroen,Jan,Marcel,Cornelis,Hendrik,Petrus,
+#             Willem,Ali,Mohammed,Noor
+
+
+
+pops <- c(ref1, ref2, ref3)
+
+# Analyze an example ard data set using Zheng et al. (2006) models
+ard <- as.matrix(dfans)
+subpop_sizes <- pops
+known_ind <- c(1:43)
+
+N <- 17407585
+
+
+# renormalization
+# first with primary scaling groups ALL
+overdisp.est1 <- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            G1_ind = known_ind,
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+
+# two scaling groups, ALL groups selected
+overdisp.est2 <- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            G1_ind = c(2, 3, 4, 7, 9, 35), #hbo, mbo,dochterzoon, elauto,vegan, jan
+                            G2_ind = c(15, 17, 32), # maria, johanna, johannes
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+ 
+
+# subgroup selection
+# regularize subpopulations to < 10k and selection < 10k
+ard <- as.matrix(dfans)
+subpop_sizes <- pops
+z <- which(subpop_sizes < 10000)
+ard <- ard[, z]
+subpop_sizes <- pops[z]
+known_ind <- c(1:length(subpop_sizes))
+overdisp.est3 <- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            G1_ind = known_ind,
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+
+# only subpopulations < 50k
+ard <- as.matrix(dfans)
+subpop_sizes <- pops
+z <- which(subpop_sizes < 50000)
+ard <- ard[, z]
+subpop_sizes <- pops[z]
+known_ind <- c(1:length(subpop_sizes))
+overdisp.est4 <- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+
+
+
+#without corona, the very top level one
+ard <- as.matrix(dfans[,-c(6)]) 
+subpop_sizes <- pops[-6]
+known_ind <- c(1:42)
+overdisp.est5 <- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            G1_ind = known_ind,
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+
+
+#with mccormick selection criteria .1-.2
+ref <- as.data.frame(pops)
+ref$prop <- (ref$pops/N)*100
+
+ref <- ref[ref$prop < .22,]
+ref <- ref[ref$prop > .08,]
+z <- as.integer(rownames(ref))
+
+ard <- as.matrix(dfans)
+ard <- ard[, z]
+subpop_sizes <- pops[z]
+known_ind <- c(1:length(subpop_sizes))
+
+overdisp.mccormick1 <- overdispersed(ard,
+                            known_sizes = subpop_sizes[known_ind],
+                            known_ind = known_ind,
+                            G1_ind = known_ind,
+                            N = N,
+                            warmup = 500,
+                            iter = 5000)
+
+
+
+# 
+# #with mccormick selection criteria .05-.25
+# ref <- as.data.frame(pops)
+# ref$prop <- (ref$pops/N)*100
+# 
+# ref <- ref[ref$prop < .25,]
+# ref <- ref[ref$prop > .05,]
+# z <- as.integer(rownames(ref))
+# 
+# ard <- ard[, z]
+# subpop_sizes <- pops[z]
+# known_ind <- c(1:length(subpop_sizes))
+# 
+# overdisp.mccormick2 <- overdispersed(ard,
+#                             known_sizes = subpop_sizes[known_ind],
+#                             known_ind = known_ind,
+#                             G1_ind = known_ind,
+#                             N = N,
+#                             warmup = 500,
+#                             iter = 5000)
+
+
+
+# same iterations in one mean, correlate
+x1 <- data.frame(colMeans(overdisp.est1$degrees))
+x2 <- data.frame(colMeans(overdisp.est2$degrees))
+x3 <- data.frame(colMeans(overdisp.est3$degrees))
+x4 <- data.frame(colMeans(overdisp.est4$degrees))
+x5 <- data.frame(colMeans(overdisp.est5$degrees))
+x6 <- data.frame(colMeans(overdisp.mccormick1$degrees))
+#x7 <- data.frame(colMeans(overdisp.mccormick2$degrees))
+summary(x1[,1])
+summary(x2[,1])
+summary(x3[,1])
+summary(x4[,1])
+summary(x5[,1])
+summary(x6[,1])
+#summary(x7[,1])
+
+#safe to data
+df$netsover1 <- colMeans(overdisp.est1$degrees)
+df$netsover2 <- colMeans(overdisp.est2$degrees)
+df$netsover3 <- colMeans(overdisp.est3$degrees)
+df$netsover4 <- colMeans(overdisp.est4$degrees)
+df$netsover5 <- colMeans(overdisp.est5$degrees)
+df$netsover6 <- colMeans(overdisp.mccormick1$degrees)
+
+df$netsover7 <- colMeans(overdisp.mccormick1$degrees)
+#df$netsover7 <- colMeans(overdisp.mccormick2$degrees)
+cor(df[,c("netsover1", "netsover2", "netsover3", "netsover4", "netsover5", "netsover6")])
+
+
+summary(df$netsover1)
+summary(df$netsover2)
+summary(df$netsover3)
+summary(df$netsover4)
+summary(df$netsover5)
+summary(df$netsover6)
+summary(df$netsover7)
+
+
+```
+
+Homogeneity metrics for gender.
+
+```{r revisionhomogeneity_gen,  eval=FALSE}
+# jeroense et al.:
+# The numerical response to each name question was divided by the name frequency in the population. 
+#We then calculated a total sum for each set of distinct ethnic-group names and for all names. 
+# By dividing the total sum of co-ethnic names by the total sum of all names multiplied by 100, 
+# we derive our relative ethnic homogeneity measurement, running from 0 to 100.
+
+# volker et al.:
+# For our gender and educational homogeneity metrics we follow Jeroense and colleagues' (2023) approach to measuring homogeneity in extended networks.
+# We first divide the numerical response to each name by that name's population size.
+# We then sum these numbers for all names and for women en men names seperately. 
+# we subsequently divide the sum of women (or men) names by the sum of all names multiplied by 100 for the relative number of women (or men) in the alter category answers (from 0 to 100). This is defined as follows:
+# We also divide the sum of same-gender names by the sum of all names multipled by 100 for our relative gender homogeneity measurement (from 0 to 100). We define both measurements as follows:
+
+#GENDER
+# table(df$woman)
+# df$numwoman <- rowSums(df[, c("Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
+#                               "Anna","Elisabeth","Cornelia","Wilhelmina","Amira","Samira","Sara", "Noor")])
+# 
+# 
+# 
+# df$numman <- rowSums(df[, c("Daan","Sem","Thomas","Max","Kevin","Johannes","Dennis",
+#                             "Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus", "Willem","Ali","Mohammed")])
+# 
+# dfans <- df[, c("Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
+#               "Anna","Elisabeth","Cornelia","Wilhelmina","Amira","Samira","Sara","Daan","Sem",
+#               "Thomas","Max","Kevin","Johannes","Dennis","Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus",
+#               "Willem","Ali","Mohammed","Noor")] # take mean of each of the cats
+# 
+# 
+# df$numnames <- df$numwoman+df$numman
+# df$samegender <- ifelse(df$woman == 1, (df$numwoman/df$numnames)*100, (df$numman/df$numnames)*100)
+# summary(df$samegender)
+# 
+# summary(df[df$woman == 1, c("samegender")])
+# summary(df[df$woman == 0, c("samegender")])
+
+#women homogeneity
+# extract answers to women names
+women <- df[, c("Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
+                              "Anna","Elisabeth","Cornelia","Wilhelmina","Amira","Samira","Sara", "Noor")]
+
+wompop <- c(15276,16350,27394,21200,25681,334502,29955,266522,39481, 2692,
+          136296,110231,112807,98208,1386,2186,11640,4517)
+
+#
+sort(c(15276,16350,27394,21200,25681,334502,29955,266522,39481, 2692,
+          136296,110231,112807,98208,1386,2186,11640,4517)) > sort(c(22704,13276,40543,17024,23167,307032,36411,49182,186746,35973,134956,118610,86500,
+          102296,4213,5003))
+
+# ORDER:   Sophie, Julia,Sanne,Lisa,Laura,Maria,Linda,Johanna,Monique,Ester,
+#             Anna,Elisabeth,Cornelia,Wilhelmina,Amira,Samira,Sara, Noor      
+
+for (i in 1:length(women)) {
+  
+  women[[i]] <- women[[i]]/wompop[i]
+  
+}
+women$womsum <- rowSums(women[, c("Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
+                              "Anna","Elisabeth","Cornelia","Wilhelmina","Amira","Samira","Sara", "Noor")])
+
+
+# men homogeneity
+# extract answers to men names
+men <- df[, c("Daan","Sem","Thomas","Max","Kevin","Johannes","Dennis",
+                            "Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus", "Willem","Ali","Mohammed")]
+
+#popu
+menpop <- c(22704,13276,40543,17024,23167,307032,36411,49182,186746,35973,134956,118610,86500,
+          102296,4213,5003)
+# ORDER:   Daan,Sem, Thomas,Max,Kevin,Johannes,Dennis,Jeroen,Jan,Marcel,Cornelis,Hendrik,Petrus,
+#             Willem,Ali,Mohammed,
+
+for (i in 1:length(men)) {
+  
+  men[[i]] <- men[[i]]/menpop[i]
+  
+}
+men$mensum <- rowSums(men[, c("Daan","Sem","Thomas","Max","Kevin","Johannes","Dennis",
+                            "Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus", "Willem","Ali","Mohammed")])
+
+# and the totals
+df2 <- cbind(women, men)
+df2$perwomen <- df2$womsum/(df2$womsum+df2$mensum)
+df2$permen <- df2$mensum/(df2$womsum+df2$mensum)
+
+df <- cbind(df, df2[,c("perwomen", "permen")])
+df$samegender <- ifelse(df$woman == 1, df$perwomen, df$permen)
+
+```
+
+Homogeneity metrics for education.
+
+```{r revisionhomogeneity_educ,  eval=FALSE}
+#EDUC
+#independent
+df$opl2[df$opleiding == 1] <- 0 # prim/sec
+df$opl2[df$opleiding == 2] <- 0 # prim/sec
+df$opl2[df$opleiding == 3] <- 0 # prim/sec
+df$opl2[df$opleiding == 4] <- 0 # prim/sec
+
+df$opl2[df$opleiding == 5] <- 0 # prim/sec
+
+df$opl2[df$opleiding == 6] <- 1 # prim/sec
+df$opl2[df$opleiding == 7] <- 1 # prim/sec
+table(df$opleiding)
+table(df$opl2)
+
+df$numeduchigh <- df$hbo + df$uni
+df$numeduclow <- df$mbo
+
+df$numeduc <- rowSums(df[, c("uni", "hbo", "mbo")])
+
+df$pereduchigh <- df$numeduchigh/df$numeduc
+df$pereduclow <- df$numeduclow/df$numeduc
+
+df$sameeduc <- ifelse(df$opl2 == 1, df$pereduchigh, df$pereduclow)
+#df$sameeduc <- ifelse(df$opl2 == 1, (df$numeduchigh / df$numeduc) * 100, df$sameeduc)
+
+summary(df$sameeduc)
+summary(df[df$opl2 == 1, c("sameeduc")])
+summary(df[df$opl2 == 0, c("sameeduc")])
+
+# df$sameeduc[df$oplei == 5] <- (df$hbo / df$numeduc) * 100
+# df$sameeduc[df$oplei == 6] <- (df$hbo / df$numeduc) * 100
+# 
+# df$sameeduc[df$oplei == 7] <- (df$uni / df$numeduc) * 100
+
+#df[138, c("opleiding", "oplei", "numeduc", "mbo", "hbo", "uni", "sameeduc")]
+
+# geen onderwijs / basisonderwijs / cursus inburgering / cursus Nederlandse taal 
+# 1 
+# LBO / VBO / VMBO (kader- of beroepsgerichte leerweg) / MBO 1 (assistentenopleidi 
+# 2 
+# MAVO / HAVO of VWO (eerste drie jaar) / ULO / MULO / VMBO (TL of GL) / VSO 
+# 3 
+# MBO 2, 3, 4 (basisberoeps-, vak-, middenkader- of specialistenopleiding) of MBO 
+# 4 
+# HAVO of VWO (overgegaan naar de 4e klas) / HBS / MMS / HBO propedeuse of WO Prop 
+# 5 
+# HBO (behalve HBO-master) / WO-kandidaats -of WO-bachelor 
+# 6 
+# WO-doctoraal of WO-master of HBO-master / postdoctoraal onderwijs 
+# 7
+```
+
+
+Homogeneity metrics for ethnic background
+
+```{r revisionhomogeneity_ethnic,  eval=FALSE}
+# 
+# # ETHNIC
+# df$numdutch <- rowSums(df[, c("Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
+#                               "Anna","Elisabeth","Cornelia","Wilhelmina", "Sara", "Noor",
+#                               "Daan","Sem","Thomas","Max","Kevin","Johannes","Dennis",
+#                               "Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus", "Willem")])
+# df$numnodutch <- rowSums(df[, c("Ali","Mohammed","Amira","Samira")])
+# table(df$migr3)
+# df$sameethnic1 <- ifelse(df$migr3 == 1, (df$numdutch/df$numnames)*100, (df$numnodutch/df$numnames)*100)
+# df$sameethnic2 <- ifelse(df$migr3 == 1, (df$numdutch/df$numnames)*100, (df$numnodutch/df$numnames)*100)
+# df$sameethnic2 <- ifelse(df$migr3 == 2, NA, df$sameethnic1)
+# 
+# df[37, c("migr3", "sameethnic1", "numdutch", "numnodutch", "numnames")]
+
+
+```
+
+```{r revisionhomogeneity_gensubpopreduced,  eval=FALSE}
+#women homogeneity
+# extract answers to women names 
+# NO AMIRA AND SAMIRA
+women <- df[, c("Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
+                              "Anna","Elisabeth","Cornelia","Wilhelmina","Sara", "Noor")]
+wompop <- c(15276,16350,27394,21200,25681,334502,29955,266522,39481, 2692,
+          136296,110231,112807,98208, 11640,4517)
+# ORDER:   Sophie, Julia,Sanne,Lisa,Laura,Maria,Linda,Johanna,Monique,Ester,
+#             Anna,Elisabeth,Cornelia,Wilhelmina,Sara, Noor      
+
+for (i in 1:length(women)) {
+  
+  women[[i]] <- women[[i]]/wompop[i]
+  
+}
+women$womsum <- rowSums(women[, c("Sophie", "Julia","Sanne","Lisa","Laura","Maria","Linda","Johanna","Monique","Ester",
+                              "Anna","Elisabeth","Cornelia","Wilhelmina","Sara", "Noor")])
+
+
+# men homogeneity
+# extract answers to men names
+men <- df[, c("Daan","Sem","Thomas","Max","Kevin","Johannes","Dennis",
+                            "Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus", "Willem","Ali","Mohammed")]
+#popu
+menpop <- c(22704,13276,40543,17024,23167,307032,36411,49182,186746,35973,134956,118610,86500,
+          102296,4213,5003)
+# ORDER:   Daan,Sem, Thomas,Max,Kevin,Johannes,Dennis,Jeroen,Jan,Marcel,Cornelis,Hendrik,Petrus,
+#             Willem,Ali,Mohammed,
+for (i in 1:length(men)) {
+  
+  men[[i]] <- men[[i]]/menpop[i]
+  
+}
+men$mensum <- rowSums(men[, c("Daan","Sem","Thomas","Max","Kevin","Johannes","Dennis",
+                            "Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus", "Willem","Ali","Mohammed")])
+
+# and the totals
+df2 <- cbind(women, men)
+df2$perwomen_red <- df2$womsum/(df2$womsum+df2$mensum)
+df2$permen_red <- df2$mensum/(df2$womsum+df2$mensum)
+
+df <- cbind(df, df2[,c("perwomen_red", "permen_red")])
+df$samegender_red <- ifelse(df$woman == 1, df$perwomen, df$permen)
+
+```
+
+
+```{r revisionhomogeneity_gensubpopupped,  eval=FALSE}
+#women homogeneity
+# extract answers to women names 
+# NO Maria,Johanna
+women <- df[, c("Sophie", "Julia","Sanne","Lisa","Laura","Linda","Monique","Ester",
+                              "Anna","Elisabeth","Cornelia","Wilhelmina","Sara", "Noor")]
+wompop <- c(15276,16350,27394,21200,25681,29955,39481, 2692,
+          136296,110231,112807,98208, 11640,4517)
+# ORDER:   Sophie, Julia,Sanne,Lisa,Laura,Maria,Linda,Johanna,Monique,Ester,
+#             Anna,Elisabeth,Cornelia,Wilhelmina,Sara, Noor      
+
+for (i in 1:length(women)) {
+  
+  women[[i]] <- women[[i]]/wompop[i]
+  
+}
+women$womsum <- rowSums(women[, c("Sophie", "Julia","Sanne","Lisa","Laura","Linda","Monique","Ester",
+                              "Anna","Elisabeth","Cornelia","Wilhelmina","Sara", "Noor")])
+
+
+# men homogeneity
+# extract answers to men names
+men <- df[, c("Daan","Sem","Thomas","Max","Kevin","Johannes","Dennis",
+                            "Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus", "Willem","Ali","Mohammed")]
+#popu
+menpop <- c(22704,13276,40543,17024,23167,307032,36411,49182,186746,35973,134956,118610,86500,
+          102296,4213,5003)
+# ORDER:   Daan,Sem, Thomas,Max,Kevin,Johannes,Dennis,Jeroen,Jan,Marcel,Cornelis,Hendrik,Petrus,
+#             Willem,Ali,Mohammed,
+for (i in 1:length(men)) {
+  
+  men[[i]] <- men[[i]]/menpop[i]
+  
+}
+men$mensum <- rowSums(men[, c("Daan","Sem","Thomas","Max","Kevin","Johannes","Dennis",
+                            "Jeroen","Jan","Marcel","Cornelis","Hendrik","Petrus", "Willem","Ali","Mohammed")])
+
+# and the totals
+df2 <- cbind(women, men)
+df2$perwomen_up <- df2$womsum/(df2$womsum+df2$mensum)
+df2$permen_up <- df2$mensum/(df2$womsum+df2$mensum)
+
+df <- cbind(df, df2[,c("perwomen_up", "permen_up")])
+df$samegender_up <- ifelse(df$woman == 1, df$perwomen_up, df$permen_up)
+
+```
+
+
+# Data storage
+  
+Finally, we save the data that we use for the analyses.
+  
+```{r datasave, eval=FALSE}
+
+# save data
+save(df, file = "data/dutch_netsize_analyses_revision_2.rda")
+
+```

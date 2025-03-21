@@ -29,6 +29,8 @@ navbar:
         href: dependent_variables.html
       - text: "Dependent Variables Revision"
         href: dependent_variables_revision.html
+      - text: "Dependent Variables Revision 2"
+        href: dependent_variables_revision_2.html
       - text: "Independent Variables"
         href: independent_variables.html
     - text: "Analyses"
