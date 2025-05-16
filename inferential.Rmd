@@ -381,7 +381,10 @@ tab_model(modell2, modellnb2, show.se = TRUE)
 
 ```{r regrevision_gen, eval = TRUE}
 #gender
-modelwoman <- lm(perwomen ~ 
+
+summary(df$perwomen)
+
+modelwoman <- lm(perwomen*100 ~ 
                           as.factor(work) +
                            
                           hhsize + 
@@ -398,7 +401,7 @@ modelwoman <- lm(perwomen ~
                         data = df)
 summary(modelwoman)
 
-modelman <- lm(permen ~ 
+modelman <- lm(permen*100 ~ 
                          as.factor(work) +
                            
                           hhsize + 
@@ -418,7 +421,7 @@ summary(modelman)
 summary(df$permen)
 summary(df$perwomen)
 
-modelsamegen <- lm(samegender ~ 
+modelsamegen <- lm(samegender*100 ~ 
                      
                          as.factor(work) +
                            
@@ -443,9 +446,9 @@ tab_model(modelwoman, modelsamegen, show.se = TRUE)
 ```{r regrevision_educ, eval = TRUE}
 
 # line educ independent variable up to educ homogeneity dependent
-
+summary(df$pereduchigh)
 #educ
-modeleduch <- lm(pereduchigh ~ 
+modeleduch <- lm(pereduchigh*100 ~ 
                           as.factor(work) +
                            
                           hhsize + 
@@ -462,7 +465,7 @@ modeleduch <- lm(pereduchigh ~
                         data = df)
 summary(modeleduch)
 
-modeleducl <- lm(pereduclow ~ 
+modeleducl <- lm(pereduclow*100 ~ 
                           as.factor(work) +
                            
                           hhsize + 
@@ -481,7 +484,7 @@ summary(modeleducl)
 
 
 
-modelsameeduc <- lm(sameeduc ~ 
+modelsameeduc <- lm(sameeduc*100 ~ 
                           as.factor(work) +
                            
                           hhsize + 

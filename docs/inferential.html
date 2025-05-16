@@ -439,7 +439,7 @@ div.tocify {
   addClassKlippyTo("pre.r, pre.markdown");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<p>Last compiled on March, 2025</p>
+<p>Last compiled on May, 2025</p>
 <p><br></p>
 <hr />
 <p>This is the code with which we run our inferential analyses.</p>
@@ -1164,7 +1164,11 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 </tr>
 </table>
 <pre class="r test"><code>#gender
-modelwoman &lt;- lm(perwomen ~ 
+
+summary(df$perwomen)</code></pre>
+<pre class="test2"><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+#&gt;  0.0000  0.4800  0.6571  0.6108  0.7861  1.0000      11</code></pre>
+<pre class="r test"><code>modelwoman &lt;- lm(perwomen*100 ~ 
                           as.factor(work) +
                            
                           hhsize + 
@@ -1182,35 +1186,35 @@ modelwoman &lt;- lm(perwomen ~
 summary(modelwoman)</code></pre>
 <pre class="test2"><code>#&gt; 
 #&gt; Call:
-#&gt; lm(formula = perwomen ~ as.factor(work) + hhsize + as.factor(agecat) + 
+#&gt; lm(formula = perwomen * 100 ~ as.factor(work) + hhsize + as.factor(agecat) + 
 #&gt;     as.factor(income) + worthhouse + as.factor(woman) + as.factor(opl2), 
 #&gt;     data = df)
 #&gt; 
 #&gt; Residuals:
-#&gt;      Min       1Q   Median       3Q      Max 
-#&gt; -0.68469 -0.13189  0.04078  0.16113  0.46832 
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -68.469 -13.189   4.078  16.113  46.832 
 #&gt; 
 #&gt; Coefficients:
-#&gt;                     Estimate Std. Error t value Pr(&gt;|t|)    
-#&gt; (Intercept)         0.498266   0.030446  16.365  &lt; 2e-16 ***
-#&gt; as.factor(work)1   -0.004459   0.016524  -0.270  0.78732    
-#&gt; hhsize              0.009540   0.006241   1.529  0.12661    
-#&gt; as.factor(agecat)1  0.023957   0.023898   1.002  0.31632    
-#&gt; as.factor(agecat)2  0.010720   0.024553   0.437  0.66248    
-#&gt; as.factor(agecat)3  0.016652   0.019756   0.843  0.39946    
-#&gt; as.factor(income)1  0.016213   0.016188   1.002  0.31677    
-#&gt; as.factor(income)3  0.019798   0.021508   0.921  0.35748    
-#&gt; worthhouse          0.003215   0.007626   0.422  0.67342    
-#&gt; as.factor(woman)1   0.090881   0.013365   6.800 1.63e-11 ***
-#&gt; as.factor(opl2)1    0.041546   0.015007   2.768  0.00572 ** 
+#&gt;                    Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)         49.8266     3.0446  16.365  &lt; 2e-16 ***
+#&gt; as.factor(work)1    -0.4459     1.6524  -0.270  0.78732    
+#&gt; hhsize               0.9540     0.6241   1.529  0.12661    
+#&gt; as.factor(agecat)1   2.3957     2.3898   1.002  0.31632    
+#&gt; as.factor(agecat)2   1.0720     2.4553   0.437  0.66248    
+#&gt; as.factor(agecat)3   1.6652     1.9756   0.843  0.39946    
+#&gt; as.factor(income)1   1.6213     1.6188   1.002  0.31677    
+#&gt; as.factor(income)3   1.9798     2.1508   0.921  0.35748    
+#&gt; worthhouse           0.3215     0.7626   0.422  0.67342    
+#&gt; as.factor(woman)1    9.0881     1.3365   6.800 1.63e-11 ***
+#&gt; as.factor(opl2)1     4.1546     1.5007   2.768  0.00572 ** 
 #&gt; ---
 #&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 #&gt; 
-#&gt; Residual standard error: 0.2291 on 1227 degrees of freedom
+#&gt; Residual standard error: 22.91 on 1227 degrees of freedom
 #&gt;   (11 observations deleted due to missingness)
 #&gt; Multiple R-squared:  0.05174,    Adjusted R-squared:  0.04402 
 #&gt; F-statistic: 6.695 on 10 and 1227 DF,  p-value: 3.394e-10</code></pre>
-<pre class="r test"><code>modelman &lt;- lm(permen ~ 
+<pre class="r test"><code>modelman &lt;- lm(permen*100 ~ 
                          as.factor(work) +
                            
                           hhsize + 
@@ -1228,31 +1232,31 @@ summary(modelwoman)</code></pre>
 summary(modelman)</code></pre>
 <pre class="test2"><code>#&gt; 
 #&gt; Call:
-#&gt; lm(formula = permen ~ as.factor(work) + hhsize + as.factor(agecat) + 
+#&gt; lm(formula = permen * 100 ~ as.factor(work) + hhsize + as.factor(agecat) + 
 #&gt;     as.factor(income) + worthhouse + as.factor(woman) + as.factor(opl2), 
 #&gt;     data = df)
 #&gt; 
 #&gt; Residuals:
-#&gt;      Min       1Q   Median       3Q      Max 
-#&gt; -0.46832 -0.16113 -0.04078  0.13189  0.68469 
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -46.832 -16.113  -4.078  13.189  68.469 
 #&gt; 
 #&gt; Coefficients:
-#&gt;                     Estimate Std. Error t value Pr(&gt;|t|)    
-#&gt; (Intercept)         0.501734   0.030446  16.479  &lt; 2e-16 ***
-#&gt; as.factor(work)1    0.004459   0.016524   0.270  0.78732    
-#&gt; hhsize             -0.009540   0.006241  -1.529  0.12661    
-#&gt; as.factor(agecat)1 -0.023957   0.023898  -1.002  0.31632    
-#&gt; as.factor(agecat)2 -0.010720   0.024553  -0.437  0.66248    
-#&gt; as.factor(agecat)3 -0.016652   0.019756  -0.843  0.39946    
-#&gt; as.factor(income)1 -0.016213   0.016188  -1.002  0.31677    
-#&gt; as.factor(income)3 -0.019798   0.021508  -0.921  0.35748    
-#&gt; worthhouse         -0.003215   0.007626  -0.422  0.67342    
-#&gt; as.factor(woman)1  -0.090881   0.013365  -6.800 1.63e-11 ***
-#&gt; as.factor(opl2)1   -0.041546   0.015007  -2.768  0.00572 ** 
+#&gt;                    Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)         50.1734     3.0446  16.479  &lt; 2e-16 ***
+#&gt; as.factor(work)1     0.4459     1.6524   0.270  0.78732    
+#&gt; hhsize              -0.9540     0.6241  -1.529  0.12661    
+#&gt; as.factor(agecat)1  -2.3957     2.3898  -1.002  0.31632    
+#&gt; as.factor(agecat)2  -1.0720     2.4553  -0.437  0.66248    
+#&gt; as.factor(agecat)3  -1.6652     1.9756  -0.843  0.39946    
+#&gt; as.factor(income)1  -1.6213     1.6188  -1.002  0.31677    
+#&gt; as.factor(income)3  -1.9798     2.1508  -0.921  0.35748    
+#&gt; worthhouse          -0.3215     0.7626  -0.422  0.67342    
+#&gt; as.factor(woman)1   -9.0881     1.3365  -6.800 1.63e-11 ***
+#&gt; as.factor(opl2)1    -4.1546     1.5007  -2.768  0.00572 ** 
 #&gt; ---
 #&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 #&gt; 
-#&gt; Residual standard error: 0.2291 on 1227 degrees of freedom
+#&gt; Residual standard error: 22.91 on 1227 degrees of freedom
 #&gt;   (11 observations deleted due to missingness)
 #&gt; Multiple R-squared:  0.05174,    Adjusted R-squared:  0.04402 
 #&gt; F-statistic: 6.695 on 10 and 1227 DF,  p-value: 3.394e-10</code></pre>
@@ -1262,7 +1266,7 @@ summary(modelman)</code></pre>
 <pre class="r test"><code>summary(df$perwomen)</code></pre>
 <pre class="test2"><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
 #&gt;  0.0000  0.4800  0.6571  0.6108  0.7861  1.0000      11</code></pre>
-<pre class="r test"><code>modelsamegen &lt;- lm(samegender ~ 
+<pre class="r test"><code>modelsamegen &lt;- lm(samegender*100 ~ 
                      
                          as.factor(work) +
                            
@@ -1281,31 +1285,31 @@ summary(modelman)</code></pre>
 summary(modelsamegen)</code></pre>
 <pre class="test2"><code>#&gt; 
 #&gt; Call:
-#&gt; lm(formula = samegender ~ as.factor(work) + hhsize + as.factor(agecat) + 
+#&gt; lm(formula = samegender * 100 ~ as.factor(work) + hhsize + as.factor(agecat) + 
 #&gt;     as.factor(income) + worthhouse + as.factor(woman) + as.factor(opl2), 
 #&gt;     data = df)
 #&gt; 
 #&gt; Residuals:
-#&gt;      Min       1Q   Median       3Q      Max 
-#&gt; -0.67160 -0.14994  0.01213  0.15343  0.59364 
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -67.160 -14.994   1.213  15.343  59.364 
 #&gt; 
 #&gt; Coefficients:
-#&gt;                      Estimate Std. Error t value Pr(&gt;|t|)    
-#&gt; (Intercept)         0.4244446  0.0305418  13.897   &lt;2e-16 ***
-#&gt; as.factor(work)1    0.0180866  0.0165755   1.091    0.275    
-#&gt; hhsize              0.0006058  0.0062601   0.097    0.923    
-#&gt; as.factor(agecat)1  0.0109655  0.0239727   0.457    0.647    
-#&gt; as.factor(agecat)2  0.0067618  0.0246299   0.275    0.784    
-#&gt; as.factor(agecat)3  0.0194900  0.0198180   0.983    0.326    
-#&gt; as.factor(income)1 -0.0151583  0.0162388  -0.933    0.351    
-#&gt; as.factor(income)3 -0.0103683  0.0215749  -0.481    0.631    
-#&gt; worthhouse         -0.0011878  0.0076494  -0.155    0.877    
-#&gt; as.factor(woman)1   0.2222627  0.0134072  16.578   &lt;2e-16 ***
-#&gt; as.factor(opl2)1    0.0041080  0.0150543   0.273    0.785    
+#&gt;                    Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)        42.44446    3.05418  13.897   &lt;2e-16 ***
+#&gt; as.factor(work)1    1.80866    1.65755   1.091    0.275    
+#&gt; hhsize              0.06058    0.62601   0.097    0.923    
+#&gt; as.factor(agecat)1  1.09655    2.39727   0.457    0.647    
+#&gt; as.factor(agecat)2  0.67618    2.46299   0.275    0.784    
+#&gt; as.factor(agecat)3  1.94900    1.98180   0.983    0.326    
+#&gt; as.factor(income)1 -1.51583    1.62388  -0.933    0.351    
+#&gt; as.factor(income)3 -1.03683    2.15749  -0.481    0.631    
+#&gt; worthhouse         -0.11878    0.76494  -0.155    0.877    
+#&gt; as.factor(woman)1  22.22627    1.34072  16.578   &lt;2e-16 ***
+#&gt; as.factor(opl2)1    0.41080    1.50543   0.273    0.785    
 #&gt; ---
 #&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 #&gt; 
-#&gt; Residual standard error: 0.2298 on 1227 degrees of freedom
+#&gt; Residual standard error: 22.98 on 1227 degrees of freedom
 #&gt;   (11 observations deleted due to missingness)
 #&gt; Multiple R-squared:  0.1903, Adjusted R-squared:  0.1837 
 #&gt; F-statistic: 28.83 on 10 and 1227 DF,  p-value: &lt; 2.2e-16</code></pre>
@@ -1316,10 +1320,10 @@ summary(modelsamegen)</code></pre>
  
 </th>
 <th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
-perwomen
+perwomen * 100
 </th>
 <th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
-samegender
+samegender * 100
 </th>
 </tr>
 <tr>
@@ -1356,25 +1360,25 @@ p
 (Intercept)
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.50
+49.83
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+3.04
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.44 – 0.56
+43.85 – 55.80
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 <strong>&lt;0.001</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.42
+42.44
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.03
+3.05
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
-0.36 – 0.48
+36.45 – 48.44
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 <strong>&lt;0.001</strong>
@@ -1385,25 +1389,25 @@ p
 work [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.00
+-0.45
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+1.65
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.04 – 0.03
+-3.69 – 2.80
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.787
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+1.81
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.02
+1.66
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.01 – 0.05
+-1.44 – 5.06
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.275
@@ -1414,25 +1418,25 @@ work [1]
 hhsize
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+0.95
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+0.62
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.00 – 0.02
+-0.27 – 2.18
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.127
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.00
+0.06
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.01
+0.63
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.01 – 0.01
+-1.17 – 1.29
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.923
@@ -1443,25 +1447,25 @@ hhsize
 agecat [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+2.40
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+2.39
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.02 – 0.07
+-2.29 – 7.08
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.316
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+1.10
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.02
+2.40
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.04 – 0.06
+-3.61 – 5.80
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.647
@@ -1472,25 +1476,25 @@ agecat [1]
 agecat [2]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+1.07
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+2.46
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.04 – 0.06
+-3.75 – 5.89
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.662
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+0.68
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.02
+2.46
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.04 – 0.06
+-4.16 – 5.51
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.784
@@ -1501,25 +1505,25 @@ agecat [2]
 agecat [3]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+1.67
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+1.98
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.02 – 0.06
+-2.21 – 5.54
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.399
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+1.95
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.02
+1.98
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.02 – 0.06
+-1.94 – 5.84
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.326
@@ -1530,25 +1534,25 @@ agecat [3]
 income [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+1.62
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+1.62
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.02 – 0.05
+-1.55 – 4.80
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.317
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.02
+-1.52
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.02
+1.62
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.05 – 0.02
+-4.70 – 1.67
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.351
@@ -1559,25 +1563,25 @@ income [1]
 income [3]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+1.98
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+2.15
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.02 – 0.06
+-2.24 – 6.20
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.357
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.01
+-1.04
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.02
+2.16
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.05 – 0.03
+-5.27 – 3.20
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.631
@@ -1588,25 +1592,25 @@ income [3]
 worthhouse
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.00
+0.32
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+0.76
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.01 – 0.02
+-1.17 – 1.82
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.673
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.00
+-0.12
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.01
+0.76
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.02 – 0.01
+-1.62 – 1.38
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.877
@@ -1617,25 +1621,25 @@ worthhouse
 woman [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.09
+9.09
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+1.34
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.06 – 0.12
+6.47 – 11.71
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 <strong>&lt;0.001</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.22
+22.23
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.01
+1.34
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
-0.20 – 0.25
+19.60 – 24.86
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 <strong>&lt;0.001</strong>
@@ -1646,25 +1650,25 @@ woman [1]
 opl2 [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.04
+4.15
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+1.50
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01 – 0.07
+1.21 – 7.10
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 <strong>0.006</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.00
+0.41
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.02
+1.51
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.03 – 0.03
+-2.54 – 3.36
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.785
@@ -1694,9 +1698,11 @@ R<sup>2</sup> / R<sup>2</sup> adjusted
 </tr>
 </table>
 <pre class="r test"><code># line educ independent variable up to educ homogeneity dependent
-
-#educ
-modeleduch &lt;- lm(pereduchigh ~ 
+summary(df$pereduchigh)</code></pre>
+<pre class="test2"><code>#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+#&gt;   0.000   0.400   0.750   0.652   1.000   1.000     640</code></pre>
+<pre class="r test"><code>#educ
+modeleduch &lt;- lm(pereduchigh*100 ~ 
                           as.factor(work) +
                            
                           hhsize + 
@@ -1714,35 +1720,35 @@ modeleduch &lt;- lm(pereduchigh ~
 summary(modeleduch)</code></pre>
 <pre class="test2"><code>#&gt; 
 #&gt; Call:
-#&gt; lm(formula = pereduchigh ~ as.factor(work) + hhsize + as.factor(agecat) + 
+#&gt; lm(formula = pereduchigh * 100 ~ as.factor(work) + hhsize + as.factor(agecat) + 
 #&gt;     as.factor(income) + worthhouse + as.factor(woman) + as.factor(opl2), 
 #&gt;     data = df)
 #&gt; 
 #&gt; Residuals:
-#&gt;      Min       1Q   Median       3Q      Max 
-#&gt; -0.93837 -0.19409  0.06789  0.22336  0.58169 
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -93.837 -19.409   6.789  22.336  58.169 
 #&gt; 
 #&gt; Coefficients:
-#&gt;                     Estimate Std. Error t value Pr(&gt;|t|)    
-#&gt; (Intercept)         0.573799   0.065958   8.700  &lt; 2e-16 ***
-#&gt; as.factor(work)1   -0.032362   0.033907  -0.954  0.34025    
-#&gt; hhsize             -0.037515   0.012737  -2.945  0.00335 ** 
-#&gt; as.factor(agecat)1  0.087501   0.049404   1.771  0.07705 .  
-#&gt; as.factor(agecat)2 -0.007916   0.055923  -0.142  0.88748    
-#&gt; as.factor(agecat)3 -0.055373   0.046698  -1.186  0.23619    
-#&gt; as.factor(income)1 -0.040102   0.033643  -1.192  0.23374    
-#&gt; as.factor(income)3 -0.046119   0.046984  -0.982  0.32670    
-#&gt; worthhouse          0.031077   0.015480   2.008  0.04514 *  
-#&gt; as.factor(woman)1   0.023365   0.028131   0.831  0.40656    
-#&gt; as.factor(opl2)1    0.247144   0.030722   8.045 4.67e-15 ***
+#&gt;                    Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)         57.3799     6.5958   8.700  &lt; 2e-16 ***
+#&gt; as.factor(work)1    -3.2362     3.3907  -0.954  0.34025    
+#&gt; hhsize              -3.7515     1.2737  -2.945  0.00335 ** 
+#&gt; as.factor(agecat)1   8.7501     4.9404   1.771  0.07705 .  
+#&gt; as.factor(agecat)2  -0.7916     5.5923  -0.142  0.88748    
+#&gt; as.factor(agecat)3  -5.5373     4.6698  -1.186  0.23619    
+#&gt; as.factor(income)1  -4.0102     3.3643  -1.192  0.23374    
+#&gt; as.factor(income)3  -4.6119     4.6984  -0.982  0.32670    
+#&gt; worthhouse           3.1077     1.5480   2.008  0.04514 *  
+#&gt; as.factor(woman)1    2.3365     2.8131   0.831  0.40656    
+#&gt; as.factor(opl2)1    24.7144     3.0722   8.045 4.67e-15 ***
 #&gt; ---
 #&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 #&gt; 
-#&gt; Residual standard error: 0.3387 on 598 degrees of freedom
+#&gt; Residual standard error: 33.87 on 598 degrees of freedom
 #&gt;   (640 observations deleted due to missingness)
 #&gt; Multiple R-squared:  0.1881, Adjusted R-squared:  0.1745 
 #&gt; F-statistic: 13.86 on 10 and 598 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r test"><code>modeleducl &lt;- lm(pereduclow ~ 
+<pre class="r test"><code>modeleducl &lt;- lm(pereduclow*100 ~ 
                           as.factor(work) +
                            
                           hhsize + 
@@ -1760,35 +1766,35 @@ summary(modeleduch)</code></pre>
 summary(modeleducl)</code></pre>
 <pre class="test2"><code>#&gt; 
 #&gt; Call:
-#&gt; lm(formula = pereduclow ~ as.factor(work) + hhsize + as.factor(agecat) + 
+#&gt; lm(formula = pereduclow * 100 ~ as.factor(work) + hhsize + as.factor(agecat) + 
 #&gt;     as.factor(income) + worthhouse + as.factor(woman) + as.factor(opl2), 
 #&gt;     data = df)
 #&gt; 
 #&gt; Residuals:
-#&gt;      Min       1Q   Median       3Q      Max 
-#&gt; -0.58169 -0.22336 -0.06789  0.19409  0.93837 
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -58.169 -22.336  -6.789  19.409  93.837 
 #&gt; 
 #&gt; Coefficients:
-#&gt;                     Estimate Std. Error t value Pr(&gt;|t|)    
-#&gt; (Intercept)         0.426201   0.065958   6.462 2.15e-10 ***
-#&gt; as.factor(work)1    0.032362   0.033907   0.954  0.34025    
-#&gt; hhsize              0.037515   0.012737   2.945  0.00335 ** 
-#&gt; as.factor(agecat)1 -0.087501   0.049404  -1.771  0.07705 .  
-#&gt; as.factor(agecat)2  0.007916   0.055923   0.142  0.88748    
-#&gt; as.factor(agecat)3  0.055373   0.046698   1.186  0.23619    
-#&gt; as.factor(income)1  0.040102   0.033643   1.192  0.23374    
-#&gt; as.factor(income)3  0.046119   0.046984   0.982  0.32670    
-#&gt; worthhouse         -0.031077   0.015480  -2.008  0.04514 *  
-#&gt; as.factor(woman)1  -0.023365   0.028131  -0.831  0.40656    
-#&gt; as.factor(opl2)1   -0.247144   0.030722  -8.045 4.67e-15 ***
+#&gt;                    Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)         42.6201     6.5958   6.462 2.15e-10 ***
+#&gt; as.factor(work)1     3.2362     3.3907   0.954  0.34025    
+#&gt; hhsize               3.7515     1.2737   2.945  0.00335 ** 
+#&gt; as.factor(agecat)1  -8.7501     4.9404  -1.771  0.07705 .  
+#&gt; as.factor(agecat)2   0.7916     5.5923   0.142  0.88748    
+#&gt; as.factor(agecat)3   5.5373     4.6698   1.186  0.23619    
+#&gt; as.factor(income)1   4.0102     3.3643   1.192  0.23374    
+#&gt; as.factor(income)3   4.6119     4.6984   0.982  0.32670    
+#&gt; worthhouse          -3.1077     1.5480  -2.008  0.04514 *  
+#&gt; as.factor(woman)1   -2.3365     2.8131  -0.831  0.40656    
+#&gt; as.factor(opl2)1   -24.7144     3.0722  -8.045 4.67e-15 ***
 #&gt; ---
 #&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 #&gt; 
-#&gt; Residual standard error: 0.3387 on 598 degrees of freedom
+#&gt; Residual standard error: 33.87 on 598 degrees of freedom
 #&gt;   (640 observations deleted due to missingness)
 #&gt; Multiple R-squared:  0.1881, Adjusted R-squared:  0.1745 
 #&gt; F-statistic: 13.86 on 10 and 598 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r test"><code>modelsameeduc &lt;- lm(sameeduc ~ 
+<pre class="r test"><code>modelsameeduc &lt;- lm(sameeduc*100 ~ 
                           as.factor(work) +
                            
                           hhsize + 
@@ -1806,31 +1812,31 @@ summary(modeleducl)</code></pre>
 summary(modelsameeduc)</code></pre>
 <pre class="test2"><code>#&gt; 
 #&gt; Call:
-#&gt; lm(formula = sameeduc ~ as.factor(work) + hhsize + as.factor(agecat) + 
+#&gt; lm(formula = sameeduc * 100 ~ as.factor(work) + hhsize + as.factor(agecat) + 
 #&gt;     as.factor(income) + worthhouse + as.factor(woman) + as.factor(opl2), 
 #&gt;     data = df)
 #&gt; 
 #&gt; Residuals:
-#&gt;      Min       1Q   Median       3Q      Max 
-#&gt; -0.89997 -0.21691  0.08803  0.21071  0.64777 
+#&gt;     Min      1Q  Median      3Q     Max 
+#&gt; -89.997 -21.691   8.803  21.071  64.777 
 #&gt; 
 #&gt; Coefficients:
-#&gt;                     Estimate Std. Error t value Pr(&gt;|t|)    
-#&gt; (Intercept)         0.346288   0.066859   5.179 3.05e-07 ***
-#&gt; as.factor(work)1    0.064881   0.034370   1.888   0.0595 .  
-#&gt; hhsize             -0.003228   0.012911  -0.250   0.8027    
-#&gt; as.factor(agecat)1  0.065634   0.050079   1.311   0.1905    
-#&gt; as.factor(agecat)2  0.073664   0.056687   1.299   0.1943    
-#&gt; as.factor(agecat)3  0.019065   0.047337   0.403   0.6873    
-#&gt; as.factor(income)1  0.014432   0.034102   0.423   0.6723    
-#&gt; as.factor(income)3 -0.035598   0.047626  -0.747   0.4551    
-#&gt; worthhouse          0.021065   0.015691   1.342   0.1800    
-#&gt; as.factor(woman)1   0.032038   0.028516   1.124   0.2617    
-#&gt; as.factor(opl2)1    0.300928   0.031142   9.663  &lt; 2e-16 ***
+#&gt;                    Estimate Std. Error t value Pr(&gt;|t|)    
+#&gt; (Intercept)         34.6288     6.6859   5.179 3.05e-07 ***
+#&gt; as.factor(work)1     6.4881     3.4370   1.888   0.0595 .  
+#&gt; hhsize              -0.3228     1.2911  -0.250   0.8027    
+#&gt; as.factor(agecat)1   6.5634     5.0079   1.311   0.1905    
+#&gt; as.factor(agecat)2   7.3664     5.6687   1.299   0.1943    
+#&gt; as.factor(agecat)3   1.9065     4.7337   0.403   0.6873    
+#&gt; as.factor(income)1   1.4432     3.4102   0.423   0.6723    
+#&gt; as.factor(income)3  -3.5598     4.7626  -0.747   0.4551    
+#&gt; worthhouse           2.1065     1.5691   1.342   0.1800    
+#&gt; as.factor(woman)1    3.2038     2.8516   1.124   0.2617    
+#&gt; as.factor(opl2)1    30.0928     3.1142   9.663  &lt; 2e-16 ***
 #&gt; ---
 #&gt; Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 #&gt; 
-#&gt; Residual standard error: 0.3434 on 598 degrees of freedom
+#&gt; Residual standard error: 34.34 on 598 degrees of freedom
 #&gt;   (640 observations deleted due to missingness)
 #&gt; Multiple R-squared:  0.2062, Adjusted R-squared:  0.193 
 #&gt; F-statistic: 15.54 on 10 and 598 DF,  p-value: &lt; 2.2e-16</code></pre>
@@ -1841,10 +1847,10 @@ summary(modelsameeduc)</code></pre>
  
 </th>
 <th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
-pereduchigh
+pereduchigh * 100
 </th>
 <th colspan="4" style="border-top: double; text-align:center; font-style:normal; font-weight:bold; padding:0.2cm; ">
-sameeduc
+sameeduc * 100
 </th>
 </tr>
 <tr>
@@ -1881,25 +1887,25 @@ p
 (Intercept)
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.57
+57.38
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.07
+6.60
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.44 – 0.70
+44.43 – 70.33
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 <strong>&lt;0.001</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.35
+34.63
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.07
+6.69
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
-0.21 – 0.48
+21.50 – 47.76
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 <strong>&lt;0.001</strong>
@@ -1910,25 +1916,25 @@ p
 work [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.03
+-3.24
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+3.39
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.10 – 0.03
+-9.90 – 3.42
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.340
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.06
+6.49
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.03
+3.44
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.00 – 0.13
+-0.26 – 13.24
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.060
@@ -1939,25 +1945,25 @@ work [1]
 hhsize
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.04
+-3.75
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+1.27
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.06 – -0.01
+-6.25 – -1.25
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 <strong>0.003</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.00
+-0.32
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.01
+1.29
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.03 – 0.02
+-2.86 – 2.21
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.803
@@ -1968,25 +1974,25 @@ hhsize
 agecat [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.09
+8.75
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.05
+4.94
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.01 – 0.18
+-0.95 – 18.45
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.077
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.07
+6.56
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.05
+5.01
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.03 – 0.16
+-3.27 – 16.40
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.190
@@ -1997,25 +2003,25 @@ agecat [1]
 agecat [2]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.01
+-0.79
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.06
+5.59
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.12 – 0.10
+-11.77 – 10.19
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.887
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.07
+7.37
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.06
+5.67
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.04 – 0.18
+-3.77 – 18.50
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.194
@@ -2026,25 +2032,25 @@ agecat [2]
 agecat [3]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.06
+-5.54
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.05
+4.67
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.15 – 0.04
+-14.71 – 3.63
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.236
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+1.91
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.05
+4.73
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.07 – 0.11
+-7.39 – 11.20
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.687
@@ -2055,25 +2061,25 @@ agecat [3]
 income [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.04
+-4.01
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+3.36
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.11 – 0.03
+-10.62 – 2.60
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.234
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.01
+1.44
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.03
+3.41
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.05 – 0.08
+-5.25 – 8.14
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.672
@@ -2084,25 +2090,25 @@ income [1]
 income [3]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.05
+-4.61
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.05
+4.70
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.14 – 0.05
+-13.84 – 4.62
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.327
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.04
+-3.56
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.05
+4.76
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.13 – 0.06
+-12.91 – 5.79
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.455
@@ -2113,25 +2119,25 @@ income [3]
 worthhouse
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+3.11
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+1.55
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.00 – 0.06
+0.07 – 6.15
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 <strong>0.045</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+2.11
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.02
+1.57
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.01 – 0.05
+-0.98 – 5.19
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.180
@@ -2142,25 +2148,25 @@ worthhouse
 woman [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.02
+2.34
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+2.81
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
--0.03 – 0.08
+-3.19 – 7.86
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 0.407
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+3.20
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.03
+2.85
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
--0.02 – 0.09
+-2.40 – 8.80
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 0.262
@@ -2171,25 +2177,25 @@ woman [1]
 opl2 [1]
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.25
+24.71
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.03
+3.07
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.19 – 0.31
+18.68 – 30.75
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
 <strong>&lt;0.001</strong>
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  ">
-0.30
+30.09
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col7">
-0.03
+3.11
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col8">
-0.24 – 0.36
+23.98 – 36.21
 </td>
 <td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center;  col9">
 <strong>&lt;0.001</strong>
@@ -2693,7 +2699,7 @@ summary(modelsamegen)</code></pre>
 #&gt; F-statistic: 17.99 on 10 and 1227 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 
-<div id="rmd-source-code">Ci0tLQp0aXRsZTogIkluZmVyZW50aWFsIGFuYWx5c2VzIgojYmlibGlvZ3JhcGh5OiByZWZlcmVuY2VzLmJpYgphdXRob3I6ICJCYXMgSG9mc3RyYSIKLS0tCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KCmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCkxhc3QgY29tcGlsZWQgb24gYHIgZm9ybWF0KFN5cy50aW1lKCksICclQiwgJVknKWAKCjxicj4KCi0tLS0KClRoaXMgaXMgdGhlIGNvZGUgd2l0aCB3aGljaCB3ZSBydW4gb3VyIGluZmVyZW50aWFsIGFuYWx5c2VzLgoKPGJyPgoKLS0tLQoKIyBJbml0YXRpYXRpbmcgUiBlbnZpcm9ubWVudAoKU3RhcnQgb3V0IHdpdGggYSBjdXN0b20gZnVuY3Rpb24gdG8gbG9hZCBhIHNldCBvZiByZXF1aXJlZCBwYWNrYWdlcy4KICAKYGBge3IgcGFjaywgZXZhbD1UUlVFfQojIHBhY2thZ2VzIGFuZCByZWFkIGRhdGEKcm0obGlzdCA9IGxzKCkpCgojIChjKSBKb2NoZW0gVG9sc21hCmZwYWNrYWdlLmNoZWNrIDwtIGZ1bmN0aW9uKHBhY2thZ2VzKSB7CiAgbGFwcGx5KHBhY2thZ2VzLCBGVU4gPSBmdW5jdGlvbih4KSB7CiAgICBpZiAoIXJlcXVpcmUoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKSkgewogICAgICBpbnN0YWxsLnBhY2thZ2VzKHgsIGRlcGVuZGVuY2llcyA9IFRSVUUpCiAgICAgIGxpYnJhcnkoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKQogICAgfQogIH0pCn0KcGFja2FnZXMgPSBjKCJoYXZlbiIsICJjb2RhIiwgIm1hdHJpeFN0YXRzIiwgInBhcmFsbGVsIiwgIk1BU1MiLCAiZG9QYXJhbGxlbCIsICJkcGx5ciIsICJjb3dwbG90IiwgCiAgICAgICAgICAgICAidGlkeXZlcnNlIiwgIm5hbmlhciIsICJkb3R3aGlza2VyIiAsImd0IiwgInJlc2hhcGUyIiwgIlZHQU0iLCAiZXhwc3MiLCAiSG1pc2MiLCAiTUFTUyIsICJzalBsb3QiKQpmcGFja2FnZS5jaGVjayhwYWNrYWdlcykKcm0ocGFja2FnZXMpCmxvYWQoImRhdGEvZHV0Y2hfbmV0c2l6ZV9hbmFseXNlc19yZXZpc2lvbl8yLnJkYSIpCmBgYAoKPGJyPgoKLS0tLQoKIyBMaW5lYXIgcmVncmVzc2lvbiBtb2RlbHMKCldlIHJ1biBhIHNlcmllcyBvZiByZWdyZXNzaW9uIG1vZGVscyBvZiBsb2dnZWQgYWNxdWFudGFuY2VzaGlwIG5ldHdvcmsgc2l6ZSAoYXMgaXQgaXMgcmlnaHQtc2tld2VkKSBvbiBvdXIgaW5kZXBlbmRlbnQgYW5kIGNvbnRyb2wgdmFyaWFibGVzLiBXZSB0aHVzIHJ1biAxNzIgZGlmZmVyZW50IHJlZ3Jlc3Npb24gbW9kZWxzIChhbGwgc2NlbmFyaW9zKS4KCmBgYHtyIHJlZ3MsIGV2YWwgPSBUUlVFfQojIAojIAojICMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwojICMgTU9ERUxTCiMgIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIyAKIyAjICMgYWdlIGluIGNhdGVnb3JpZXMsIGV2YWwgPSBmYWxzZSBpbiAiaW5kZXBlbmRlbnRfdmFyaWFibGVzLnJtZCIgZml4IGxhdGVyCiMgZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiMTgtMzAiXSA8LSAxCiMgZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiMzEtNDUiXSA8LSAyCiMgZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiNDYtNjUiXSA8LSAzCiMgZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiPjY1Il0gPC0gNAojIAojIHRhYmxlKGRmJGFnZWNhdCkKIyBjbGFzcyhkZiRhZ2VjYXQpCiMgCiMgCiMgIyBzb21lIGZpbmFsIGRhdGEgaGFuZGxpbmcgdG8gYXNzaWduIHRoZSBjb3JyZWN0IHJlZmVyZW5jZSBjYXRlZ29yaWVzCiMgZGYkb3BsIDwtcmVsZXZlbChkZiRvcGwsIHJlZiA9IDEpCiMgZGYkbWlncjMgPC1yZWxldmVsKGFzLmZhY3RvcihkZiRtaWdyMyksIHJlZiA9IDEpCiMgZGYkaW5jb21lIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkaW5jb21lKSwgcmVmID0gMikKIyBkZiRhZ2VjYXQgPC1yZWxldmVsKGFzLmZhY3RvcihkZiRhZ2VjYXQpLCByZWYgPSA0KQojIAojIAojIAojIAojICAjIDE3MiByZWdyZXNzaW9ucyB3aXRoIGRpZmZlcmVudCBuZXRzaXplcy4gV2UgdGhlbiBsb29rIGF0IGRpc3RyaWJ1dGlvbnMgb2YgY29lZmZpY2llbnRzIGFjcm9zcyB0aG9zZS4KIyAjIG5vdGUgdGhlIGxvZzEwIGZvciBuZXR3b3JrIHNpemUgYW5kIGhvdyB3ZSBkb24ndCB0YWtlIGludG8gYWNjb3VudCBleHRyZW1lIG5ldHdvcmsgc2l6ZS4KIyBtb2RlbGxvZyA8LSBsaXN0KCkKIyBmb3IgKGkgaW4gMTQ6MTg1KSB7CiMgICAgIAojICAgICBkZlssYyhpKV0gPC0gcm91bmQoZGZbLCBjKGkpXSwgMCkKIyAgICAgCiMgICAgIG1vZGVsbG9nW1tpXV0gPC0gbG0obG9nMTAoZGZbIWRmW1tpXV0+NTAwMCwgYyhpKV0pIH4gCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2ldXT41MDAwLF0pCiMgICAgIAojIH0KIyBtb2RlbGxvZ1tzYXBwbHkobW9kZWxsb2csIGlzLm51bGwpXSA8LSBOVUxMCiMgc3VtbWFyeShtb2RlbGxvZ1tbMV1dKQpgYGAKCjxicj4KCi0tLS0KCiMgVmlzdWFsaXphdGlvbiBvZiByZWdyZXNzaW9uIG1vZGVscwoKV2UgdGhlbiByZW5kZXIgYWxsIHRob3NlIG1vZGVscyBpbnRvIG9uZSBmaWd1cmUgd2hlcmUgd2UgY2FuIHNob3cgc3RhdGlzdGljYWwgc2lnbmlmYW5jZSBhbmQgdGhhdCByZXN1bHRzIGRvIG5vdCB2YXJ5IG92ZXIgYWxsIHRob3NlIHNjZW5hcmlvcy4gVGhpcyBtYXRjaGVzIEZpZ3VyZSAzIGluIHRoZSBwYXBlci4KCgpgYGB7ciByZWd2aXosIGV2YWwgPSBUUlVFfQoKIyAjLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyAjIFZpeiBvZiByZXN1bHRzCiMgCiMgIyBtYWluIGVmZmVjdHMKIyBmb3VyX2JyYWNrZXRzIDwtIGxpc3QoCiMgICAKIyAgIGMoIkR1dGNoIG1haj1yZWYiLCAiV2VzdCBiYWNrZ3IiLCAibm9uLVdlc3QgYmFja2dyIiksCiMgICAKIyAgIGMoIj42NT1yZWYiLCAiMTgtMzAiLCAiNDYtNjUiKSwKIyAgIAojICAgYygiPm1vZGFsIGluYz1yZWYiLCAiPD1tb2RhbCBpbmNvbWUiLCAiVW5rbiBpbmNvbWUiKSwKIyAgIAojICAgYygiRWR1YyB0ZXJ0IGhpZ2g9cmVmIiwgIkVkdWMgcHJpbS9zZWMiLCAiRWR1YyB0ZXJ0IGxvdyIpKQojIAojICBsb2dtb2RlbCA8LSB7ZHdwbG90KG1vZGVsbG9nLAojICAgICAgICAgIGRvdF9hcmdzID0gbGlzdChjb2xvciA9ICJibGFjayIsIHNpemUgPSAwLjc1LCBzaGFwZSA9IDEpLCAjIGNvbG9yIGZvciB0aGUgZG90CiMgICAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSwgY29sb3IgPSAiZGFya2dyZXkiLCBhbHBoYSA9IDAuNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKIyAgICAgICAgICB2bGluZSA9IGdncGxvdDI6Omdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsICAjIHB1dCB2bGluZSBfYmVoaW5kXyBjb2Vmczsgc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9mc29sdC9kb3R3aGlza2VyL2lzc3Vlcy84NAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiZ3JleTYwIiwKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ld2lkdGggPSAxKSkgJT4lICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMgbWFrZSBtb2RlbCB2YXJpYWJsZQojICAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKIyAgICAgICAiYXMuZmFjdG9yKHdvcmspMSIgPSAiV29ya2luZyIsCiMgICAgICAgCiMgICAgICAgImhoc2l6ZSIgPSAiSG91c2Vob2xkIHNpemUiLAojICAgICAgIAojICAgICAgICJhcy5mYWN0b3IobWlncjMpMiIgPSAiV2VzdCBiYWNrZ3IiLAojICAgICAgICJhcy5mYWN0b3IobWlncjMpMyIgPSAibm9uLVdlc3QgYmFja2dyIiwKIyAgICAgICAKIyAgICAgICAiYXMuZmFjdG9yKGFnZWNhdCkxIiA9ICIxOC0zMCIsCiMgICAgICAgImFzLmZhY3RvcihhZ2VjYXQpMiIgPSAiMzEtNDUiLAojICAgICAgICJhcy5mYWN0b3IoYWdlY2F0KTMiID0gIjQ2LTY1IiwKIyAgICAgICAKIyAgICAgICAiYXMuZmFjdG9yKGluY29tZSkxIiA9ICI8PW1vZGFsIGluY29tZSIsCiMgICAgICAgImFzLmZhY3RvcihpbmNvbWUpMyIgPSAiVW5rbiBpbmNvbWUiLAojICAgICAgIAojICAgICAgICJ3b3J0aGhvdXNlIiA9ICJIb3VzZSB2YWx1ZSIsCiMgCiMgICAgICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICJXb21lbiIsCiMgICAgICAgCiMgICAgICAgImFzLmZhY3RvcihvcGwpMSIgPSAiRWR1YyBwcmltL3NlYyIsCiMgICAgICAgImFzLmZhY3RvcihvcGwpMiIgPSAiRWR1YyB0ZXJ0IGxvdyIKIyAKIyAgICAgKSkgKyB0aGVtZShsZWdlbmQucG9zaXRpb24gPSAibm9uZSIsCiMgICAgICAgICAgICAgICAgYXhpcy50ZXh0ID0gZWxlbWVudF90ZXh0KGNvbG9yID0gImdyZXkiKSkgKyAKIyAgICAgdGhlbWVfbWluaW1hbCgpICsKIyAgICAgeGxhYigiQiBvbiBMb2cobmV0d29yayBzaXplIGNvdW50KSIpfSAgJT4lCiMgICBhZGRfYnJhY2tldHMoZm91cl9icmFja2V0cywgZm9udFNpemUgPSAuNikKIyAKIyAgZ2dzYXZlKCJvdXRwdXQvbW9kZWxzLnBkZiIsIHBsb3QgPSBsb2dtb2RlbCwgZGV2aWNlID0gInBkZiIsCiMgICAgICAgIHNjYWxlID0gMSwgd2lkdGggPSA2LCBoZWlnaHQgPSA1LCB1bml0cyA9IGMoImluIiksCiMgICAgICAgIGRwaSA9ICJyZXRpbmEiKQojIAojICAjIEZpZ3VyZSAzIGluIHRoZSBwYXBlcgojIGxvZ21vZGVsCiMgIAoKYGBgCgoKPGJyPgoKLS0tLQoKIyBSZWdyZXNzaW9uIHRhYmxlCgpXZSBhbHNvIGF2ZXJhZ2UgYWxsIDE3MiBuZXR3b3JrIHNpemUgc2NlbmFyaW9zIHdpdGhpbiByZXNwb25kZW50cyBhbmQgcnVuIG9uZSBzaW5nbGUgcmVncmVzc2lvbiBtb2RlbCBzbyBhcyB0byBnZW5lcmF0ZSBhIHRhYmxlIHdpdGggY29lZmZpY2llbnRzLiBUaGlzIG1hdGNoZXMgVGFibGUgMyBpbiB0aGUgcGFwZXIuCgoKYGBge3IgcmVndGFibGUsIGV2YWwgPSBUUlVFfQojIAojIGRmJG5ldHNpemUgPC0gcm91bmQocm93U3VtcyhkZlssYygxNDoxODUpXSkgLyBsZW5ndGgoMTQ6MTg1KSwgMCkKIyAKIyBtb2RlbGwgPC0gbG0obG9nMTAobmV0c2l6ZSkgfiAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKIyAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c2l6ZSJdXT41MDAwLF0pCiMgCiMgbW9kZWxsaW4gPC0gbG0obmV0c2l6ZSB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAojICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzaXplIl1dPjUwMDAsXSkKIyAgIAojICAgCiMgZnBhY2thZ2UuY2hlY2soInNqUGxvdCIpCiMgCiMgI3RhYmxlIDMgaW4gdGhlIHBhcGVyCiMgdGFiX21vZGVsKG1vZGVsbCwgbW9kZWxsaW4sIHNob3cuc2UgPSBUUlVFKQpgYGAKCmBgYHtyIHJlZ3JvYnVzdCwgZXZhbCA9IFRSVUV9CiMgIyByb2J1c3RuZXNzLCBtaWdyYXRpb24gdHdvIGNhdHMsIGFuZCBpbmNvbWUgbm8gbWlzc2luZ3MgbGVhZCB0byBzaW1pbGFyIHJlc3VsdHMKIyBzdW1tYXJ5KHggPC1sbShsb2cxMChuZXRzaXplKSB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncikgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiMgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNpemUiXV0+NTAwMCxdKSkKIyAKIyBzdW1tYXJ5KHggPC1sbShsb2cxMChuZXRzaXplKSB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAojICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzaXplIl1dPjUwMDAgJiBkZiRpbmNvbWUgIT0gMyxdKSkKCgpgYGAKCi0tLS0KCiMgUmV2aXNpb25zIFJlZ3Jlc3Npb24gdGFibGUKCgpGcm9tIGhlcmUgb253YXJkcywgd2Ugc2hvdyBvdXIgbmV3IHJlc3VsdHMgYmFzZWQgb24gdGhlIHJldmlzaW9ucyBvZiB0aGlzIHBhcGVyLgoKYGBge3IgcmVncmV2aXNpb25fc2l6ZSwgZXZhbCA9IFRSVUV9CgojICMgYWdlIGluIGNhdGVnb3JpZXMsIGV2YWwgPSBmYWxzZSBpbiAiaW5kZXBlbmRlbnRfdmFyaWFibGVzLnJtZCIgZml4IGxhdGVyCmRmJGFnZWNhdFtkZiRhZ2VjYXQgPT0gIjE4LTMwIl0gPC0gMQpkZiRhZ2VjYXRbZGYkYWdlY2F0ID09ICIzMS00NSJdIDwtIDIKZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiNDYtNjUiXSA8LSAzCmRmJGFnZWNhdFtkZiRhZ2VjYXQgPT0gIj42NSJdIDwtIDQKCnRhYmxlKGRmJGFnZWNhdCkKY2xhc3MoZGYkYWdlY2F0KQoKCiMgc29tZSBmaW5hbCBkYXRhIGhhbmRsaW5nIHRvIGFzc2lnbiB0aGUgY29ycmVjdCByZWZlcmVuY2UgY2F0ZWdvcmllcwojZGYkb3BsMiA8LXJlbGV2ZWwoYXMuZmFjdG9yKGRmJG9wbDIpLCByZWYgPSAwKQoKZGYkYWdlY2F0PC0gYXMuY2hhcmFjdGVyKGRmJGFnZWNhdCkKZGYkaW5jb21lPC0gYXMuY2hhcmFjdGVyKGRmJGluY29tZSkKZGYkaW5jb21lIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkaW5jb21lKSwgcmVmID0gMikKZGYkYWdlY2F0IDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkYWdlY2F0KSwgcmVmID0gNCkKCnRhYmxlKGRmJG9wbDIpCgpzdW1tYXJ5KGRmJG5ldHNvdmVyMSkKc3VtbWFyeShkZiRuZXRzb3ZlcjIpCnN1bW1hcnkoZGYkbmV0c292ZXIzKQpzdW1tYXJ5KGRmJG5ldHNvdmVyNCkKc3VtbWFyeShkZiRuZXRzb3ZlcjUpCnN1bW1hcnkoZGYkbmV0c292ZXI2KQoKCkRlc2NUb29sczo6RGVzYyhkZiRuZXRzb3ZlcjYpCkRlc2NUb29sczo6RGVzYyhkZiRuZXRzb3ZlcjcpCgoKbW9kZWxsMiA8LSBsbShsb2cobmV0c292ZXI2KSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArICNoMQogICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAjSDIKCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAjaDMKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArICNoNAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAjSDQKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgI2g1CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAjaDYKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNvdmVyNiJdXT4yNTAwLF0pCnN1bW1hcnkobW9kZWxsMikKCm1vZGVsbG5iMiA8LSBnbG0ubmIobmV0c292ZXI2IH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzb3ZlcjYiXV0+MjUwMCxdLAogICAgICAgICAgICAgICAgICAgICAgICBpbml0LnRoZXRhID0gMS4wMzI3MTMxNTYsIGxpbmsgPSBsb2cpCnN1bW1hcnkobW9kZWxsbmIyKQoKZnBhY2thZ2UuY2hlY2soInNqUGxvdCIpCgojIHRhYmxlIDMgcGFwZXIsIChuZWdiaW4gaXMgaW4gYXBwZW5kaXgpCnRhYl9tb2RlbChtb2RlbGwyLCBtb2RlbGxuYjIsIHNob3cuc2UgPSBUUlVFKQoKCmBgYAoKYGBge3IgcmVncmV2aXNpb25fZ2VuLCBldmFsID0gVFJVRX0KI2dlbmRlcgptb2RlbHdvbWFuIDwtIGxtKHBlcndvbWVuIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAjaDcKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksIAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCnN1bW1hcnkobW9kZWx3b21hbikKCm1vZGVsbWFuIDwtIGxtKHBlcm1lbiB+IAogICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAjaDcKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksIAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCnN1bW1hcnkobW9kZWxtYW4pCgpzdW1tYXJ5KGRmJHBlcm1lbikKc3VtbWFyeShkZiRwZXJ3b21lbikKCm1vZGVsc2FtZWdlbiA8LSBsbShzYW1lZ2VuZGVyIH4gCiAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAjaDcKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksIAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCnN1bW1hcnkobW9kZWxzYW1lZ2VuKQoKdGFiX21vZGVsKG1vZGVsd29tYW4sIG1vZGVsc2FtZWdlbiwgc2hvdy5zZSA9IFRSVUUpCmBgYAoKCmBgYHtyIHJlZ3JldmlzaW9uX2VkdWMsIGV2YWwgPSBUUlVFfQoKIyBsaW5lIGVkdWMgaW5kZXBlbmRlbnQgdmFyaWFibGUgdXAgdG8gZWR1YyBob21vZ2VuZWl0eSBkZXBlbmRlbnQKCiNlZHVjCm1vZGVsZWR1Y2ggPC0gbG0ocGVyZWR1Y2hpZ2ggfiAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwyKSwgIyBoOAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCnN1bW1hcnkobW9kZWxlZHVjaCkKCm1vZGVsZWR1Y2wgPC0gbG0ocGVyZWR1Y2xvdyB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAjIGg4CiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZikKc3VtbWFyeShtb2RlbGVkdWNsKQoKCgptb2RlbHNhbWVlZHVjIDwtIGxtKHNhbWVlZHVjIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksICMgaDgKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmKQpzdW1tYXJ5KG1vZGVsc2FtZWVkdWMpCgp0YWJfbW9kZWwobW9kZWxlZHVjaCwgbW9kZWxzYW1lZWR1Yywgc2hvdy5zZSA9IFRSVUUpCgpgYGAKCkh5cG90aGVzaXMgOTogbmV0d29yayBzaXplIGJ5IGhvbW9nZW5laXR5LgoKYGBge3IgcmVncmV2aXNpb25faDksIGV2YWwgPSBUUlVFfQojIAojIGdlbmg5IDwtIGxtKHNhbWVnZW5kZXIgfiAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKIyAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpICsKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgbG9nKG5ldHNvdmVyNCsxKSwgI0g5CiMgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmKQojIAojIAojIGVkdWNoOSA8LSBsbShzYW1lZWR1YyB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMikgKwojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBsb2cobmV0c292ZXI0KzEpLCAjSDkKIyAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCiMgCiMgc3VtbWFyeShnZW5oOSkKIyBzdW1tYXJ5KGVkdWNoOSkKIyB0YWJfbW9kZWwoZ2VuaDksIGVkdWNoOSwgc2hvdy5zZSA9IFRSVUUpCgpgYGAKCkV0aG5pYyBiYWNrZ3JvdW5kIGlzIGRyb3BwZWQgZnJvbSB0aGUgcGFwZXIuCgpgYGB7ciByZWdyZXZpc2lvbl9ldGgsIGV2YWwgPSBUUlVFfQojIAojICNnZW5kZXIKIyBtb2RlbGR1dGNoIDwtIGxtKG51bWR1dGNoIH4gCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihtaWdyMykgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCiMgI3N1bW1hcnkobW9kZWxkdXRjaCkKIyAKIyAKIyBtb2RlbG5vZHV0Y2ggPC0gbG0obnVtbm9kdXRjaCB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAojICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZikKIyAjc3VtbWFyeShtb2RlbG5vZHV0Y2gpCiMgCiMgCiMgbW9kZWxzYW1lZXRobmljMSA8LSBsbShzYW1lZXRobmljMSB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAojICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZikKIyAjc3VtbWFyeShtb2RlbHNhbWVldGhuaWMxKQojIAojIHRhYl9tb2RlbChtb2RlbGR1dGNoLCBtb2RlbG5vZHV0Y2gsIG1vZGVsc2FtZWV0aG5pYzEsIHNob3cuc2UgPSBUUlVFKQpgYGAKCgojIFJldmlzaW9ucyBSb2J1c3RuZXNzIFJlZ3Jlc3Npb24gdGFibGUKCmBgYHtyIHJlZ3JldmlzaW9uX3JvYnVzdCwgZXZhbCA9IFRSVUV9CiMgZm9yIGVhY2ggcmVtb3ZlIHRoZSB0b3AgNSBoaWdoZXN0IHBvaW50cyBhcyBvdXRsaWVycyAodGhvdWdoIGRvZXMgbm90IHJlYWxseSBtYXR0ZXIpCkRlc2NUb29sczo6RGVzYyhkZiRuZXRzb3ZlcjEpCkRlc2NUb29sczo6RGVzYyhkZiRuZXRzb3ZlcjIpCkRlc2NUb29sczo6RGVzYyhkZiRuZXRzb3ZlcjQpCkRlc2NUb29sczo6RGVzYyhkZiRuZXRzb3ZlcjUpCgojIHJvYnVzdG5lc3MgZm91ciBvdGhlciBlc3RpbWF0aW9uIHNjZW5hcmlvczogbW9zdGx5IHF1YWxpdGF0aXZlbHkgc2ltaWxhcgpyMSA8LSBsbShsb2cobmV0c292ZXIxKSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArICNoMQogICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAjSDIKCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAjaDMKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArICNoNAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAjSDQKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgI2g1CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAjaDYKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNvdmVyMSJdXT43MDAsXSkKCgpyMiA8LSBsbShsb2cobmV0c292ZXIyKSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArICNoMQogICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAjSDIKCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAjaDMKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArICNoNAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAjSDQKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgI2g1CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAjaDYKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNvdmVyMiJdXT43MDAsXSkKCnI0IDwtIGxtKGxvZyhuZXRzb3ZlcjQpIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgI2gxCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArICNIMgoKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArICNoMwogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgI2g0CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArICNINAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAjaDUKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksICNoNgogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c292ZXI1Il1dPjE0MDAsXSkKCgpyNSA8LSBsbShsb2cobmV0c292ZXI1KSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArICNoMQogICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAjSDIKCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAjaDMKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArICNoNAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAjSDQKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgI2g1CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAjaDYKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNvdmVyNSJdXT42NTAsXSkKCiMgcm9idXN0bmVzcyBmb3Igc2NlbmFyaW9zCnN1bW1hcnkocjEpCnN1bW1hcnkocjIpCnN1bW1hcnkocjQpCnN1bW1hcnkocjUpCgoKCmBgYAoKYGBge3IgcmVncmV2aXNpb25fcm9idXN0X2hvbW8sIGV2YWwgPSBUUlVFfQojZ2VuZGVyCm1vZGVsd29tYW4gPC0gbG0ocGVyd29tZW5fcmVkIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAjaDcKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksIAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCnN1bW1hcnkobW9kZWx3b21hbikKCgoKbW9kZWxzYW1lZ2VuIDwtIGxtKHNhbWVnZW5kZXJfcmVkIH4gCiAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAjaDcKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksIAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCnN1bW1hcnkobW9kZWxzYW1lZ2VuKQoKI2dlbmRlcgptb2RlbHdvbWFuIDwtIGxtKHBlcndvbWVuX3VwIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAjaDcKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksIAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCnN1bW1hcnkobW9kZWx3b21hbikKCm1vZGVsc2FtZWdlbiA8LSBsbShzYW1lZ2VuZGVyX3VwIH4gCiAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAjaDcKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksIAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCnN1bW1hcnkobW9kZWxzYW1lZ2VuKQoKYGBg</div>
+<div id="rmd-source-code">Ci0tLQp0aXRsZTogIkluZmVyZW50aWFsIGFuYWx5c2VzIgojYmlibGlvZ3JhcGh5OiByZWZlcmVuY2VzLmJpYgphdXRob3I6ICJCYXMgSG9mc3RyYSIKLS0tCgpgYGB7ciwgZ2xvYmFsc2V0dGluZ3MsIGVjaG89RkFMU0UsIHdhcm5pbmc9RkFMU0UsIHJlc3VsdHM9J2hpZGUnfQpsaWJyYXJ5KGtuaXRyKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KGVjaG8gPSBUUlVFKQpvcHRzX2NodW5rJHNldCh0aWR5Lm9wdHM9bGlzdCh3aWR0aC5jdXRvZmY9MTAwKSx0aWR5PVRSVUUsIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFLGNvbW1lbnQgPSAiIz4iLCBjYWNoZT1UUlVFLCBjbGFzcy5zb3VyY2U9YygidGVzdCIpLCBjbGFzcy5vdXRwdXQ9YygidGVzdDIiKSkKb3B0aW9ucyh3aWR0aCA9IDEwMCkKcmdsOjpzZXR1cEtuaXRyKCkKCgoKY29sb3JpemUgPC0gZnVuY3Rpb24oeCwgY29sb3IpIHtzcHJpbnRmKCI8c3BhbiBzdHlsZT0nY29sb3I6ICVzOyc+JXM8L3NwYW4+IiwgY29sb3IsIHgpIH0KCmBgYAoKYGBge3Iga2xpcHB5LCBlY2hvPUZBTFNFLCBpbmNsdWRlPVRSVUV9CmtsaXBweTo6a2xpcHB5KHBvc2l0aW9uID0gYygndG9wJywgJ3JpZ2h0JykpCiNrbGlwcHk6OmtsaXBweShjb2xvciA9ICdkYXJrcmVkJykKI2tsaXBweTo6a2xpcHB5KHRvb2x0aXBfbWVzc2FnZSA9ICdDbGljayB0byBjb3B5JywgdG9vbHRpcF9zdWNjZXNzID0gJ0RvbmUnKQpgYGAKCkxhc3QgY29tcGlsZWQgb24gYHIgZm9ybWF0KFN5cy50aW1lKCksICclQiwgJVknKWAKCjxicj4KCi0tLS0KClRoaXMgaXMgdGhlIGNvZGUgd2l0aCB3aGljaCB3ZSBydW4gb3VyIGluZmVyZW50aWFsIGFuYWx5c2VzLgoKPGJyPgoKLS0tLQoKIyBJbml0YXRpYXRpbmcgUiBlbnZpcm9ubWVudAoKU3RhcnQgb3V0IHdpdGggYSBjdXN0b20gZnVuY3Rpb24gdG8gbG9hZCBhIHNldCBvZiByZXF1aXJlZCBwYWNrYWdlcy4KICAKYGBge3IgcGFjaywgZXZhbD1UUlVFfQojIHBhY2thZ2VzIGFuZCByZWFkIGRhdGEKcm0obGlzdCA9IGxzKCkpCgojIChjKSBKb2NoZW0gVG9sc21hCmZwYWNrYWdlLmNoZWNrIDwtIGZ1bmN0aW9uKHBhY2thZ2VzKSB7CiAgbGFwcGx5KHBhY2thZ2VzLCBGVU4gPSBmdW5jdGlvbih4KSB7CiAgICBpZiAoIXJlcXVpcmUoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKSkgewogICAgICBpbnN0YWxsLnBhY2thZ2VzKHgsIGRlcGVuZGVuY2llcyA9IFRSVUUpCiAgICAgIGxpYnJhcnkoeCwgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKQogICAgfQogIH0pCn0KcGFja2FnZXMgPSBjKCJoYXZlbiIsICJjb2RhIiwgIm1hdHJpeFN0YXRzIiwgInBhcmFsbGVsIiwgIk1BU1MiLCAiZG9QYXJhbGxlbCIsICJkcGx5ciIsICJjb3dwbG90IiwgCiAgICAgICAgICAgICAidGlkeXZlcnNlIiwgIm5hbmlhciIsICJkb3R3aGlza2VyIiAsImd0IiwgInJlc2hhcGUyIiwgIlZHQU0iLCAiZXhwc3MiLCAiSG1pc2MiLCAiTUFTUyIsICJzalBsb3QiKQpmcGFja2FnZS5jaGVjayhwYWNrYWdlcykKcm0ocGFja2FnZXMpCmxvYWQoImRhdGEvZHV0Y2hfbmV0c2l6ZV9hbmFseXNlc19yZXZpc2lvbl8yLnJkYSIpCmBgYAoKPGJyPgoKLS0tLQoKIyBMaW5lYXIgcmVncmVzc2lvbiBtb2RlbHMKCldlIHJ1biBhIHNlcmllcyBvZiByZWdyZXNzaW9uIG1vZGVscyBvZiBsb2dnZWQgYWNxdWFudGFuY2VzaGlwIG5ldHdvcmsgc2l6ZSAoYXMgaXQgaXMgcmlnaHQtc2tld2VkKSBvbiBvdXIgaW5kZXBlbmRlbnQgYW5kIGNvbnRyb2wgdmFyaWFibGVzLiBXZSB0aHVzIHJ1biAxNzIgZGlmZmVyZW50IHJlZ3Jlc3Npb24gbW9kZWxzIChhbGwgc2NlbmFyaW9zKS4KCmBgYHtyIHJlZ3MsIGV2YWwgPSBUUlVFfQojIAojIAojICMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwojICMgTU9ERUxTCiMgIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIyAKIyAjICMgYWdlIGluIGNhdGVnb3JpZXMsIGV2YWwgPSBmYWxzZSBpbiAiaW5kZXBlbmRlbnRfdmFyaWFibGVzLnJtZCIgZml4IGxhdGVyCiMgZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiMTgtMzAiXSA8LSAxCiMgZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiMzEtNDUiXSA8LSAyCiMgZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiNDYtNjUiXSA8LSAzCiMgZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiPjY1Il0gPC0gNAojIAojIHRhYmxlKGRmJGFnZWNhdCkKIyBjbGFzcyhkZiRhZ2VjYXQpCiMgCiMgCiMgIyBzb21lIGZpbmFsIGRhdGEgaGFuZGxpbmcgdG8gYXNzaWduIHRoZSBjb3JyZWN0IHJlZmVyZW5jZSBjYXRlZ29yaWVzCiMgZGYkb3BsIDwtcmVsZXZlbChkZiRvcGwsIHJlZiA9IDEpCiMgZGYkbWlncjMgPC1yZWxldmVsKGFzLmZhY3RvcihkZiRtaWdyMyksIHJlZiA9IDEpCiMgZGYkaW5jb21lIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkaW5jb21lKSwgcmVmID0gMikKIyBkZiRhZ2VjYXQgPC1yZWxldmVsKGFzLmZhY3RvcihkZiRhZ2VjYXQpLCByZWYgPSA0KQojIAojIAojIAojIAojICAjIDE3MiByZWdyZXNzaW9ucyB3aXRoIGRpZmZlcmVudCBuZXRzaXplcy4gV2UgdGhlbiBsb29rIGF0IGRpc3RyaWJ1dGlvbnMgb2YgY29lZmZpY2llbnRzIGFjcm9zcyB0aG9zZS4KIyAjIG5vdGUgdGhlIGxvZzEwIGZvciBuZXR3b3JrIHNpemUgYW5kIGhvdyB3ZSBkb24ndCB0YWtlIGludG8gYWNjb3VudCBleHRyZW1lIG5ldHdvcmsgc2l6ZS4KIyBtb2RlbGxvZyA8LSBsaXN0KCkKIyBmb3IgKGkgaW4gMTQ6MTg1KSB7CiMgICAgIAojICAgICBkZlssYyhpKV0gPC0gcm91bmQoZGZbLCBjKGkpXSwgMCkKIyAgICAgCiMgICAgIG1vZGVsbG9nW1tpXV0gPC0gbG0obG9nMTAoZGZbIWRmW1tpXV0+NTAwMCwgYyhpKV0pIH4gCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbW2ldXT41MDAwLF0pCiMgICAgIAojIH0KIyBtb2RlbGxvZ1tzYXBwbHkobW9kZWxsb2csIGlzLm51bGwpXSA8LSBOVUxMCiMgc3VtbWFyeShtb2RlbGxvZ1tbMV1dKQpgYGAKCjxicj4KCi0tLS0KCiMgVmlzdWFsaXphdGlvbiBvZiByZWdyZXNzaW9uIG1vZGVscwoKV2UgdGhlbiByZW5kZXIgYWxsIHRob3NlIG1vZGVscyBpbnRvIG9uZSBmaWd1cmUgd2hlcmUgd2UgY2FuIHNob3cgc3RhdGlzdGljYWwgc2lnbmlmYW5jZSBhbmQgdGhhdCByZXN1bHRzIGRvIG5vdCB2YXJ5IG92ZXIgYWxsIHRob3NlIHNjZW5hcmlvcy4gVGhpcyBtYXRjaGVzIEZpZ3VyZSAzIGluIHRoZSBwYXBlci4KCgpgYGB7ciByZWd2aXosIGV2YWwgPSBUUlVFfQoKIyAjLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyAjIFZpeiBvZiByZXN1bHRzCiMgCiMgIyBtYWluIGVmZmVjdHMKIyBmb3VyX2JyYWNrZXRzIDwtIGxpc3QoCiMgICAKIyAgIGMoIkR1dGNoIG1haj1yZWYiLCAiV2VzdCBiYWNrZ3IiLCAibm9uLVdlc3QgYmFja2dyIiksCiMgICAKIyAgIGMoIj42NT1yZWYiLCAiMTgtMzAiLCAiNDYtNjUiKSwKIyAgIAojICAgYygiPm1vZGFsIGluYz1yZWYiLCAiPD1tb2RhbCBpbmNvbWUiLCAiVW5rbiBpbmNvbWUiKSwKIyAgIAojICAgYygiRWR1YyB0ZXJ0IGhpZ2g9cmVmIiwgIkVkdWMgcHJpbS9zZWMiLCAiRWR1YyB0ZXJ0IGxvdyIpKQojIAojICBsb2dtb2RlbCA8LSB7ZHdwbG90KG1vZGVsbG9nLAojICAgICAgICAgIGRvdF9hcmdzID0gbGlzdChjb2xvciA9ICJibGFjayIsIHNpemUgPSAwLjc1LCBzaGFwZSA9IDEpLCAjIGNvbG9yIGZvciB0aGUgZG90CiMgICAgICAgICAgd2hpc2tlcl9hcmdzID0gbGlzdChzaXplID0gMC4yNSwgY29sb3IgPSAiZGFya2dyZXkiLCBhbHBoYSA9IDAuNSksICAgIyBjb2xvciBmb3IgdGhlIHdoaXNrZXIKIyAgICAgICAgICB2bGluZSA9IGdncGxvdDI6Omdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsICAjIHB1dCB2bGluZSBfYmVoaW5kXyBjb2Vmczsgc2VlIGh0dHBzOi8vZ2l0aHViLmNvbS9mc29sdC9kb3R3aGlza2VyL2lzc3Vlcy84NAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xvdXIgPSAiZ3JleTYwIiwKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGluZXR5cGUgPSAyLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsaW5ld2lkdGggPSAxKSkgJT4lICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMgbWFrZSBtb2RlbCB2YXJpYWJsZQojICAgICByZWxhYmVsX3ByZWRpY3RvcnMoYygKIyAgICAgICAiYXMuZmFjdG9yKHdvcmspMSIgPSAiV29ya2luZyIsCiMgICAgICAgCiMgICAgICAgImhoc2l6ZSIgPSAiSG91c2Vob2xkIHNpemUiLAojICAgICAgIAojICAgICAgICJhcy5mYWN0b3IobWlncjMpMiIgPSAiV2VzdCBiYWNrZ3IiLAojICAgICAgICJhcy5mYWN0b3IobWlncjMpMyIgPSAibm9uLVdlc3QgYmFja2dyIiwKIyAgICAgICAKIyAgICAgICAiYXMuZmFjdG9yKGFnZWNhdCkxIiA9ICIxOC0zMCIsCiMgICAgICAgImFzLmZhY3RvcihhZ2VjYXQpMiIgPSAiMzEtNDUiLAojICAgICAgICJhcy5mYWN0b3IoYWdlY2F0KTMiID0gIjQ2LTY1IiwKIyAgICAgICAKIyAgICAgICAiYXMuZmFjdG9yKGluY29tZSkxIiA9ICI8PW1vZGFsIGluY29tZSIsCiMgICAgICAgImFzLmZhY3RvcihpbmNvbWUpMyIgPSAiVW5rbiBpbmNvbWUiLAojICAgICAgIAojICAgICAgICJ3b3J0aGhvdXNlIiA9ICJIb3VzZSB2YWx1ZSIsCiMgCiMgICAgICAgImFzLmZhY3Rvcih3b21hbikxIiA9ICJXb21lbiIsCiMgICAgICAgCiMgICAgICAgImFzLmZhY3RvcihvcGwpMSIgPSAiRWR1YyBwcmltL3NlYyIsCiMgICAgICAgImFzLmZhY3RvcihvcGwpMiIgPSAiRWR1YyB0ZXJ0IGxvdyIKIyAKIyAgICAgKSkgKyB0aGVtZShsZWdlbmQucG9zaXRpb24gPSAibm9uZSIsCiMgICAgICAgICAgICAgICAgYXhpcy50ZXh0ID0gZWxlbWVudF90ZXh0KGNvbG9yID0gImdyZXkiKSkgKyAKIyAgICAgdGhlbWVfbWluaW1hbCgpICsKIyAgICAgeGxhYigiQiBvbiBMb2cobmV0d29yayBzaXplIGNvdW50KSIpfSAgJT4lCiMgICBhZGRfYnJhY2tldHMoZm91cl9icmFja2V0cywgZm9udFNpemUgPSAuNikKIyAKIyAgZ2dzYXZlKCJvdXRwdXQvbW9kZWxzLnBkZiIsIHBsb3QgPSBsb2dtb2RlbCwgZGV2aWNlID0gInBkZiIsCiMgICAgICAgIHNjYWxlID0gMSwgd2lkdGggPSA2LCBoZWlnaHQgPSA1LCB1bml0cyA9IGMoImluIiksCiMgICAgICAgIGRwaSA9ICJyZXRpbmEiKQojIAojICAjIEZpZ3VyZSAzIGluIHRoZSBwYXBlcgojIGxvZ21vZGVsCiMgIAoKYGBgCgoKPGJyPgoKLS0tLQoKIyBSZWdyZXNzaW9uIHRhYmxlCgpXZSBhbHNvIGF2ZXJhZ2UgYWxsIDE3MiBuZXR3b3JrIHNpemUgc2NlbmFyaW9zIHdpdGhpbiByZXNwb25kZW50cyBhbmQgcnVuIG9uZSBzaW5nbGUgcmVncmVzc2lvbiBtb2RlbCBzbyBhcyB0byBnZW5lcmF0ZSBhIHRhYmxlIHdpdGggY29lZmZpY2llbnRzLiBUaGlzIG1hdGNoZXMgVGFibGUgMyBpbiB0aGUgcGFwZXIuCgoKYGBge3IgcmVndGFibGUsIGV2YWwgPSBUUlVFfQojIAojIGRmJG5ldHNpemUgPC0gcm91bmQocm93U3VtcyhkZlssYygxNDoxODUpXSkgLyBsZW5ndGgoMTQ6MTg1KSwgMCkKIyAKIyBtb2RlbGwgPC0gbG0obG9nMTAobmV0c2l6ZSkgfiAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKIyAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGZbIWRmW1sibmV0c2l6ZSJdXT41MDAwLF0pCiMgCiMgbW9kZWxsaW4gPC0gbG0obmV0c2l6ZSB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAojICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzaXplIl1dPjUwMDAsXSkKIyAgIAojICAgCiMgZnBhY2thZ2UuY2hlY2soInNqUGxvdCIpCiMgCiMgI3RhYmxlIDMgaW4gdGhlIHBhcGVyCiMgdGFiX21vZGVsKG1vZGVsbCwgbW9kZWxsaW4sIHNob3cuc2UgPSBUUlVFKQpgYGAKCmBgYHtyIHJlZ3JvYnVzdCwgZXZhbCA9IFRSVUV9CiMgIyByb2J1c3RuZXNzLCBtaWdyYXRpb24gdHdvIGNhdHMsIGFuZCBpbmNvbWUgbm8gbWlzc2luZ3MgbGVhZCB0byBzaW1pbGFyIHJlc3VsdHMKIyBzdW1tYXJ5KHggPC1sbShsb2cxMChuZXRzaXplKSB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncikgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbCksCiMgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNpemUiXV0+NTAwMCxdKSkKIyAKIyBzdW1tYXJ5KHggPC1sbShsb2cxMChuZXRzaXplKSB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAojICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzaXplIl1dPjUwMDAgJiBkZiRpbmNvbWUgIT0gMyxdKSkKCgpgYGAKCi0tLS0KCiMgUmV2aXNpb25zIFJlZ3Jlc3Npb24gdGFibGUKCgpGcm9tIGhlcmUgb253YXJkcywgd2Ugc2hvdyBvdXIgbmV3IHJlc3VsdHMgYmFzZWQgb24gdGhlIHJldmlzaW9ucyBvZiB0aGlzIHBhcGVyLgoKYGBge3IgcmVncmV2aXNpb25fc2l6ZSwgZXZhbCA9IFRSVUV9CgojICMgYWdlIGluIGNhdGVnb3JpZXMsIGV2YWwgPSBmYWxzZSBpbiAiaW5kZXBlbmRlbnRfdmFyaWFibGVzLnJtZCIgZml4IGxhdGVyCmRmJGFnZWNhdFtkZiRhZ2VjYXQgPT0gIjE4LTMwIl0gPC0gMQpkZiRhZ2VjYXRbZGYkYWdlY2F0ID09ICIzMS00NSJdIDwtIDIKZGYkYWdlY2F0W2RmJGFnZWNhdCA9PSAiNDYtNjUiXSA8LSAzCmRmJGFnZWNhdFtkZiRhZ2VjYXQgPT0gIj42NSJdIDwtIDQKCnRhYmxlKGRmJGFnZWNhdCkKY2xhc3MoZGYkYWdlY2F0KQoKCiMgc29tZSBmaW5hbCBkYXRhIGhhbmRsaW5nIHRvIGFzc2lnbiB0aGUgY29ycmVjdCByZWZlcmVuY2UgY2F0ZWdvcmllcwojZGYkb3BsMiA8LXJlbGV2ZWwoYXMuZmFjdG9yKGRmJG9wbDIpLCByZWYgPSAwKQoKZGYkYWdlY2F0PC0gYXMuY2hhcmFjdGVyKGRmJGFnZWNhdCkKZGYkaW5jb21lPC0gYXMuY2hhcmFjdGVyKGRmJGluY29tZSkKZGYkaW5jb21lIDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkaW5jb21lKSwgcmVmID0gMikKZGYkYWdlY2F0IDwtcmVsZXZlbChhcy5mYWN0b3IoZGYkYWdlY2F0KSwgcmVmID0gNCkKCnRhYmxlKGRmJG9wbDIpCgpzdW1tYXJ5KGRmJG5ldHNvdmVyMSkKc3VtbWFyeShkZiRuZXRzb3ZlcjIpCnN1bW1hcnkoZGYkbmV0c292ZXIzKQpzdW1tYXJ5KGRmJG5ldHNvdmVyNCkKc3VtbWFyeShkZiRuZXRzb3ZlcjUpCnN1bW1hcnkoZGYkbmV0c292ZXI2KQoKCkRlc2NUb29sczo6RGVzYyhkZiRuZXRzb3ZlcjYpCkRlc2NUb29sczo6RGVzYyhkZiRuZXRzb3ZlcjcpCgoKbW9kZWxsMiA8LSBsbShsb2cobmV0c292ZXI2KSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArICNoMQogICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAjSDIKCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAjaDMKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArICNoNAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAjSDQKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgI2g1CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAjaDYKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNvdmVyNiJdXT4yNTAwLF0pCnN1bW1hcnkobW9kZWxsMikKCm1vZGVsbG5iMiA8LSBnbG0ubmIobmV0c292ZXI2IH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzb3ZlcjYiXV0+MjUwMCxdLAogICAgICAgICAgICAgICAgICAgICAgICBpbml0LnRoZXRhID0gMS4wMzI3MTMxNTYsIGxpbmsgPSBsb2cpCnN1bW1hcnkobW9kZWxsbmIyKQoKZnBhY2thZ2UuY2hlY2soInNqUGxvdCIpCgojIHRhYmxlIDMgcGFwZXIsIChuZWdiaW4gaXMgaW4gYXBwZW5kaXgpCnRhYl9tb2RlbChtb2RlbGwyLCBtb2RlbGxuYjIsIHNob3cuc2UgPSBUUlVFKQoKCmBgYAoKYGBge3IgcmVncmV2aXNpb25fZ2VuLCBldmFsID0gVFJVRX0KI2dlbmRlcgoKc3VtbWFyeShkZiRwZXJ3b21lbikKCm1vZGVsd29tYW4gPC0gbG0ocGVyd29tZW4qMTAwIH4gCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAjaDcKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsMiksIAogICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCnN1bW1hcnkobW9kZWx3b21hbikKCm1vZGVsbWFuIDwtIGxtKHBlcm1lbioxMDAgfiAKICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgI2g3CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmKQpzdW1tYXJ5KG1vZGVsbWFuKQoKc3VtbWFyeShkZiRwZXJtZW4pCnN1bW1hcnkoZGYkcGVyd29tZW4pCgptb2RlbHNhbWVnZW4gPC0gbG0oc2FtZWdlbmRlcioxMDAgfiAKICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKwogICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArICNoNwogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwyKSwgCiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZikKc3VtbWFyeShtb2RlbHNhbWVnZW4pCgp0YWJfbW9kZWwobW9kZWx3b21hbiwgbW9kZWxzYW1lZ2VuLCBzaG93LnNlID0gVFJVRSkKYGBgCgoKYGBge3IgcmVncmV2aXNpb25fZWR1YywgZXZhbCA9IFRSVUV9CgojIGxpbmUgZWR1YyBpbmRlcGVuZGVudCB2YXJpYWJsZSB1cCB0byBlZHVjIGhvbW9nZW5laXR5IGRlcGVuZGVudApzdW1tYXJ5KGRmJHBlcmVkdWNoaWdoKQojZWR1Ywptb2RlbGVkdWNoIDwtIGxtKHBlcmVkdWNoaWdoKjEwMCB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAjIGg4CiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZikKc3VtbWFyeShtb2RlbGVkdWNoKQoKbW9kZWxlZHVjbCA8LSBsbShwZXJlZHVjbG93KjEwMCB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAjIGg4CiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZikKc3VtbWFyeShtb2RlbGVkdWNsKQoKCgptb2RlbHNhbWVlZHVjIDwtIGxtKHNhbWVlZHVjKjEwMCB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAjIGg4CiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZikKc3VtbWFyeShtb2RlbHNhbWVlZHVjKQoKdGFiX21vZGVsKG1vZGVsZWR1Y2gsIG1vZGVsc2FtZWVkdWMsIHNob3cuc2UgPSBUUlVFKQoKYGBgCgpIeXBvdGhlc2lzIDk6IG5ldHdvcmsgc2l6ZSBieSBob21vZ2VuZWl0eS4KCmBgYHtyIHJlZ3JldmlzaW9uX2g5LCBldmFsID0gVFJVRX0KIyAKIyBnZW5oOSA8LSBsbShzYW1lZ2VuZGVyIH4gCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKwojICAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgCiMgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgd29ydGhob3VzZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwyKSArCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGxvZyhuZXRzb3ZlcjQrMSksICNIOQojICAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZikKIyAKIyAKIyBlZHVjaDkgPC0gbG0oc2FtZWVkdWMgfiAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKIyAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b21hbikgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpICsKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgbG9nKG5ldHNvdmVyNCsxKSwgI0g5CiMgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmKQojIAojIHN1bW1hcnkoZ2VuaDkpCiMgc3VtbWFyeShlZHVjaDkpCiMgdGFiX21vZGVsKGdlbmg5LCBlZHVjaDksIHNob3cuc2UgPSBUUlVFKQoKYGBgCgpFdGhuaWMgYmFja2dyb3VuZCBpcyBkcm9wcGVkIGZyb20gdGhlIHBhcGVyLgoKYGBge3IgcmVncmV2aXNpb25fZXRoLCBldmFsID0gVFJVRX0KIyAKIyAjZ2VuZGVyCiMgbW9kZWxkdXRjaCA8LSBsbShudW1kdXRjaCB+IAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvcmspICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IobWlncjMpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihpbmNvbWUpICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKwojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwpLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmKQojICNzdW1tYXJ5KG1vZGVsZHV0Y2gpCiMgCiMgCiMgbW9kZWxub2R1dGNoIDwtIGxtKG51bW5vZHV0Y2ggfiAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKIyAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCiMgI3N1bW1hcnkobW9kZWxub2R1dGNoKQojIAojIAojIG1vZGVsc2FtZWV0aG5pYzEgPC0gbG0oc2FtZWV0aG5pYzEgfiAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG1pZ3IzKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoYWdlY2F0KSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsKIyAgICAgICAgICAgICAgICAgICAgICAgICAgIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArIAojICAgICAgICAgICAgICAgICAgICAgICAgICAgCiMgICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iob3BsKSwKIyAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhID0gZGYpCiMgI3N1bW1hcnkobW9kZWxzYW1lZXRobmljMSkKIyAKIyB0YWJfbW9kZWwobW9kZWxkdXRjaCwgbW9kZWxub2R1dGNoLCBtb2RlbHNhbWVldGhuaWMxLCBzaG93LnNlID0gVFJVRSkKYGBgCgoKIyBSZXZpc2lvbnMgUm9idXN0bmVzcyBSZWdyZXNzaW9uIHRhYmxlCgpgYGB7ciByZWdyZXZpc2lvbl9yb2J1c3QsIGV2YWwgPSBUUlVFfQojIGZvciBlYWNoIHJlbW92ZSB0aGUgdG9wIDUgaGlnaGVzdCBwb2ludHMgYXMgb3V0bGllcnMgKHRob3VnaCBkb2VzIG5vdCByZWFsbHkgbWF0dGVyKQpEZXNjVG9vbHM6OkRlc2MoZGYkbmV0c292ZXIxKQpEZXNjVG9vbHM6OkRlc2MoZGYkbmV0c292ZXIyKQpEZXNjVG9vbHM6OkRlc2MoZGYkbmV0c292ZXI0KQpEZXNjVG9vbHM6OkRlc2MoZGYkbmV0c292ZXI1KQoKIyByb2J1c3RuZXNzIGZvdXIgb3RoZXIgZXN0aW1hdGlvbiBzY2VuYXJpb3M6IG1vc3RseSBxdWFsaXRhdGl2ZWx5IHNpbWlsYXIKcjEgPC0gbG0obG9nKG5ldHNvdmVyMSkgfiAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKyAjaDEKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgI0gyCgogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgI2gzCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAjaDQKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsgI0g0CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArICNoNQogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwyKSwgI2g2CiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzb3ZlcjEiXV0+NzAwLF0pCgoKcjIgPC0gbG0obG9nKG5ldHNvdmVyMikgfiAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKyAjaDEKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgI0gyCgogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgI2gzCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAjaDQKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsgI0g0CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArICNoNQogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwyKSwgI2g2CiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzb3ZlcjIiXV0+NzAwLF0pCgpyNCA8LSBsbShsb2cobmV0c292ZXI0KSB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArICNoMQogICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBoaHNpemUgKyAjSDIKCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAjaDMKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArICNoNAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAjSDQKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgI2g1CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAjaDYKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmWyFkZltbIm5ldHNvdmVyNSJdXT4xNDAwLF0pCgoKcjUgPC0gbG0obG9nKG5ldHNvdmVyNSkgfiAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29yaykgKyAjaDEKICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgaGhzaXplICsgI0gyCgogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihhZ2VjYXQpICsgI2gzCiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGluY29tZSkgKyAjaDQKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICB3b3J0aGhvdXNlICsgI0g0CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKHdvbWFuKSArICNoNQogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3RvcihvcGwyKSwgI2g2CiAgICAgICAgICAgICAgICAgICAgICAgIGRhdGEgPSBkZlshZGZbWyJuZXRzb3ZlcjUiXV0+NjUwLF0pCgojIHJvYnVzdG5lc3MgZm9yIHNjZW5hcmlvcwpzdW1tYXJ5KHIxKQpzdW1tYXJ5KHIyKQpzdW1tYXJ5KHI0KQpzdW1tYXJ5KHI1KQoKCgpgYGAKCmBgYHtyIHJlZ3JldmlzaW9uX3JvYnVzdF9ob21vLCBldmFsID0gVFJVRX0KI2dlbmRlcgptb2RlbHdvbWFuIDwtIGxtKHBlcndvbWVuX3JlZCB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgI2g3CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmKQpzdW1tYXJ5KG1vZGVsd29tYW4pCgoKCm1vZGVsc2FtZWdlbiA8LSBsbShzYW1lZ2VuZGVyX3JlZCB+IAogICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgI2g3CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmKQpzdW1tYXJ5KG1vZGVsc2FtZWdlbikKCiNnZW5kZXIKbW9kZWx3b21hbiA8LSBsbShwZXJ3b21lbl91cCB+IAogICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgI2g3CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmKQpzdW1tYXJ5KG1vZGVsd29tYW4pCgptb2RlbHNhbWVnZW4gPC0gbG0oc2FtZWdlbmRlcl91cCB+IAogICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgIGFzLmZhY3Rvcih3b3JrKSArCiAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIGhoc2l6ZSArIAogICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKGFnZWNhdCkgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3IoaW5jb21lKSArIAogICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgIHdvcnRoaG91c2UgKyAKICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICBhcy5mYWN0b3Iod29tYW4pICsgI2g3CiAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgYXMuZmFjdG9yKG9wbDIpLCAKICAgICAgICAgICAgICAgICAgICAgICAgZGF0YSA9IGRmKQpzdW1tYXJ5KG1vZGVsc2FtZWdlbikKCmBgYA==</div>
 
 
 </div>

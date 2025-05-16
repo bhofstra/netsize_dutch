@@ -147,6 +147,8 @@ summary(df$sameeduc)
 summary(df[df$opl2 == 1, c("sameeduc")])
 summary(df[df$opl2 == 0, c("sameeduc")])
 
+summary(df$netsover6)
+
 ```
 
 ----
@@ -304,9 +306,9 @@ The code below generates Figure 2 from the paper associated with the text on pag
 
 
  
-# Comparing four different estimation scenarios
+# Figure 1
 
-The code below generates Figure X from the paper associated with the text on page X.
+The code below generates Figure 1 from the paper associated with the text on page X.
   
 ```{r densityrevision, eval = TRUE}
 
@@ -314,6 +316,7 @@ netsize_l <- data.frame(df[, c("netsover6")])
 names(netsize_l) <- c("value")
 round(summary(df$netsover6)[3], digits = 0)
 round(summary(df$netsover6)[4], digits = 0)
+IQR(df$netsover6)
 
 dens1 <- ggplot(netsize_l, aes(x=value)) + 
   geom_density(alpha = .2, size = 0.5) + 
